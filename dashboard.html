@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard.css">
+  
+</head>
+
+<body>
+  <!-- NAVIGATION -->
+  <header>
+  <nav class="navbar">
+    
+    <div class="logo">
+      <a href="index.html">Rahma Farms</a>
+    </div>
+
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="order.html">Orders</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+  </nav>
+</header>
+
+  <h2>Seller Dashboard</h2>
+
+  <button id="logoutBtn">Logout</button>
+  <button id="exportSubs">Export Emails</button>
+
+  <!-- ===================== -->
+  <!-- ORDERS TABLE -->
+  <!-- ===================== -->
+   <div id="adminPanel">
+  <button id="toggleAdminPanel">Toggle Admin Panel ⚙️</button>
+  
+  <div id="adminContent" style="display:none; border:1px solid #ccc; padding:10px; margin-top:10px;">
+    <div id="lowStockAlerts"></div>
+    <div id="stockManager" style="margin-top:10px;"></div>
+    <div id="analytics" style="margin-top:10px;"></div>
+  </div>
+</div>
+  <h3>Orders</h3>
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>Items</th>
+        <th>Total (₵)</th>
+        <th>Payment Status</th>
+        <th>Delivery Status</th>
+        <th>Date/Time</th>
+      </tr>
+    </thead>
+    <tbody id="orders-table"></tbody>
+  </table>
+
+  
+
+  <!-- ===================== -->
+  <!-- SCRIPTS -->
+  <!-- ===================== -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="dashboard.js"></script>
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const navLinks = document.getElementById("nav-links");
+
+  toggle.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+  });
+
+  window.addEventListener("scroll", function() {
+    const navbar = document.querySelector(".navbar");
+    navbar.classList.toggle("scrolled", window.scrollY > 20);
+  });
+</script>
+</body>
+</html>

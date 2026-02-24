@@ -1,0 +1,122 @@
+/* =========================
+   GLOBAL RESET
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* =========================
+   HERO SECTION
+========================= */
+.page-hero {
+  margin-top: 90px; /* keep if navbar is fixed */
+  padding: 60px 0;
+  text-align: center;
+  background: linear-gradient(rgba(46,125,50,0.85), rgba(46,125,50,0.85)),
+              url("https://images.unsplash.com/photo-1500937386664-56d1dfef3854");
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+
+.page-hero h1 {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+/* =========================
+   CONTACT SECTION
+========================= */
+.contact {
+  padding: 60px 8%;
+}
+
+.contact-container {
+  display: flex;
+  gap: 50px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.contact-info,
+.contact-form {
+  flex: 1;
+  min-width: 300px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.contact-info h2,
+.contact-form h2 {
+  margin-bottom: 20px;
+  color: #2e7d32;
+}
+
+.contact-info p {
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+/* =========================
+   FORM STYLING
+========================= */
+.contact-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-form input,
+.contact-form textarea {
+  margin-bottom: 15px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #2e7d32;
+  outline: none;
+}
+
+.contact-form textarea {
+  resize: none;
+  height: 120px;
+}
+
+.contact-form button {
+  padding: 12px;
+  border: none;
+  background: #2e7d32;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.contact-form button:hover {
+  background: #1b5e20;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+@media (max-width: 768px) {
+  .contact-container {
+    flex-direction: column;
+  }
+}

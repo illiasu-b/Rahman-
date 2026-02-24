@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Your Cart</h2>
+
+<table id="cartTable">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Price (₵)</th>
+      <th>Qty</th>
+      <th>Total</th>
+      <th>Remove</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Cart items will be dynamically inserted here -->
+  </tbody>
+</table>
+
+<h3 id="cartTotal">Total: ₵0</h3>
+
+<a href="order.html" class="btn">Proceed to Order</a>
+
+<!-- Firebase -->
+<script type="module" src="firebase.js"></script>
+<!-- Cart logic -->
+<script type="module" src="cart.js"></script>
+
+</body>
+</html>

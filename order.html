@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="order.css">
+</head>
+<body>
+  <!-- NAVIGATION BAR -->
+<header>
+  <nav class="navbar">
+    
+    <div class="logo">
+      <a href="index.html">Rahma Farms</a>
+    </div>
+
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Admin</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="order.html">Orders</a></li>
+      <li><a href="tracking.html">Track Order</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+  </nav>
+</header>
+
+  <h3>Customer Info</h3>
+  <form id="orderForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="text" id="phone" placeholder="Phone" required>
+    <input type="email" id="email" placeholder="Enter your email" required>
+    <input type="text" id="address" placeholder="Address" required>
+
+    <!-- Pay Now button triggers Paystack -->
+    <button type="button" id="payNowBtn">Pay Now</button>
+
+    <!-- Place Order button saves order in Firebase without payment -->
+    <button type="submit">Place Order</button>
+  </form>
+
+  <!-- Cart Icon with Badge -->
+<div id="cartContainer">
+  <button id="cartButton">
+    🛒 Cart <span id="cartBadge">0</span>
+  </button>
+</div>
+
+<!-- Cart Table (optional, hidden until opened) -->
+<div id="cartDetails" style="display:none;">
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="cartTable"></tbody>
+  </table>
+  <p>Total: ₵<span id="cartTotal">0</span></p>
+</div>
+
+
+  <!-- PAYSTACK INLINE JS MUST BE FIRST -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+
+  <!-- Your scripts -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="cart.js"></script>
+  <script type="module" src="order.js"></script>
+  <script>
+  const toggle = document.getElementById("menu-toggle");
+  const navLinks = document.getElementById("nav-links");
+
+  toggle.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+  });
+
+  window.addEventListener("scroll", function() {
+    const navbar = document.querySelector(".navbar");
+    navbar.classList.toggle("scrolled", window.scrollY > 20);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Checkout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Checkout</h2>
+
+<form id="checkout-form">
+  <input type="text" placeholder="Full Name" required>
+  <input type="tel" placeholder="Phone Number" required>
+  <input type="text" placeholder="Delivery Address" required>
+
+  <select required>
+    <option value="">Select Delivery Option</option>
+    <option>Pickup at Farm</option>
+    <option>Home Delivery</option>
+  </select>
+
+  <button type="submit">Place Order</button>
+</form>
+
+<script>
+document.getElementById("checkout-form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  alert("Order placed successfully! (Demo)");
+  localStorage.removeItem("cart");
+  window.location.href = "index.html";
+});
+</script>
+
+</body>
+</html>

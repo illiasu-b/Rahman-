@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About Us | Rahma Farms</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- NAVIGATION BAR -->
+<header>
+  <nav class="navbar">
+    
+    <div class="logo">
+      <a href="index.html">Rahma Farms</a>
+    </div>
+
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Admin</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="order.html">Orders</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+  </nav>
+</header>
+
+
+<section class="page-hero">
+  <h1>About Our Farm</h1>
+</section>
+
+<section class="about">
+  <div class="about-container">
+
+    <div class="about-text">
+      <h2>Our Story</h2>
+      <p>
+        Rahma Farms started as a small family farm with a simple goal
+        to provide fresh, healthy farm products directly to our community.
+      </p>
+      <p>
+        Located in Northern Ghana, we grow vegetables, fruits, and raise
+        poultry using responsible farming methods that respect the land.
+      </p>
+      <p>
+        We harvest on demand and offer delivery or pickup to ensure our
+        customers always receive fresh and quality products.
+      </p>
+
+      <ul>
+        <li>✔ Fresh farm produce</li>
+        <li>✔ Affordable prices</li>
+        <li>✔ Trusted local farmers</li>
+        <li>✔ Delivery & pickup options</li>
+      </ul>
+    </div>
+
+    <div class="about-image">
+      <img src="Green Yellow Modern Fresh Fruit & Vegetables Promotion Facebook Post.jpg" alt="Our Farm">
+    </div>
+
+  </div>
+</section>
+
+<script type="module" src="cart.js"></script>
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const navLinks = document.getElementById("nav-links");
+
+  toggle.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+  });
+
+  window.addEventListener("scroll", function() {
+    const navbar = document.querySelector(".navbar");
+    navbar.classList.toggle("scrolled", window.scrollY > 20);
+  });
+</script>
+</body>
+</html>

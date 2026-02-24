@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rahma Farms</title>
+
+  <link rel="stylesheet" href="style.css" />
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><link rel="stylesheet" href="search.css" />
+  <link rel="stylesheet" href="testimonial.css"/>
+  <link rel="stylesheet" href="subscribe.css"/>
+  <link rel="stylesheet" href="promo.css"/>
+  <link rel="stylesheet" href="hero.css"/>
+  <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search products..." />
+  <button id="searchButton">Search</button>
+</div>
+
+<div id="productResults" class="product-grid" style="padding: 10px;"></div>
+
+<!-- NAVIGATION BAR -->
+<header>
+  <!-- your nav content -->
+</header>
+
+  <nav class="navbar">
+    
+    <div class="logo">
+      <a href="index.html">Rahma Farms</a>
+    </div>
+
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="dashboard.html">Admin</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="order.html">Orders</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+
+  </nav>
+</header>
+
+<!-- PROMOTIONAL BANNERS -->
+<section id="promo-banner-container">
+  <!-- Individual promo banners will be injected here -->
+</section>
+
+
+<section id="hero">
+  <div class="hero-container"></div>
+</section>
+<section class="testimonials-section">
+
+  <h2>What Our Customers Say</h2>
+
+  <div id="testimonial-form">
+    <h3>Rate Our Service</h3>
+
+    <div class="star-rating" id="starRating">
+      <span data-value="1">★</span>
+      <span data-value="2">★</span>
+      <span data-value="3">★</span>
+      <span data-value="4">★</span>
+      <span data-value="5">★</span>
+    </div>
+
+    <input type="text" id="customerName" placeholder="Your Name" />
+    <textarea id="customerReview" placeholder="Write your review..."></textarea>
+
+    <button id="submitReview">Submit Review</button>
+  </div>
+
+  <div class="testimonials-container" id="testimonialsContainer">
+    <!-- Reviews will appear here -->
+  </div>
+
+</section>
+
+<form id="subscribe-form">
+  <input type="text" id="name" placeholder="Your name" />
+  <input type="email" id="email" placeholder="Your email" />
+  <button type="submit">Subscribe</button>
+</form>
+
+<p id="newsletter-msg"></p>
+
+<!-- Firebase + Scripts -->
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="promo.js"></script>
+<script type="module" src="hero.js"></script>
+<script type="module" src="search.js"></script>
+<script type="module" src="subscribe.js"></script>
+<script>
+  const toggle = document.getElementById("menu-toggle");
+  const navLinks = document.getElementById("nav-links");
+
+  toggle.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+  });
+
+  window.addEventListener("scroll", function() {
+    const navbar = document.querySelector(".navbar");
+    navbar.classList.toggle("scrolled", window.scrollY > 20);
+  });
+</script>
+<script>
+let selectedRating = 0;
+const stars = document.querySelectorAll("#starRating span");
+const container = document.getElementById("testimonialsContainer");
+
+// Star click
+stars.forEach(star => {
+  star.addEventListener("click", () => {
+    selectedRating = star.getAttribute("data-value");
+    stars.forEach(s => s.classList.remove("active"));
+    for (let i = 0; i < selectedRating; i++) {
+      stars[i].classList.add("active");
+    }
+  });
+});
+
+// Load saved reviews
+window.addEventListener("load", () => {
+  const savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
+  savedReviews.forEach(review => addReview(review));
+});
+
+// Submit review
+document.getElementById("submitReview").addEventListener("click", () => {
+  const name = document.getElementById("customerName").value;
+  const text = document.getElementById("customerReview").value;
+
+  if (!name || !text || selectedRating == 0) {
+    alert("Please complete all fields and select rating.");
+    return;
+  }
+
+  const review = {
+    name,
+    text,
+    rating: selectedRating
+  };
+
+  addReview(review);
+
+  // Save to localStorage
+  const savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
+  savedReviews.push(review);
+  localStorage.setItem("reviews", JSON.stringify(savedReviews));
+
+  // Reset form
+  document.getElementById("customerName").value = "";
+  document.getElementById("customerReview").value = "";
+  stars.forEach(s => s.classList.remove("active"));
+  selectedRating = 0;
+});
+
+function addReview(review) {
+  const card = document.createElement("div");
+  card.classList.add("testimonial-card");
+
+  let starIcons = "";
+  for (let i = 0; i < review.rating; i++) {
+    starIcons += "★";
+  }
+
+  card.innerHTML = `
+    <div class="stars">${starIcons}</div>
+    <h4>${review.name}</h4>
+    <p>${review.text}</p>
+  `;
+
+  container.prepend(card);
+}
+</script>
+
+
+</body>
+</html>
