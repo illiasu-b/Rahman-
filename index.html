@@ -6,32 +6,22 @@
   <title>Rahma Farms</title>
 
   <link rel="stylesheet" href="style.css" />
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><link rel="stylesheet" href="search.css" />
+  <link rel="stylesheet" href="search.css" />
   <link rel="stylesheet" href="testimonial.css"/>
   <link rel="stylesheet" href="subscribe.css"/>
   <link rel="stylesheet" href="promo.css"/>
   <link rel="stylesheet" href="hero.css"/>
-  <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
 
-<div class="search-bar">
-  <input type="text" id="searchInput" placeholder="Search products..." />
-  <button id="searchButton">Search</button>
-</div>
-
-<div id="productResults" class="product-grid" style="padding: 10px;"></div>
-
-<!-- NAVIGATION BAR -->
+<!-- ================= NAVBAR ================= -->
 <header>
-  <!-- your nav content -->
-</header>
-
   <nav class="navbar">
-    
+
     <div class="logo">
-      <a href="index.html">Rahma Farms</a>
+      <a href="index.html">Rahman Farms</a>
     </div>
 
     <button class="menu-toggle" id="menu-toggle">☰</button>
@@ -47,15 +37,25 @@
   </nav>
 </header>
 
-<!-- PROMOTIONAL BANNERS -->
-<section id="promo-banner-container">
-  <!-- Individual promo banners will be injected here -->
-</section>
+<!-- ================= SEARCH SECTION ================= -->
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search products..." />
+  <button id="searchButton">
+    <i class="fas fa-search"></i>
+  </button>
+</div>
 
+<div id="productResults" class="product-grid" style="padding: 10px;"></div>
 
+<!-- ================= PROMO ================= -->
+<section id="promo-banner-container"></section>
+
+<!-- ================= HERO ================= -->
 <section id="hero">
   <div class="hero-container"></div>
 </section>
+
+<!-- ================= TESTIMONIALS ================= -->
 <section class="testimonials-section">
 
   <h2>What Our Customers Say</h2>
@@ -77,12 +77,11 @@
     <button id="submitReview">Submit Review</button>
   </div>
 
-  <div class="testimonials-container" id="testimonialsContainer">
-    <!-- Reviews will appear here -->
-  </div>
+  <div class="testimonials-container" id="testimonialsContainer"></div>
 
 </section>
 
+<!-- ================= SUBSCRIBE ================= -->
 <form id="subscribe-form">
   <input type="text" id="name" placeholder="Your name" />
   <input type="email" id="email" placeholder="Your email" />
@@ -91,13 +90,14 @@
 
 <p id="newsletter-msg"></p>
 
-<!-- Firebase + Scripts -->
+<!-- ================= SCRIPTS ================= -->
 
 <script type="module" src="firebase.js"></script>
 <script type="module" src="promo.js"></script>
 <script type="module" src="hero.js"></script>
 <script type="module" src="search.js"></script>
 <script type="module" src="subscribe.js"></script>
+
 <script>
   const toggle = document.getElementById("menu-toggle");
   const navLinks = document.getElementById("nav-links");
@@ -111,12 +111,12 @@
     navbar.classList.toggle("scrolled", window.scrollY > 20);
   });
 </script>
+
 <script>
 let selectedRating = 0;
 const stars = document.querySelectorAll("#starRating span");
 const container = document.getElementById("testimonialsContainer");
 
-// Star click
 stars.forEach(star => {
   star.addEventListener("click", () => {
     selectedRating = star.getAttribute("data-value");
@@ -127,13 +127,11 @@ stars.forEach(star => {
   });
 });
 
-// Load saved reviews
 window.addEventListener("load", () => {
   const savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
   savedReviews.forEach(review => addReview(review));
 });
 
-// Submit review
 document.getElementById("submitReview").addEventListener("click", () => {
   const name = document.getElementById("customerName").value;
   const text = document.getElementById("customerReview").value;
@@ -143,20 +141,13 @@ document.getElementById("submitReview").addEventListener("click", () => {
     return;
   }
 
-  const review = {
-    name,
-    text,
-    rating: selectedRating
-  };
-
+  const review = { name, text, rating: selectedRating };
   addReview(review);
 
-  // Save to localStorage
   const savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
   savedReviews.push(review);
   localStorage.setItem("reviews", JSON.stringify(savedReviews));
 
-  // Reset form
   document.getElementById("customerName").value = "";
   document.getElementById("customerReview").value = "";
   stars.forEach(s => s.classList.remove("active"));
@@ -181,7 +172,6 @@ function addReview(review) {
   container.prepend(card);
 }
 </script>
-
 
 </body>
 </html>
