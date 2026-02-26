@@ -6,27 +6,63 @@
   <title>Order</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="order.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <!-- NAVIGATION BAR -->
 <header>
   <nav class="navbar">
-    
+
     <div class="logo">
-      <a href="index.html">Rahma Farms</a>
+      <a href="index.html">Rahman Farms</a>
     </div>
 
-    <button class="menu-toggle" id="menu-toggle">☰</button>
-
     <ul class="nav-links" id="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="dashboard.html">Admin</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="order.html">Orders</a></li>
-      <li><a href="tracking.html">Track Order</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li>
+        <a href="index.html">
+          <i class="fas fa-house"></i>
+          <span>Home</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="dashboard.html">
+          <i class="fas fa-user-shield"></i>
+          <span>Admin</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="shop.html">
+          <i class="fas fa-store"></i>
+          <span>Shop</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="about.html">
+          <i class="fas fa-leaf"></i>
+          <span>About</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="contact.html">
+          <i class="fas fa-phone"></i>
+          <span>Contact</span>
+        </a>
+      </li>
+
+      <!-- Cart Icon -->
+  <li class="cart-item">
+    <a href="order.html" class="cart-link">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="cartBadge">0</span>
+    </a>
+  </li>
     </ul>
+
+    <button class="menu-toggle" id="menu-toggle">☰</button>
 
   </nav>
 </header>
@@ -47,9 +83,7 @@
 
   <!-- Cart Icon with Badge -->
 <div id="cartContainer">
-  <button id="cartButton">
-    🛒 Cart <span id="cartBadge">0</span>
-  </button>
+  
 </div>
 
 <!-- Cart Table (optional, hidden until opened) -->
@@ -76,19 +110,7 @@
   <script type="module" src="firebase.js"></script>
   <script type="module" src="cart.js"></script>
   <script type="module" src="order.js"></script>
-  <script>
-  const toggle = document.getElementById("menu-toggle");
-  const navLinks = document.getElementById("nav-links");
-
-  toggle.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-  });
-
-  window.addEventListener("scroll", function() {
-    const navbar = document.querySelector(".navbar");
-    navbar.classList.toggle("scrolled", window.scrollY > 20);
-  });
-</script>
-
+  
+  
 </body>
 </html>

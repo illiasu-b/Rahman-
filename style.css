@@ -1,4 +1,7 @@
 /* ================= GLOBAL ================= */
+.navbar .nav-links li {
+  list-style: none;
+}
 * {
   box-sizing: border-box;
 }
@@ -9,7 +12,7 @@ body {
 }
 
 header {
-  height: 85px;
+  height: auto;
 }
 /* ================= NAVBAR ================= */
 .navbar {
@@ -54,6 +57,36 @@ header {
 
 .navbar .nav-links li a:hover {
   color: #ffcc00;
+}
+.navbar .nav-links li {
+  list-style: none;   /* removes bullet */
+  margin: 0;
+  padding: 0;
+}
+
+#cartBadge {
+  background: red;
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 50%;
+  vertical-align: top;
+  margin-left: 5px;
+}
+.navbar .nav-links li a {
+  display: flex;          /* make flex container */
+  flex-direction: column; /* stack icon and text vertically */
+  align-items: center;    /* center horizontally */
+  justify-content: center;
+  text-decoration: none;
+  color: white;           /* or your navbar color */
+  font-weight: bold;
+  font-size: 0.85rem;     /* adjust text size */
+  gap: 4px;               /* space between icon and text */
+}
+
+.navbar .nav-links li a i {
+  font-size: 1.5rem;      /* icon size */
 }
 
 /* ================= DROPDOWN ================= */
@@ -251,7 +284,7 @@ header {
   }
 
   .product-card img {
-    height: 100px;
+    height: 80px;
   }
 
   .product-card h3 {
@@ -267,7 +300,7 @@ header {
   }
 
   .product-card button {
-    padding: 8px 16px;
+    padding: 5px 16px;
     font-size: 0.85rem;
   }
 }
@@ -292,12 +325,12 @@ header {
   }
 
   .product-card .price {
-    font-size: 0.9rem;
+    font-size: 0.5rem;
   }
 
   .product-card button {
     width: 80%;
-    padding: 8px 0;
+    padding: 5px 0;
     font-size: 0.85rem;
   }
 }
@@ -321,7 +354,7 @@ header {
 }
 
 .promo-banner img {
-  width: 100%;
+  width: 60%;
   max-width: 320px;
   height: auto;
   margin-top: 15px;
@@ -361,7 +394,7 @@ header {
   flex: 1 1 250px;
   padding: 10px 12px;
   border-radius: 4px;
-  border: 1px solid #ccc;
+  border: 1px solid blue;
   font-size: 1rem;
 }
 
@@ -371,7 +404,7 @@ header {
   border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
-  background: #f9f9f9;
+  background:#f9f9f9;
 }
 
 #newsletter-msg {
@@ -381,41 +414,59 @@ header {
   font-weight: 500;
 }
 
-/* ================= MOBILE ================= */
 @media (max-width: 768px) {
 
+  /* Move navbar to bottom */
+  .navbar {
+    top: auto;
+    bottom: 0;
+    padding: 12px 0;
+    justify-content: center;
+  }
+  /* Hidden by default */
+#subscribe-form {
+  display: none;
+  margin-top: 15px;
+}
+
+/* Shown when JS toggles .active */
+#subscribe-form.active {
+  display: block;
+}
+
+
+  /* Hide logo & hamburger */
+  .logo,
   .menu-toggle {
-    display: block;
+    display: none;
   }
 
+  /* Make links horizontal */
   .navbar .nav-links {
-    position: absolute;
-    top: 80px;
-    right: 0;
-    width: 50%;
-    max-width: 80px;
-    flex-direction: column;
-    padding: 5px;
-    border-radius: 0 0 0 5px;
-    box-shadow: -1px 1px 2px rgba(0,0,0,0.2);
-    display: none;
-    z-index: 2000;
-  }
-
-  .navbar .nav-links.active {
+    position: static;
     display: flex;
-  }
-
-  .navbar .nav-links .dropdown {
-    position: static; /* KEY FIX */
-    display: none;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
     width: 100%;
-    background: #111;
+    gap: 0;
   }
 
-  .navbar .nav-links li:hover .dropdown {
-    display: block;
+  .navbar .nav-links li {
+    list-style: none;
   }
+
+  .navbar .nav-links li a {
+    color: white;
+    font-size: 13px;
+  }
+
+  /* Add space so content doesn't hide */
+  body {
+    padding-bottom: 75px;
+  }
+
+}
 
   .story-container {
     flex-direction: column;
@@ -461,5 +512,7 @@ header {
     font-size: 0.85rem;
   }
 }
+
+
 
 

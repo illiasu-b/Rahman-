@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Shop</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     /* Basic styling for product cards */
     #products-container { display: flex; flex-wrap: wrap; gap: 20px; }
@@ -15,45 +16,85 @@
 <body>
  <header>
   <nav class="navbar">
-    
+
     <div class="logo">
-      <a href="index.html">Rahma Farms</a>
+      <a href="index.html">Rahman Farms</a>
     </div>
+
+    <ul class="nav-links" id="nav-links">
+      <li>
+        <a href="index.html">
+          <i class="fas fa-house"></i>
+          <span>Home</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="dashboard.html">
+          <i class="fas fa-user-shield"></i>
+          <span>Admin</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="order.html">
+          <i class="fas fa-bag-shopping"></i>
+          <span>Orders</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="about.html">
+          <i class="fas fa-leaf"></i>
+          <span>About</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="contact.html">
+          <i class="fas fa-phone"></i>
+          <span>Contact</span>
+        </a>
+      </li>
+
+      <!-- Cart Icon -->
+  <li class="cart-item">
+    <a href="order.html" class="cart-link">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="cartBadge">0</span>
+    </a>
+  </li>
+    </ul>
 
     <button class="menu-toggle" id="menu-toggle">☰</button>
 
-    <ul class="nav-links" id="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="dashboard.html">Admin</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="order.html">Orders</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-
   </nav>
-</header> 
-
-
+</header>
 <h1>Welcome to My Shop</h1>
 <div id="products-container"></div>
+<!-- Cart Icon with Badge -->
+<div id="cartContainer">
+  
+</div>
+<!-- Cart Table (optional, hidden until opened) -->
+<div id="cartDetails" style="display:none;">
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="cartTable"></tbody>
+  </table>
+  <p>Total: ₵<span id="cartTotal">0</span></p>
+</div>
 
 <!-- Your scripts go here -->
 <script type="module" src="firebase.js"></script>
 <script type="module" src="shop.js"></script>
-<script>
-  const toggle = document.getElementById("menu-toggle");
-  const navLinks = document.getElementById("nav-links");
-
-  toggle.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-  });
-
-  window.addEventListener("scroll", function() {
-    const navbar = document.querySelector(".navbar");
-    navbar.classList.toggle("scrolled", window.scrollY > 20);
-  });
-</script>
-
+<script type="module" src="order.js"></script>
 </body>
 </html>

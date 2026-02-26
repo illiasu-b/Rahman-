@@ -16,7 +16,6 @@
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
 <header>
   <nav class="navbar">
 
@@ -24,18 +23,71 @@
       <a href="index.html">Rahman Farms</a>
     </div>
 
-    <button class="menu-toggle" id="menu-toggle">☰</button>
-
     <ul class="nav-links" id="nav-links">
-      <li><a href="dashboard.html">Admin</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="order.html">Orders</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
+
+      <li>
+        <a href="dashboard.html">
+          <i class="fas fa-user-shield"></i>
+          <span>Admin</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="shop.html">
+          <i class="fas fa-store"></i>
+          <span>Shop</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="order.html">
+          <i class="fas fa-bag-shopping"></i>
+          <span>Orders</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="about.html">
+          <i class="fas fa-leaf"></i>
+          <span>About</span>
+        </a>
+      </li>
+
+      <li>
+        <a href="contact.html">
+          <i class="fas fa-phone"></i>
+          <span>Contact</span>
+        </a>
+      </li>
+
+      <!-- Cart Icon -->
+  <li class="cart-item">
+    <a href="order.html" class="cart-link">
+      <i class="fas fa-shopping-cart"></i>
+      <span id="cartBadge">0</span>
+    </a>
+  </li>
     </ul>
+
+    <button class="menu-toggle" id="menu-toggle">☰</button>
 
   </nav>
 </header>
+<!-- Cart Table (optional, hidden until opened) -->
+<div id="cartDetails" style="display:none;">
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="cartTable"></tbody>
+  </table>
+  <p>Total: ₵<span id="cartTotal">0</span></p>
+</div>
 
 <!-- ================= SEARCH SECTION ================= -->
 <div class="search-bar">
@@ -81,14 +133,25 @@
 
 </section>
 
-<!-- ================= SUBSCRIBE ================= -->
+
+
+  <button id="showSubscribeBtn" type="button">
+  Subscribe
+</button>
+
 <form id="subscribe-form">
-  <input type="text" id="name" placeholder="Your name" />
-  <input type="email" id="email" placeholder="Your email" />
-  <button type="submit">Subscribe</button>
+  <label for="name">Name</label>
+  <input type="text" id="name" placeholder="Your Name" required />
+
+  <label for="email">Email</label>
+  <input type="email" id="email" placeholder="Your Email" required />
+
+  <button type="submit">Subscribe Now</button>
+  <p id="newsletter-msg"></p>
 </form>
 
-<p id="newsletter-msg"></p>
+
+
 
 <!-- ================= SCRIPTS ================= -->
 
@@ -97,81 +160,9 @@
 <script type="module" src="hero.js"></script>
 <script type="module" src="search.js"></script>
 <script type="module" src="subscribe.js"></script>
+<script type="module" src="order.js"></script>
+<script type="module" src="testimonials.js"></script>
 
-<script>
-  const toggle = document.getElementById("menu-toggle");
-  const navLinks = document.getElementById("nav-links");
-
-  toggle.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-  });
-
-  window.addEventListener("scroll", function() {
-    const navbar = document.querySelector(".navbar");
-    navbar.classList.toggle("scrolled", window.scrollY > 20);
-  });
-</script>
-
-<script>
-let selectedRating = 0;
-const stars = document.querySelectorAll("#starRating span");
-const container = document.getElementById("testimonialsContainer");
-
-stars.forEach(star => {
-  star.addEventListener("click", () => {
-    selectedRating = star.getAttribute("data-value");
-    stars.forEach(s => s.classList.remove("active"));
-    for (let i = 0; i < selectedRating; i++) {
-      stars[i].classList.add("active");
-    }
-  });
-});
-
-window.addEventListener("load", () => {
-  const savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
-  savedReviews.forEach(review => addReview(review));
-});
-
-document.getElementById("submitReview").addEventListener("click", () => {
-  const name = document.getElementById("customerName").value;
-  const text = document.getElementById("customerReview").value;
-
-  if (!name || !text || selectedRating == 0) {
-    alert("Please complete all fields and select rating.");
-    return;
-  }
-
-  const review = { name, text, rating: selectedRating };
-  addReview(review);
-
-  const savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
-  savedReviews.push(review);
-  localStorage.setItem("reviews", JSON.stringify(savedReviews));
-
-  document.getElementById("customerName").value = "";
-  document.getElementById("customerReview").value = "";
-  stars.forEach(s => s.classList.remove("active"));
-  selectedRating = 0;
-});
-
-function addReview(review) {
-  const card = document.createElement("div");
-  card.classList.add("testimonial-card");
-
-  let starIcons = "";
-  for (let i = 0; i < review.rating; i++) {
-    starIcons += "★";
-  }
-
-  card.innerHTML = `
-    <div class="stars">${starIcons}</div>
-    <h4>${review.name}</h4>
-    <p>${review.text}</p>
-  `;
-
-  container.prepend(card);
-}
-</script>
 
 </body>
 </html>

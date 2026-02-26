@@ -74,5 +74,3 @@ export function clearCart() {
   renderCart();
 }
 
-// --- Auto-render cart on page load ---
-document.addEventListener("DOMContentLoaded", renderCart);

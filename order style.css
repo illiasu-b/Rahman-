@@ -86,3 +86,18 @@ h2 {
     font-size: 1.8rem;
   }
 }
+.navbar .nav-links li a {
+  display: flex;          /* make flex container */
+  flex-direction: column; /* stack icon and text vertically */
+  align-items: center;    /* center horizontally */
+  justify-content: center;
+  text-decoration: none;
+  color: white;           /* or your navbar color */
+  font-weight: bold;
+  font-size: 0.85rem;     /* adjust text size */
+  gap: 4px;               /* space between icon and text */
+}
+
+.navbar .nav-links li a i {
+  font-size: 1.5rem;      /* icon size */
+}
