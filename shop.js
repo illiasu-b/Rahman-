@@ -84,3 +84,17 @@ function attachCartListeners() {
 }
 
 document.addEventListener("DOMContentLoaded", showProducts);
+
+const productsContainer = document.getElementById("products-container");
+
+products.forEach(product => {
+  const div = document.createElement("div");
+  div.className = "shop-item"; // important!
+  div.innerHTML = `
+    <img src="${product.image}" alt="${product.name}">
+    <h4>${product.name}</h4>
+    <p>₵${product.price}</p>
+    <button>Add to Cart</button>
+  `;
+  productsContainer.appendChild(div);
+});

@@ -135,6 +135,41 @@ header {
   border: none;
 }
 
+/* ================= HERO SECTION ================= */
+
+#hero {
+  width: 100%;
+  min-height: 90vh;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* GRID ONLY — no flex anywhere */
+.hero-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .hero-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile → 2 per row */
+@media (max-width: 600px) {
+  .hero-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 /* ================= STORY ================= */
 .story {
   padding: 60px 20px;
@@ -177,7 +212,7 @@ header {
 
 /* ================= PRODUCTS ================= */ 
 .products {
-  padding: 60px 20px;
+  padding: 10px 20px;
   background: #ffffff;
 }
 
@@ -211,7 +246,7 @@ header {
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 5px rgba(0,0,0,0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -221,7 +256,7 @@ header {
 
 /* Product Image */
 .product-card img {
-  width: 100%;
+  width: 60%;
   height: 120px;
   object-fit: cover;
   border-bottom: 1px solid #eee;
@@ -354,7 +389,7 @@ header {
 }
 
 .promo-banner img {
-  width: 60%;
+  width: 30%;
   max-width: 320px;
   height: auto;
   margin-top: 15px;
@@ -376,6 +411,47 @@ header {
   background: darkgreen;
 }
 
+
+.home-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 50px 20px;
+  flex-wrap: wrap;
+}
+
+.home-links .link-card {
+  background: #f8fafc;
+  padding: 25px 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  flex: 1 1 200px; /* responsive width */
+  max-width: 250px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.home-links .link-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.home-links .link-card a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.home-links .link-card h3 {
+  margin-top: 10px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  color: #2e7d32;
+}
+
+.home-links .link-card p {
+  font-size: 14px;
+  color: #333;
+}
 /* ================= SUBSCRIBE ================= */
 #subscribe-form {
   display: flex;
@@ -513,6 +589,121 @@ header {
   }
 }
 
+/* ================= SHOP PAGE ================= */
+.shop-page {
+  min-height: 100vh;
+  padding: 40px 15px;
+  background: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+}
 
+.shop-page h1 {
+  text-align: center;
+  color: #222;
+  margin-bottom: 20px;
+  font-size: 30px;
+}
 
+/* Product Grid */
+.shop-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
 
+/* ================= PRODUCT CARD ================= */
+.shop-item {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 6px;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: 0.3s ease;
+}
+
+.shop-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* Product Image */
+.shop-item img {
+  width: 100%;
+  height: 100px; /* compact */
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+/* Product Name */
+.shop-item h4 {
+  margin: 4px 0 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Price */
+.shop-item p {
+  font-size: 12px;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 4px;
+}
+
+/* Button */
+.shop-item button {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2e7d32;
+  color: white;
+  font-size: 11px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.shop-item button:hover {
+  background-color: #1b5e20;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Tablet */
+@media (max-width: 992px) {
+  .shop-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .shop-item img {
+    height: 90px;
+  }
+}
+
+/* Mobile → 2 inline */
+@media (max-width: 600px) {
+  .shop-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .shop-item img {
+    height: 80px;
+  }
+  .shop-item {
+    padding: 4px;
+  }
+  .shop-item h4 {
+    font-size: 12px;
+  }
+  .shop-item p {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+  .shop-item button {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+}
