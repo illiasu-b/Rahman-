@@ -208,3 +208,5 @@ if (orderForm) {
 
 // Initial badge update
 updateCartBadge();
+const div = document.createElement("div");
+div.className = "hero-card";
