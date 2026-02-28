@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Shop</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="search.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
+  
     /* Basic styling for product cards */
     #products-container { display: flex; flex-wrap: wrap; gap: 20px; }
     .product-card { border: 1px solid #ccc; padding: 10px; width: 200px; border-radius: 8px; text-align: center; }
@@ -14,6 +16,13 @@
   </style>
 </head>
 <body>
+
+  <header class="top-navbar">
+  <div class="top-logo">
+    <img src="ChatGPT Image Feb 28, 2026, 02_27_07 PM.png" alt="RahmanGrow Logo">
+  </div>
+</header>
+
  <header>
   <nav class="navbar">
 
@@ -36,13 +45,7 @@
         </a>
       </li>
 
-      <li>
-        <a href="order.html">
-          <i class="fas fa-bag-shopping"></i>
-          <span>Orders</span>
-        </a>
-      </li>
-
+      
       <!-- Cart Icon -->
   <li class="cart-item">
     <a href="order.html" class="cart-link">
@@ -76,10 +79,21 @@
   </table>
   <p>Total: ₵<span id="cartTotal">0</span></p>
 </div>
+<!-- ================= SEARCH SECTION ================= -->
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search products..." />
+  <button id="searchButton">
+    <i class="fas fa-search"></i>
+  </button>
+</div>
+
+<div id="productResults" class="product-grid" style="padding: 10px;"></div>
+
 
 <!-- Your scripts go here -->
 <script type="module" src="firebase.js"></script>
 <script type="module" src="shop.js"></script>
 <script type="module" src="order.js"></script>
+<script type="module" src="search.js"></script>
 </body>
 </html>
