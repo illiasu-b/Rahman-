@@ -1,76 +1,92 @@
-// cart.js
-export let cart = JSON.parse(localStorage.getItem("cart")) || [];
+const cartTable = document.getElementById("cartTable");
+const totalItemsEl = document.getElementById("totalItems");
+const totalPriceEl = document.getElementById("cartTotal");
 
-// --- Save cart to localStorage ---
-function saveCart() {
+// ======================
+// GET CART (always fresh)
+// ======================
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+// ======================
+// SAVE CART
+// ======================
+function saveCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-// --- Render cart table dynamically ---
-export function renderCart() {
-  const tableBody = document.querySelector("#cartTable");
-  const totalElem = document.getElementById("cartTotal");
+// ======================
+// RENDER CART
+// ======================
+function renderCart() {
+  if (!cartTable) return;
 
-  if (!tableBody || !totalElem) return;
+  const cart = getCart();
 
-  tableBody.innerHTML = "";
+  cartTable.innerHTML = "";
 
-  if (cart.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="5">Your cart is empty</td></tr>`;
-    totalElem.textContent = "Total: ₵0";
-    return;
-  }
+  let totalItems = 0;
+  let totalPrice = 0;
 
-  let total = 0;
-  cart.forEach(item => {
-    const price = Number(item.price);
-    const qty = Number(item.qty);
-    const itemTotal = price * qty;
-    total += itemTotal;
+  cart.forEach((item, index) => {
 
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${item.name}</td>
-      <td>₵${price}</td>
-      <td>${qty}</td>
-      <td>₵${itemTotal}</td>
-      <td><button class="removeBtn">Remove</button></td>
+    const qty = Number(item.qty || 1);
+    const price = Number(item.price || 0);
+
+    totalItems += qty;
+    totalPrice += price * qty;
+
+    const div = document.createElement("div");
+    div.className = "cart-item";
+
+    div.innerHTML = `
+      <div class="cart-name">${item.name}</div>
+
+      <div class="cart-price">₵${price}</div>
+
+      <div class="cart-qty">
+        ${qty} <!-- ✅ ONLY NUMBER, NO TEXT -->
+      </div>
+
+      
+      <button class="remove-btn" onclick="removeItem(${index})">❌</button>
     `;
 
-    // Remove button
-    row.querySelector(".removeBtn").addEventListener("click", () => {
-      removeFromCart(item.name);
-    });
-
-    tableBody.appendChild(row);
+    cartTable.appendChild(div);
   });
 
-  totalElem.textContent = `Total: ₵${total}`;
+  if (totalItemsEl) totalItemsEl.textContent = totalItems;
+  if (totalPriceEl) totalPriceEl.textContent = totalPrice;
+
+  saveCart(cart);
 }
 
-// --- Add item to cart ---
-export function addToCart(item) {
-  const existing = cart.find(i => i.name === item.name);
-  if (existing) {
-    existing.qty += Number(item.qty);
-  } else {
-    cart.push({ ...item, qty: Number(item.qty) });
-  }
-  saveCart();
+// ======================
+// UPDATE QUANTITY
+// ======================
+window.updateQty = (index, value) => {
+  const cart = getCart();
+
+  cart[index].qty = Number(value);
+
+  saveCart(cart);
   renderCart();
-}
+};
 
-// --- Remove item from cart ---
-export function removeFromCart(itemName) {
-  cart = cart.filter(i => i.name !== itemName);
-  saveCart();
+// ======================
+// REMOVE ITEM
+// ======================
+window.removeItem = (index) => {
+  const cart = getCart();
+
+  cart.splice(index, 1);
+
+  saveCart(cart);
   renderCart();
-}
+};
 
-// --- Clear cart ---
-export function clearCart() {
-  cart = [];
-  saveCart();
-  renderCart();
-}
-
+// ======================
+// INIT
+// ======================
+renderCart();

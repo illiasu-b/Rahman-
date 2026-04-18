@@ -8,12 +8,32 @@
 
 <h2>Checkout</h2>
 
-<form id="checkout-form">
-  <input type="text" placeholder="Full Name" required>
-  <input type="tel" placeholder="Phone Number" required>
-  <input type="text" placeholder="Delivery Address" required>
+<!-- ================= CART TABLE ================= -->
+<table border="1" width="100%">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Price</th>
+      <th>Qty</th>
+      <th>Total</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="cartTable"></tbody>
+</table>
 
-  <select required>
+<h3>Total Items: <span id="totalItems">0</span></h3>
+<h3>Total Price: ₵<span id="totalPrice">0</span></h3>
+
+<hr>
+
+<!-- ================= USER FORM ================= -->
+<form id="checkout-form">
+  <input type="text" id="name" placeholder="Full Name" required>
+  <input type="tel" id="phone" placeholder="Phone Number" required>
+  <input type="text" id="address" placeholder="Delivery Address" required>
+
+  <select id="delivery" required>
     <option value="">Select Delivery Option</option>
     <option>Pickup at Farm</option>
     <option>Home Delivery</option>
@@ -22,12 +42,105 @@
   <button type="submit">Place Order</button>
 </form>
 
-<script>
-document.getElementById("checkout-form").addEventListener("submit", function(e) {
+<!-- ================= SCRIPT ================= -->
+<script type="module">
+import { db } from "./firebase.js";
+import { addDoc, collection } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+// LOAD CART
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const cartTable = document.getElementById("cartTable");
+const totalItemsEl = document.getElementById("totalItems");
+const totalPriceEl = document.getElementById("totalPrice");
+
+// RENDER CART
+function renderCart() {
+  cartTable.innerHTML = "";
+
+  let totalItems = 0;
+  let totalPrice = 0;
+
+  cart.forEach((item, index) => {
+    totalItems += item.qty;
+    totalPrice += item.price * item.qty;
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${item.name}</td>
+      <td>₵${item.price}</td>
+      <td>
+        <input type="number" value="${item.qty}" min="1"
+          onchange="updateQty(${index}, this.value)">
+      </td>
+      <td>₵${item.price * item.qty}</td>
+      <td>
+        <button onclick="removeItem(${index})">❌</button>
+      </td>
+    `;
+
+    cartTable.appendChild(row);
+  });
+
+  totalItemsEl.textContent = totalItems;
+  totalPriceEl.textContent = totalPrice;
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+renderCart();
+
+// UPDATE QTY
+window.updateQty = (index, value) => {
+  cart[index].qty = Number(value);
+  renderCart();
+};
+
+// REMOVE ITEM
+window.removeItem = (index) => {
+  cart.splice(index, 1);
+  renderCart();
+};
+
+// PLACE ORDER
+document.getElementById("checkout-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  alert("Order placed successfully! (Demo)");
-  localStorage.removeItem("cart");
-  window.location.href = "index.html";
+
+  if (cart.length === 0) {
+    alert("Cart is empty ❌");
+    return;
+  }
+
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const address = document.getElementById("address").value;
+  const delivery = document.getElementById("delivery").value;
+
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+  try {
+    await addDoc(collection(db, "orders"), {
+      name,
+      phone,
+      address,
+      delivery,
+      items: cart,
+      total,
+      status: "Pending Payment",
+      deliveryStatus: "Pending",
+      createdAt: new Date()
+    });
+
+    alert("Order placed successfully ✅");
+
+    localStorage.removeItem("cart");
+    window.location.href = "index.html";
+
+  } catch (err) {
+    console.error(err);
+    alert("Error placing order ❌");
+  }
 });
 </script>
 

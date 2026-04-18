@@ -12,7 +12,7 @@
 
   <header class="top-navbar">
   <div class="top-logo">
-    <img src="ChatGPT Image Feb 28, 2026, 02_27_07 PM.png" alt="RahmanGrow Logo">
+    <img src="rahmangrow_logo.svg" alt="RahmanGrow Logo">
   </div>
 </header>
   <!-- NAVIGATION BAR -->
@@ -81,21 +81,24 @@
 </div>
 
 <!-- Cart Table (optional, hidden until opened) -->
-<div id="cartDetails" style="display:none;">
+<div id="cartDetails">
+  <h3>Your Order</h3>
+
   <table>
     <thead>
       <tr>
-        <th>Item</th>
-        <th>Qty</th>
-        <th>Price</th>
-        <th>Total</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th> <!-- ✅ NEW -->
       </tr>
     </thead>
-    <tbody id="cartTable"></tbody>
+    <div id="cartTable" class="cart-container"></div>
   </table>
-  <p>Total: ₵<span id="cartTotal">0</span></p>
-</div>
 
+  <h3>Total: ₵<span id="cartTotal">0</span></h3>
+  
+</div>
 
   <!-- PAYSTACK INLINE JS MUST BE FIRST -->
   <script src="https://js.paystack.co/v1/inline.js"></script>

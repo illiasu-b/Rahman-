@@ -1,58 +1,118 @@
-// shop.js
-import { db } from './firebase.js';
-import { 
-  collection, 
-  onSnapshot 
+import { db } from "./firebase.js";
+import {
+  collection,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-import { addToCart } from "./cart.js";
 
-// Real-time product listener
+const container = document.getElementById("products-container");
+
+
+// ==========================
+// CART SYSTEM
+// ==========================
+function addToCart(product) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const existing = cart.find(p => p.id === product.id);
+
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+window.addToCart = addToCart;
+
+
+// ==========================
+// SAFE IMAGE FUNCTION
+// ==========================
+function getImage(p) {
+  if (p.imageURL && p.imageURL.trim() !== "") {
+    return p.imageURL;
+  }
+  return "images/no-image.png";
+}
+
+
+// ==========================
+// REAL-TIME PRODUCTS (excludes promo — client-side filter)
+// ==========================
 function showProducts() {
+  if (!container) {
+    console.error("products-container not found in HTML");
+    return;
+  }
 
-  const container = document.getElementById("products-container");
+  container.innerHTML = "<p>Loading products...</p>";
 
+  // ✅ FIX: Fetch ALL products, then filter out "promo" on the client side.
+  // This avoids the Firestore composite index requirement for != queries,
+  // and also shows products that have no category set yet.
   onSnapshot(collection(db, "products"), (snapshot) => {
 
-    container.innerHTML = ""; // Clear before rendering
+    container.innerHTML = "";
 
-    snapshot.forEach(doc => {
+    if (snapshot.empty) {
+      container.innerHTML = "<p>No products available.</p>";
+      return;
+    }
 
-      const p = { id: doc.id, ...doc.data() };
+    let rendered = 0;
 
-      // ✅ Hide product when stock = 0
-      if (!p.stock || p.stock <= 0) {
-        return;
+    snapshot.forEach(docSnap => {
+      const p = { id: docSnap.id, ...docSnap.data() };
+
+      // ✅ Client-side: skip anything categorised as "promo"
+      const cat = p.category?.trim().toLowerCase();
+      if (cat === "promo") return;
+
+      rendered++;
+
+      const stock    = Number(p.stock ?? 0);
+      const image    = getImage(p);
+      const currency = p.currency || "GHS";
+      const symbol   =
+        currency === "USD" ? "$" :
+        currency === "EUR" ? "€" :
+        currency === "GBP" ? "£" :
+        "₵";
+
+      let stockText = "";
+      if (stock <= 0) {
+        stockText = `<p class="sold-out">Sold Out</p>`;
+      } else if (stock <= 3) {
+        stockText = `<p class="low-stock">⚠ Only ${stock} left!</p>`;
+      } else {
+        stockText = `<p class="in-stock">In Stock: ${stock}</p>`;
       }
 
       const card = document.createElement("div");
       card.className = "product-card";
-
-      // ✅ Low stock warning
-      let stockText = "";
-
-      if (p.stock <= 3) {
-        stockText = `<p class="low-stock">⚠ Only ${p.stock} left!</p>`;
-      } else {
-        stockText = `<p class="in-stock">In Stock: ${p.stock}</p>`;
-      }
-
       card.innerHTML = `
-        <h3>${p.name}</h3>
-        <img src="${p.imageURL}" alt="${p.name}">
-        <p>${p.description}</p>
-        <p>Price: $${p.price}</p>
+        <h3>${p.name || "No name"}</h3>
+        <img src="${image}" alt="${p.name || "product"}">
+        <p>${p.description || ""}</p>
+        <p>Price: ${symbol}${p.price || 0}</p>
         ${stockText}
         <button class="add-to-cart"
-                data-id="${p.id}"
-                data-name="${p.name}"
-                data-price="${p.price}"
-                data-stock="${p.stock}">
-          Add to Cart
+          data-id="${p.id}"
+          data-name="${p.name}"
+          data-price="${p.price}"
+          data-stock="${stock}">
+          ${stock <= 0 ? "Sold Out" : "Add to Cart"}
         </button>
       `;
 
       container.appendChild(card);
     });
+
+    // ✅ If everything was filtered out (all products are promos)
+    if (rendered === 0) {
+      container.innerHTML = "<p>No products available.</p>";
+    }
 
     attachCartListeners();
   });
@@ -60,20 +120,20 @@ function showProducts() {
   console.log("Live stock tracking enabled ✅");
 }
 
+
+// ==========================
+// CART BUTTONS
+// ==========================
 function attachCartListeners() {
-
-  const buttons = document.querySelectorAll(".add-to-cart");
-
-  buttons.forEach(button => {
+  document.querySelectorAll(".add-to-cart").forEach(button => {
     button.addEventListener("click", () => {
-
-      const id = button.dataset.id;
-      const name = button.dataset.name;
+      const id    = button.dataset.id;
+      const name  = button.dataset.name;
       const price = Number(button.dataset.price);
       const stock = Number(button.dataset.stock);
 
       if (stock <= 0) {
-        alert("Out of stock");
+        alert("This product is sold out ❌");
         return;
       }
 
@@ -83,18 +143,8 @@ function attachCartListeners() {
   });
 }
 
+
+// ==========================
+// INIT
+// ==========================
 document.addEventListener("DOMContentLoaded", showProducts);
-
-const productsContainer = document.getElementById("products-container");
-
-products.forEach(product => {
-  const div = document.createElement("div");
-  div.className = "shop-item"; // important!
-  div.innerHTML = `
-    <img src="${product.image}" alt="${product.name}">
-    <h4>${product.name}</h4>
-    <p>₵${product.price}</p>
-    <button>Add to Cart</button>
-  `;
-  productsContainer.appendChild(div);
-});

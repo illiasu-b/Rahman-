@@ -185,5 +185,22 @@ h3 {
   text-align: right;
   margin-top: 10px;
 }
- 
+ .cart-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 13px;
+}
+
+.new-price {
+  color: #1a7f37;
+  font-weight: bold;
+  font-size: 16px;
+}
 

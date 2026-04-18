@@ -3,6 +3,14 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/f
 
 const heroContainer = document.querySelector(".hero-container");
 
+// ✅ MUST BE OUTSIDE (GLOBAL SCOPE)
+function getImage(p) {
+  if (p.imageURL && p.imageURL.trim() !== "") {
+    return p.imageURL;
+  }
+  return "images/no-image.png";
+}
+
 async function loadHeroProducts() {
   if (!heroContainer) return;
 
@@ -12,13 +20,14 @@ async function loadHeroProducts() {
 
     snapshot.docs.forEach(doc => {
       const product = doc.data();
-      console.log("Loaded product:", product);
 
       const card = document.createElement("div");
       card.className = "hero-product";
 
       const img = document.createElement("img");
-      img.src = (product.imageURL || "").trim() || "https://via.placeholder.com/200x150";
+
+      // ✅ NOW THIS WORKS
+      img.src = getImage(product);
 
       const title = document.createElement("h4");
       title.textContent = product.name || "Product";
@@ -36,6 +45,7 @@ async function loadHeroProducts() {
 
       heroContainer.appendChild(card);
     });
+
   } catch (error) {
     console.error("Error loading hero products:", error);
   }

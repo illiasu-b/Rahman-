@@ -10,22 +10,20 @@
 
 <h2>Your Cart</h2>
 
-<table id="cartTable">
+<table>
   <thead>
     <tr>
       <th>Product</th>
       <th>Price (₵)</th>
       <th>Qty</th>
-      <th>Total</th>
       <th>Remove</th>
     </tr>
   </thead>
-  <tbody>
-    <!-- Cart items will be dynamically inserted here -->
-  </tbody>
+  <tbody id="cartTable"></tbody> <!-- ✅ ADD ID -->
 </table>
 
-<h3 id="cartTotal">Total: ₵0</h3>
+<h3>Total Items: <span id="totalItems">0</span></h3> <!-- ✅ ADD -->
+
 
 <a href="order.html" class="btn">Proceed to Order</a>
 
