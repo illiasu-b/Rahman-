@@ -275,68 +275,68 @@ header {
 }
 
 /* ── Mobile overrides for product cards (Hero + Shop) ── */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .product-card {
-    padding: 6px;
+    padding: 8px;
     border-radius: 8px;
   }
 
   .product-card img {
-    height: 110px;
+    height: 150px;
     border-radius: 6px;
   }
 
   .product-card h3 {
-    font-size: 12px;
-    margin: 4px 2px 2px;
+    font-size: 13px;
+    margin: 6px 2px 2px;
   }
 
   .product-card p,
   .product-card .price {
-    font-size: 12px;
-    margin: 2px 0;
+    font-size: 13px;
+    margin: 3px 0;
   }
 
   .product-card button,
   .product-card .add-to-cart {
-    padding: 7px 10px;
-    font-size: 0.78rem;
-    margin-top: 6px;
+    padding: 9px 10px;
+    font-size: 0.82rem;
+    margin-top: 8px;
   }
 }
 
 @media (max-width: 380px) {
   .product-card img {
-    height: 90px;
+    height: 120px;
   }
 
   .product-card h3 {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .product-card p,
   .product-card .price {
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 
 /* ================= SHOP PAGE PRODUCT GRID ================= */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
   padding: 20px;
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 10px;
-    max-width: 100%;
-    margin: 0 auto;
+    gap: 12px;
+    padding: 12px;
   }
 }
 
@@ -345,8 +345,6 @@ header {
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     padding: 8px;
-    max-width: 100%;
-    margin: 0 auto;
   }
 }
 
