@@ -8,6 +8,15 @@ body {
   font-family: Arial, sans-serif;
   padding-bottom: 75px; /* prevent content from hiding behind navbar */
 }
+.shop-page {
+  width: 100%;
+  min-height: 100vh;
+  background: 
+    linear-gradient(135deg, rgba(46, 125, 50, 0.85), rgba(200, 230, 201, 0.6)),
+    url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600')
+    center/cover no-repeat fixed;
+  padding: 40px 20px;
+}
 
 header {
   height: auto;
