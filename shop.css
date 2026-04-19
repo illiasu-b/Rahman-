@@ -6,6 +6,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
+  padding-bottom: 75px; /* prevent content from hiding behind navbar */
 }
 
 header {
@@ -20,12 +21,12 @@ header {
   padding: 5px 20px;
   background: #2e7d32;
   position: fixed;
-  top: 0;
+  bottom: 0;        /* move to bottom */
+  top: auto;        /* override top: 0 */
   left: 0;
   width: 100%;
   z-index: 1000;
 }
-
 .navbar .logo a {
   font-size: 1.8rem;
   color: #f5f5f5;
@@ -120,7 +121,7 @@ header {
 
 .top-logo img {
   max-height: 500px;
-  width: 500px;
+  width: 300px;
 }
 
 /* ================= SEARCH BAR ================= */
@@ -135,6 +136,7 @@ header {
   padding: 20px;
 }
 
+
 /* ================= MENU TOGGLE ================= */
 .menu-toggle {
   display: none;
@@ -143,6 +145,48 @@ header {
   cursor: pointer;
   background: none;
   border: none;
+}
+
+/* ================= HOME LINKS ================= */
+.home-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 50px 20px;
+  flex-wrap: wrap;
+}
+
+.home-links .link-card {
+  background: #f8fafc;
+  padding: 25px 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  flex: 1 1 200px;
+  max-width: 250px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.home-links .link-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.home-links .link-card a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.home-links .link-card h3 {
+  margin-top: 10px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  color: #2e7d32;
+}
+
+.home-links .link-card p {
+  font-size: 14px;
+  color: #333;
 }
 <style>
   /* Product grid container */
@@ -196,4 +240,3 @@ header {
       width: calc(50% - 0.5rem); /* 2 cards per row */
     }
   }
-</style>
