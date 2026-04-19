@@ -16,17 +16,18 @@ header {
 /* ================= NAVBAR ================= */
 .navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  padding: 5px 20px;
-  background: #2e7d32;
+  padding: 12px 0;
+  background: black;
   position: fixed;
-  bottom: 0;        /* move to bottom */
-  top: auto;        /* override top: 0 */
+  bottom: 0;
+  top: auto;
   left: 0;
   width: 100%;
   z-index: 1000;
 }
+
 .navbar .logo a {
   font-size: 1.8rem;
   color: #f5f5f5;
@@ -37,10 +38,12 @@ header {
 .navbar .nav-links {
   list-style: none;
   display: flex;
-  gap: 20px;
+  justify-content: space-around; /* evenly spread icons across full width */
+  align-items: center;
+  width: 100%;
   margin: 0;
-  padding: 0;
-  position: relative;
+  padding: 0 2rem;
+  gap: clamp(10px, 4vw, 60px); /* auto gap: small on mobile, larger on desktop */
 }
 
 .navbar .nav-links li {
@@ -58,7 +61,7 @@ header {
   color: white;
   text-decoration: none;
   font-weight: bold;
-  font-size: 0.85rem;
+  font-size: clamp(0.7rem, 1.5vw, 0.95rem); /* auto font size */
   gap: 4px;
   transition: color 0.3s ease;
 }
@@ -68,7 +71,7 @@ header {
 }
 
 .navbar .nav-links li a i {
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem); /* auto icon size */
 }
 
 #cartBadge {
@@ -80,7 +83,6 @@ header {
   vertical-align: top;
   margin-left: 5px;
 }
-
 /* ================= DROPDOWN ================= */
 .navbar .nav-links .dropdown {
   position: absolute;
