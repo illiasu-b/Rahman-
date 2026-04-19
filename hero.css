@@ -22,6 +22,7 @@
   height: 150px;
   object-fit: cover;
   border-radius: 6px;
+  display: block;
 }
 
 .hero-product h4 {
@@ -38,25 +39,10 @@
   transform: translateY(-5px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.hero-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  max-width: 1200px;
-  margin: 0 auto;
-}
 
-.hero-product {
-  width: 200px;           /* adjust as needed */
-  text-align: center;
-  cursor: pointer;
-}
-
-.hero-product img {
-  width: 100%;            /* fill card width */
-  height: 150px;          /* fixed height */
-  object-fit: cover;      /* crop/scale nicely */
-  display: block;         /* ensure it’s visible */
-  border-radius: 6px;
+/* Mobile */
+@media (max-width: 480px) {
+  .hero-product {
+    width: calc(50% - 0.5rem); /* 2 cards per row */
+  }
 }
