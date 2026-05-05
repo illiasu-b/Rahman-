@@ -1,331 +1,166 @@
 /* ================= GLOBAL ================= */
-* {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  padding-bottom: 75px; /* prevent content from hiding behind navbar */
-}
-.shop-page {
-  width: 100%;
-  min-height: 100vh;
-  background: 
-    linear-gradient(135deg, rgba(46, 125, 50, 0.85), rgba(200, 230, 201, 0.6)),
-    url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600')
-    center/cover no-repeat fixed;
-  padding: 40px 20px;
-}
-
-header {
-  height: auto;
-}
-
-/* ================= NAVBAR ================= */
-.navbar {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 12px 0;
-  background: black;
-  position: fixed;
-  bottom: 0;
-  top: auto;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-}
-
-.navbar .logo a {
-  font-size: 1.8rem;
-  color: #f5f5f5;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.navbar .nav-links {
-  list-style: none;
-  display: flex;
-  justify-content: space-around; /* evenly spread icons across full width */
-  align-items: center;
-  width: 100%;
-  margin: 0;
-  padding: 0 2rem;
-  gap: clamp(10px, 4vw, 60px); /* auto gap: small on mobile, larger on desktop */
-}
-
-.navbar .nav-links li {
-  position: relative;
-  list-style: none;
+html, body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  max-width: 100%;
+  font-family: Arial, sans-serif;
 }
 
-.navbar .nav-links li a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: clamp(0.7rem, 1.5vw, 0.95rem); /* auto font size */
-  gap: 4px;
-  transition: color 0.3s ease;
+body {
+  padding-bottom: 80px;
 }
 
-.navbar .nav-links li a:hover {
-  color: #ffcc00;
-}
-
-.navbar .nav-links li a i {
-  font-size: clamp(1.2rem, 2.5vw, 1.6rem); /* auto icon size */
-}
-
-#cartBadge {
-  background: red;
-  color: white;
-  font-size: 0.75rem;
-  padding: 2px 6px;
-  border-radius: 50%;
-  vertical-align: top;
-  margin-left: 5px;
-}
-/* ================= DROPDOWN ================= */
-.navbar .nav-links .dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  min-width: 180px;
-  display: none;
-  z-index: 2000;
-}
-
-.navbar .nav-links li:hover .dropdown {
-  display: block;
-}
-
-.navbar .nav-links .dropdown a {
-  display: block;
-  padding: 10px 15px;
-  text-decoration: none;
-}
-
-.navbar .nav-links .dropdown a:hover {
-  background: #f5f5f5;
-}
-
-/* ================= TOP LOGO NAVBAR ================= */
+/* ================= TOP NAVBAR ================= */
 .top-navbar {
   position: sticky;
   top: 0;
   width: 100%;
-  background-color: darkgrey;
-  padding: 0;
+  background: darkgrey;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 200;
+  padding: 6px 10px;
 }
 
 .top-logo img {
-  max-height: 500px;
-  width: 300px;
+  height: 42px;
+  max-width: 100%;
 }
 
-/* ================= SEARCH BAR ================= */
-.search-bar,
-.search-container {
-  position: relative;
-  z-index: 1;
-}
-
-.search-section {
-  margin-top: 100px;
-  padding: 20px;
-}
-
-
-/* ================= MENU TOGGLE ================= */
-.menu-toggle {
-  display: none;
-  font-size: 26px;
-  color: white;
-  cursor: pointer;
-  background: none;
-  border: none;
-}
-
-/* ================= HOME LINKS ================= */
-.home-links {
+/* ================= BOTTOM NAVBAR ================= */
+.navbar {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  padding: 50px 20px;
-  flex-wrap: wrap;
+  align-items: center;
+  padding: 8px 0;
+  background: lightslategray;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 200;
 }
 
-.home-links .link-card {
-  background: #f8fafc;
-  padding: 25px 20px;
-  border-radius: 12px;
+.nav-links {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  list-style: none;
+  flex: 1;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  flex: 1 1 200px;
-  max-width: 250px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.home-links .link-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-}
-
-.home-links .link-card a {
-  color: inherit;
+.nav-links a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
   text-decoration: none;
+  font-size: 0.7rem;
 }
 
-.home-links .link-card h3 {
-  margin-top: 10px;
-  margin-bottom: 8px;
-  font-size: 18px;
-  color: #2e7d32;
+.nav-links i {
+  font-size: 1.4rem;
 }
 
-.home-links .link-card p {
-  font-size: 14px;
-  color: #333;
-}
-
-  /* ================= SHOP PAGE ================= */
+/* ================= SHOP PAGE ================= */
 .shop-page {
-  padding: 1rem;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  padding: 10px 6px;
+  min-height: 100vh;
+  background:
+    linear-gradient(135deg, rgba(46,125,50,0.85), rgba(200,230,201,0.6)),
+    url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600');
+  background-size: cover;
+  background-position: center;
 }
 
-/* ================= PRODUCT GRID ================= */
+.shop-page h1 {
+  text-align: center;
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+/* ================= GRID ================= */
 #products-container,
 #productResults {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
+  gap: clamp(4px, 1.5vw, 10px);
+  padding: clamp(4px, 1.5vw, 10px);
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
-/* ================= PRODUCT CARDS ================= */
+/* ================= PRODUCT CARD ================= */
 .product-card {
-  background: #fff;
-  border: 1px solid #ccc;
+  background: lavender;
   border-radius: 8px;
-  padding: 1rem;
+  padding: clamp(4px, 1.2vw, 8px);
   text-align: center;
-  cursor: pointer;
-  transition: transform 0.2s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
 }
 
+/* ================= IMAGE ================= */
 .product-card img {
   width: 100%;
-  height: 150px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 6px;
   display: block;
 }
 
+/* ================= TEXT ================= */
 .product-card h4 {
-  font-size: 1rem;
-  margin: 0.5rem 0;
+  font-size: clamp(0.6rem, 1.8vw, 0.85rem);
+  margin: clamp(3px, 0.8vw, 6px) 0 2px;
+  line-height: 1.2;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .product-card p {
-  font-size: 0.9rem;
-  color: #555;
+  font-size: clamp(0.55rem, 1.5vw, 0.75rem);
+  color: #444;
+  margin: 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* ================= SEARCH BAR ================= */
-.search-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  max-width: 600px;
-  margin: 1.5rem auto 0;
-  padding: 0 1rem;
-}
-
-.search-bar input {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-}
-
-.search-bar button {
-  padding: 10px 16px;
-  background: #2e7d32;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.search-bar button:hover {
-  background: darkgreen;
-}
-
-/* ================= TABLET (3 columns) ================= */
-@media (max-width: 992px) {
+/* ================= DESKTOP ONLY ================= */
+@media (min-width: 992px) {
   #products-container,
   #productResults {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* ================= MOBILE (2 columns) ================= */
-@media (max-width: 600px) {
-  #products-container,
-  #productResults {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-    padding: 0.75rem;
-  }
-
-  .product-card img {
-    height: 120px;
-  }
-
-  .product-card h4 {
-    font-size: 0.9rem;
-  }
-
-  .product-card p {
-    font-size: 0.8rem;
-  }
-}
-
-/* ================= SMALL MOBILE (2 tight columns) ================= */
-@media (max-width: 380px) {
-  #products-container,
-  #productResults {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    padding: 0.5rem;
-  }
-
-  .product-card {
-    padding: 0.6rem;
-  }
-
-  .product-card img {
-    height: 100px;
+    grid-template-columns: repeat(4, 1fr);
   }
 }

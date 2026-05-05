@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Shop</title>
-  
+ 
   <link rel="stylesheet" href="shop.css" />
   <link rel="stylesheet" href="search.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -12,83 +12,92 @@
 </head>
 <body>
 
+  <!-- ================= TOP LOGO NAVBAR ================= -->
   <header class="top-navbar">
-  <div class="top-logo">
-    <img src="rahmangrow_logo.svg" alt="RahmanGrow Logo">
-  </div>
-</header>
-
- <header>
-  <nav class="navbar">
-
-    <div class="logo">
-      <a href="index.html"></a>
+    <div class="top-logo">
+      <img src="rahmangrow_logo.svg" alt="RahmanGrow Logo">
     </div>
+  </header>
 
-    <ul class="nav-links" id="nav-links">
-      <li>
-        <a href="index.html">
-          <i class="fas fa-house"></i>
-          <span>Home</span>
-        </a>
-      </li>
+  <!-- ================= BOTTOM NAVBAR ================= -->
+  <header>
+    <nav class="navbar">
 
-      <li>
-        <a href="dashboard.html">
-          <i class="fas fa-user-shield"></i>
-          <span>Admin</span>
-        </a>
-      </li>
+      <div class="logo">
+        <a href="index.html"></a>
+      </div>
+
+      <ul class="nav-links" id="nav-links">
+        <li>
+          <a href="index.html">
+            <i class="fas fa-house"></i>
+            <span>Home</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="dashboard.html">
+            <i class="fas fa-user-shield"></i>
+            <span>Admin</span>
+          </a>
+        </li>
+
+        <!-- Cart Icon -->
+        <li class="cart-item">
+          <a href="order.html" class="cart-link">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cartBadge">0</span>
+          </a>
+        </li>
+      </ul>
 
       
-      <!-- Cart Icon -->
-  <li class="cart-item">
-    <a href="order.html" class="cart-link">
-      <i class="fas fa-shopping-cart"></i>
-      <span id="cartBadge">0</span>
-    </a>
-  </li>
-    </ul>
+    </nav>
+  </header>
 
-    <button class="menu-toggle" id="menu-toggle">☰</button>
+  <!-- ================= SHOP PAGE ================= -->
+  <section class="shop-page">
+    <h1>Shop Anytime, Anywhere, Effortlessly</h1>
 
-  </nav>
-</header>
-<section class="shop-page">
-  <h1></h1>
-  <div id="products-container"></div>
-  <div id="cartContainer"></div>
-</section>
-<!-- Cart Table (optional, hidden until opened) -->
-<div id="cartDetails" style="display:none;">
-  <table>
-    <thead>
-      <tr>
-        <th>Item</th>
-        <th>Qty</th>
-        <th>Price</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody id="cartTable"></tbody>
-  </table>
-  <p>Total: ₵<span id="cartTotal">0</span></p>
-</div>
-<!-- ================= SEARCH SECTION ================= -->
-<div class="search-bar">
-  <input type="text" id="searchInput" placeholder="Search products..." />
-  <button id="searchButton">
-    <i class="fas fa-search"></i>
-  </button>
-</div>
+    <!-- Main product grid (populated by shop.js) -->
+    <div id="products-container"></div>
 
-<div id="productResults" class="product-grid" style="padding: 10px;"></div>
+    <!-- Cart container -->
+    <div id="cartContainer"></div>
+  </section>
 
+  <!-- ================= CART DETAILS (hidden until opened) ================= -->
+  <div id="cartDetails" style="display:none;">
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="cartTable"></tbody>
+    </table>
+    <p>Total: ₵<span id="cartTotal">0</span></p>
+  </div>
 
-<!-- Your scripts go here -->
-<script type="module" src="firebase.js"></script>
-<script type="module" src="shop.js"></script>
-<script type="module" src="order.js"></script>
-<script type="module" src="search.js"></script>
+  <!-- ================= SEARCH SECTION ================= -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search products..." />
+    <button id="searchButton">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+
+  <!-- ✅ FIX: removed class="product-grid" and inline style="padding:10px" -->
+  <div id="productResults"></div>
+
+  <!-- ================= SCRIPTS ================= -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="shop.js"></script>
+  <script type="module" src="order.js"></script>
+  <script type="module" src="search.js"></script>
+
 </body>
 </html>

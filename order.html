@@ -4,23 +4,78 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Order</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="order.css">
+
+  
+  <link rel="stylesheet" href="shop.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    .section-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 35%;
+      padding: 14px 2px;
+      margin: 10px 0 0;
+      background: linear-gradient(135deg, #2e7d32, #4caf50);
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      text-align: left;
+    }
+
+    .section-toggle.blue {
+      background: linear-gradient(135deg, #1565c0, #42a5f5);
+    }
+
+    .section-toggle:hover {
+      transform: translateY(-1px);
+    }
+
+    .section-toggle .arrow {
+      transition: transform 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .section-toggle.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .collapsible-section {
+      display: none;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      padding: 20px;
+      background: #fff;
+      margin-bottom: 10px;
+    }
+
+    .collapsible-section.open {
+      display: block;
+    }
+  </style>
 </head>
+
 <body>
 
-  <header class="top-navbar">
+<!-- TOP NAV -->
+<header class="top-navbar">
   <div class="top-logo">
     <img src="rahmangrow_logo.svg" alt="RahmanGrow Logo">
   </div>
 </header>
-  <!-- NAVIGATION BAR -->
+
+<!-- MAIN NAV -->
 <header>
   <nav class="navbar">
 
     <div class="logo">
-      <a href="index.html">Rahman Farms</a>
+      <a href="index.html"></a>
     </div>
 
     <ul class="nav-links" id="nav-links">
@@ -45,69 +100,81 @@
         </a>
       </li>
 
-      
-
-      <!-- Cart Icon -->
-  <li class="cart-item">
-    <a href="order.html" class="cart-link">
-      <i class="fas fa-shopping-cart"></i>
-      <span id="cartBadge">0</span>
-    </a>
-  </li>
+      <li class="cart-item">
+        <a href="order.html" class="cart-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cartBadge">0</span>
+        </a>
+      </li>
     </ul>
 
-    <button class="menu-toggle" id="menu-toggle">☰</button>
-
+    
   </nav>
 </header>
 
-  <h3>Customer Info</h3>
+<!-- CUSTOMER INFO -->
+<button class="section-toggle" id="customerToggle">
+  <span>
+    <i class="fas fa-credit-card"></i> Pay Now
+  </span>
+  <span class="arrow">▼</span>
+</button>
+
+<div class="collapsible-section" id="customerSection">
   <form id="orderForm">
     <input type="text" id="name" placeholder="Name" required>
     <input type="text" id="phone" placeholder="Phone" required>
     <input type="email" id="email" placeholder="Enter your email" required>
     <input type="text" id="address" placeholder="Address" required>
 
-    <!-- Pay Now button triggers Paystack -->
-    <button type="button" id="payNowBtn">Pay Now</button>
+    <button type="button" id="payNowBtn">
+      <i class="fas fa-credit-card"></i> Pay Now
+    </button>
 
-    <!-- Place Order button saves order in Firebase without payment -->
-    <button type="submit">Place Order</button>
+    <button type="submit">
+      <i class="fas fa-receipt"></i> Place Order
+    </button>
   </form>
-
-  <!-- Cart Icon with Badge -->
-<div id="cartContainer">
-  
 </div>
 
-<!-- Cart Table (optional, hidden until opened) -->
-<div id="cartDetails">
+<!-- ORDER DETAILS -->
+<button class="section-toggle blue" id="orderToggle">
+  <span>
+    <i class="fas fa-shopping-cart"></i> View Your Order
+  </span>
+  <span class="arrow">▼</span>
+</button>
+
+<div class="collapsible-section" id="orderSection">
   <h3>Your Order</h3>
 
-  <table>
-    <thead>
-      <tr>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th> <!-- ✅ NEW -->
-      </tr>
-    </thead>
-    <div id="cartTable" class="cart-container"></div>
-  </table>
+  <div id="cartTable" class="cart-container"></div>
 
   <h3>Total: ₵<span id="cartTotal">0</span></h3>
-  
 </div>
+<!-- PAYSTACK -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
 
-  <!-- PAYSTACK INLINE JS MUST BE FIRST -->
-  <script src="https://js.paystack.co/v1/inline.js"></script>
+<!-- YOUR SCRIPTS -->
+<script type="module" src="firebase.js"></script>
+<script type="module" src="cart.js"></script>
+<script type="module" src="order.js"></script>
 
-  <!-- Your scripts -->
-  <script type="module" src="firebase.js"></script>
-  <script type="module" src="cart.js"></script>
-  <script type="module" src="order.js"></script>
-  
-  
+<!-- TOGGLE SCRIPT -->
+<script>
+  function setupToggle(buttonId, sectionId) {
+    const btn = document.getElementById(buttonId);
+    const section = document.getElementById(sectionId);
+
+    btn.addEventListener("click", () => {
+      section.classList.toggle("open");
+      btn.classList.toggle("open");
+    });
+  }
+
+  setupToggle("customerToggle", "customerSection");
+  setupToggle("orderToggle", "orderSection");
+</script>
+
 </body>
 </html>
