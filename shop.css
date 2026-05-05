@@ -29,8 +29,10 @@ body {
 }
 
 .top-logo img {
-  height: 42px;
+  width: 140px;
   max-width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 /* ================= BOTTOM NAVBAR ================= */

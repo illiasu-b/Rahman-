@@ -65,11 +65,12 @@ p { font-weight: 300; color: #4a4a4a; }
 }
 
 .top-logo img {
-  height: 50px;
-  width: 100px;
-  /* show the logo naturally on dark grey */
- 
+  width: 140px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
 }
+
 
 /* ─── Bottom Nav  ─────────────── GREY ─────────── */
 .navbar {
@@ -80,7 +81,7 @@ p { font-weight: 300; color: #4a4a4a; }
   z-index: 300;
   height: 54px;
   padding-bottom: env(safe-area-inset-bottom);
-  background: lightgray;
+  background: lightslategray;
   border-top: 1px solid rgba(255,255,255,0.06);
   display: flex;
   align-items: center;
@@ -636,7 +637,7 @@ p { font-weight: 300; color: #4a4a4a; }
 @media (max-width: 600px) {
   h2 { font-size: 1.15rem; padding: 1.4rem 0.75rem 0.5rem; }
 
-  .top-logo img { height: 28px; }
+  .top-logo img { height: 100px; }
 
   #hero { padding: 1.5rem 0.75rem 2rem; min-height: 40vh; }
 
