@@ -38,13 +38,17 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  const adminEmail = "rahman@gmail.com";
+  const adminEmails = [
+  "rahman@gmail.com",
+  "secondadmin@gmail.com",   // ← add more here
+  "thirdadmin@gmail.com"
+];
 
-  if (user.email !== adminEmail) {
-    alert("You are not admin ❌");
-    window.location.href = "index.html";
-    return;
-  }
+if (!adminEmails.includes(user.email)) {
+  alert("You are not admin ❌");
+  window.location.href = "index.html";
+  return;
+}
 
   await loadOrders();
   await loadSubscribers();
