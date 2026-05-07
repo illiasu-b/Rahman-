@@ -99,7 +99,7 @@ function showLoggedIn(user, userData) {
   document.getElementById("authTabs").style.display = "none";
   document.getElementById("profileLoggedIn").style.display = "";
 
-  const firstName = userData?.firstName || user.displayName?.split(" ")[0] || "User";
+const firstName = userData?.firstName || user.displayName?.split(" ")[0] || user.email.split("@")[0] || "User";
   const lastName = userData?.lastName || user.displayName?.split(" ")[1] || "";
   const initials = (firstName[0] + (lastName[0] || "")).toUpperCase();
   const joined = userData?.createdAt?.toDate
@@ -108,11 +108,13 @@ function showLoggedIn(user, userData) {
 
   document.getElementById("pAvatar").textContent = initials;
   document.getElementById("pFullName").textContent = `${firstName} ${lastName}`.trim();
+  document.getElementById("profileNavLabel").textContent = firstName; // shows first name only
   document.getElementById("pEmail").textContent = user.email;
   document.getElementById("pInfoEmail").textContent = user.email;
   document.getElementById("pInfoJoined").textContent = joined;
-
+initAvatarUpload(); // ✅ init upload handler after logged-in view is visible
   // Update navbar label
+  
   const label = document.getElementById("profileNavLabel");
   if (label) label.textContent = firstName;
 }
@@ -267,3 +269,59 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 });
+
+// ─── AVATAR UPLOAD ────────────────────────────────────────────────
+function initAvatarUpload() {
+  const avatarInput = document.getElementById("avatarFileInput");
+  const avatarEl    = document.getElementById("pAvatar");
+
+  if (!avatarInput || !avatarEl) return;
+  if (avatarInput._bound) return; // prevent duplicate listeners
+  avatarInput._bound = true;
+
+  // Clicking the avatar triggers the file picker
+  avatarEl.addEventListener("click", () => avatarInput.click());
+
+  avatarInput.addEventListener("change", async () => {
+    const file = avatarInput.files[0];
+    if (!file) return;
+
+    const user = auth.currentUser;
+    if (!user) return;
+
+    avatarEl.innerHTML = `<span style="font-size:11px; color:#888;">Uploading...</span>`;
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "product_upload");
+
+      const res  = await fetch("https://api.cloudinary.com/v1_1/dw3h0amnh/image/upload", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      const photoURL = data.secure_url;
+
+      if (!photoURL) throw new Error("No URL returned from Cloudinary");
+
+      // Save to Firestore
+      await setDoc(doc(db, "users", user.uid), { photoURL }, { merge: true });
+
+      // Show new image in avatar
+      avatarEl.innerHTML = `<img src="${photoURL}" 
+        style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+
+      // Update navbar icon
+      const navIcon = document.querySelector("#profileNavBtn i");
+      if (navIcon) {
+        navIcon.outerHTML = `<img src="${photoURL}" 
+          style="width:28px; height:28px; border-radius:50%; object-fit:cover; vertical-align:middle;">`;
+      }
+
+    } catch (err) {
+      console.error("Avatar upload failed:", err);
+      avatarEl.innerHTML = `<span style="font-size:11px;color:red;">Failed ❌</span>`;
+    }
+  });
+}
