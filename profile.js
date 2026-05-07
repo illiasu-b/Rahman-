@@ -44,12 +44,35 @@ function setLoading(btnId, loading) {
   btn.textContent = loading ? "Please wait…" : btn.dataset.label;
 }
 
-// ─── MODAL OPEN / CLOSE ───────────────────────────────────────────
-window.openProfileModal = function () {
-  const overlay = document.getElementById("profileModalOverlay");
-  if (overlay) overlay.style.display = "block";
-};
+// ─── NAVBAR HELPERS ───────────────────────────────────────────────
+function setNavName(firstName) {
+  const label = document.getElementById("profileNavLabel");
+  if (label) label.textContent = firstName || "Account";
+}
 
+function setNavPhoto(photoURL) {
+  const navBtn = document.querySelector("#profileNavBtn");
+  if (!navBtn || !photoURL) return;
+  const existingIcon = navBtn.querySelector("i");
+  const existingImg  = navBtn.querySelector("img");
+  const imgTag = `<img src="${photoURL}"
+    style="width:28px; height:28px; border-radius:50%; object-fit:cover; vertical-align:middle;"
+    onerror="this.outerHTML='<i class=\\'fas fa-user-circle\\'></i>'">`;
+  if (existingIcon) {
+    existingIcon.outerHTML = imgTag;
+  } else if (existingImg) {
+    existingImg.src = photoURL;
+  }
+}
+
+function resetNavPhoto() {
+  const navBtn = document.querySelector("#profileNavBtn");
+  if (!navBtn) return;
+  const existingImg = navBtn.querySelector("img");
+  if (existingImg) existingImg.outerHTML = `<i class="fas fa-user-circle"></i>`;
+}
+
+// ─── MODAL OPEN / CLOSE ───────────────────────────────────────────
 window.closeProfileModal = function () {
   const overlay = document.getElementById("profileModalOverlay");
   if (overlay) overlay.style.display = "none";
@@ -63,8 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.target === overlay) closeProfileModal();
     });
   }
-
-  // Store button labels for loading state
   ["pLoginBtn", "pRegBtn"].forEach((id) => {
     const btn = document.getElementById(id);
     if (btn) btn.dataset.label = btn.textContent;
@@ -80,13 +101,13 @@ window.switchProfileTab = function (tab) {
   document.getElementById("authTabs").style.display = "";
 
   const tLogin = document.getElementById("tabLogin");
-  const tReg = document.getElementById("tabRegister");
-  tLogin.style.background = isLogin ? "#fff" : "transparent";
-  tLogin.style.fontWeight = isLogin ? "600" : "500";
-  tLogin.style.color = isLogin ? "#000" : "#888";
-  tReg.style.background = isLogin ? "transparent" : "#fff";
-  tReg.style.fontWeight = isLogin ? "500" : "600";
-  tReg.style.color = isLogin ? "#888" : "#000";
+  const tReg   = document.getElementById("tabRegister");
+  tLogin.style.background  = isLogin ? "#fff" : "transparent";
+  tLogin.style.fontWeight  = isLogin ? "600" : "500";
+  tLogin.style.color       = isLogin ? "#000" : "#888";
+  tReg.style.background    = isLogin ? "transparent" : "#fff";
+  tReg.style.fontWeight    = isLogin ? "500" : "600";
+  tReg.style.color         = isLogin ? "#888" : "#000";
 
   clearMsg("pLoginMsg");
   clearMsg("pRegMsg");
@@ -94,66 +115,90 @@ window.switchProfileTab = function (tab) {
 
 // ─── SHOW LOGGED-IN PROFILE ───────────────────────────────────────
 function showLoggedIn(user, userData) {
-  document.getElementById("profileLoginForm").style.display = "none";
+  document.getElementById("profileLoginForm").style.display  = "none";
   document.getElementById("profileRegisterForm").style.display = "none";
-  document.getElementById("authTabs").style.display = "none";
-  document.getElementById("profileLoggedIn").style.display = "";
+  document.getElementById("authTabs").style.display          = "none";
+  document.getElementById("profileLoggedIn").style.display   = "";
 
-const firstName = userData?.firstName || user.displayName?.split(" ")[0] || user.email.split("@")[0] || "User";
-  const lastName = userData?.lastName || user.displayName?.split(" ")[1] || "";
-  const initials = (firstName[0] + (lastName[0] || "")).toUpperCase();
-  const joined = userData?.createdAt?.toDate
+  const firstName = userData?.firstName
+    || user.displayName?.split(" ")[0]
+    || user.email.split("@")[0]
+    || "User";
+  const lastName  = userData?.lastName || user.displayName?.split(" ")[1] || "";
+  const initials  = (firstName[0] + (lastName[0] || "")).toUpperCase();
+  const joined    = userData?.createdAt?.toDate
     ? userData.createdAt.toDate().toLocaleDateString("en-GB", { month: "short", year: "numeric" })
     : new Date().toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 
-  document.getElementById("pAvatar").textContent = initials;
-  document.getElementById("pFullName").textContent = `${firstName} ${lastName}`.trim();
-  document.getElementById("profileNavLabel").textContent = firstName; // shows first name only
-  document.getElementById("pEmail").textContent = user.email;
-  document.getElementById("pInfoEmail").textContent = user.email;
-  document.getElementById("pInfoJoined").textContent = joined;
-initAvatarUpload(); // ✅ init upload handler after logged-in view is visible
-  // Update navbar label
-  
-  const label = document.getElementById("profileNavLabel");
-  if (label) label.textContent = firstName;
+  // Avatar — show photo if saved, otherwise initials
+  const avatarEl = document.getElementById("pAvatar");
+  if (userData?.photoURL) {
+    avatarEl.innerHTML = `<img src="${userData.photoURL}"
+      style="width:100%; height:100%; object-fit:cover; border-radius:50%;"
+      onerror="this.parentElement.textContent='${initials}'">`;
+  } else {
+    avatarEl.textContent = initials;
+  }
+
+  document.getElementById("pFullName").textContent    = `${firstName} ${lastName}`.trim();
+  document.getElementById("pEmail").textContent       = user.email;
+  document.getElementById("pInfoEmail").textContent   = user.email;
+  document.getElementById("pInfoJoined").textContent  = joined;
+
+  // Update navbar
+  setNavName(firstName);
+  if (userData?.photoURL) setNavPhoto(userData.photoURL);
+
+  // Init avatar upload handler
+  initAvatarUpload();
 }
 
-// ─── AUTH STATE LISTENER ──────────────────────────────────────────
-// Runs on every page load — restores session automatically
+// ─── UNIFIED AUTH STATE LISTENER ─────────────────────────────────
 onAuthStateChanged(auth, async (user) => {
-  const label = document.getElementById("profileNavLabel");
+  const adminLink = document.querySelector('a[href="dashboard.html"]')?.closest("li");
+
+  // Hide admin link by default
+  if (adminLink) adminLink.style.display = "none";
+
   if (user) {
-    // Fetch extra profile data from Firestore
     try {
-      const snap = await getDoc(doc(db, "users", user.uid));
+      const snap     = await getDoc(doc(db, "users", user.uid));
       const userData = snap.exists() ? snap.data() : {};
 
-      // If modal is already open and showing login/register, switch to profile
-      const loggedInDiv = document.getElementById("profileLoggedIn");
-      if (loggedInDiv && loggedInDiv.style.display !== "none") {
-        showLoggedIn(user, userData);
-      }
+      // Restore name in navbar
+      const firstName = userData?.firstName
+        || user.displayName?.split(" ")[0]
+        || user.email.split("@")[0]
+        || "Account";
+      setNavName(firstName);
 
-      // Always update nav label
-      const firstName = userData?.firstName || user.displayName?.split(" ")[0] || "Account";
-      if (label) label.textContent = firstName;
+      // Restore photo in navbar
+      if (userData?.photoURL) setNavPhoto(userData.photoURL);
+
+      // Show admin link only for admin
+      if (adminLink && userData?.isAdmin === true) {
+        adminLink.style.display = "";
+      }
 
       // If modal is open, show profile view
       const overlay = document.getElementById("profileModalOverlay");
       if (overlay && overlay.style.display === "block") {
         showLoggedIn(user, userData);
       }
+
     } catch (err) {
-      console.error("Error fetching user data:", err);
-      if (label) label.textContent = user.displayName?.split(" ")[0] || "Account";
+      console.error("Auth state error:", err);
+      setNavName(user.displayName?.split(" ")[0] || "Account");
     }
+
   } else {
-    if (label) label.textContent = "Account";
+    setNavName("Account");
+    resetNavPhoto();
+    if (adminLink) adminLink.style.display = "none";
   }
 });
 
-// ─── OVERRIDE openProfileModal to check auth state ───────────────
+// ─── OPEN PROFILE MODAL ───────────────────────────────────────────
 window.openProfileModal = function () {
   const overlay = document.getElementById("profileModalOverlay");
   if (!overlay) return;
@@ -173,7 +218,7 @@ window.openProfileModal = function () {
 window.handleProfileLogin = async function () {
   clearMsg("pLoginMsg");
   const email = document.getElementById("pLoginEmail").value.trim();
-  const pass = document.getElementById("pLoginPassword").value;
+  const pass  = document.getElementById("pLoginPassword").value;
 
   if (!email || !pass) return showMsg("pLoginMsg", "Please fill in all fields.", false);
 
@@ -184,11 +229,11 @@ window.handleProfileLogin = async function () {
     showLoggedIn(cred.user, snap.exists() ? snap.data() : {});
   } catch (err) {
     const msgs = {
-      "auth/user-not-found": "No account found with this email.",
-      "auth/wrong-password": "Incorrect password.",
-      "auth/invalid-email": "Invalid email address.",
+      "auth/user-not-found":     "No account found with this email.",
+      "auth/wrong-password":     "Incorrect password.",
+      "auth/invalid-email":      "Invalid email address.",
       "auth/invalid-credential": "Incorrect email or password.",
-      "auth/too-many-requests": "Too many attempts. Please try again later.",
+      "auth/too-many-requests":  "Too many attempts. Please try again later.",
     };
     showMsg("pLoginMsg", msgs[err.code] || "Sign in failed. Please try again.", false);
   } finally {
@@ -199,10 +244,10 @@ window.handleProfileLogin = async function () {
 // ─── REGISTER ─────────────────────────────────────────────────────
 window.handleProfileRegister = async function () {
   clearMsg("pRegMsg");
-  const first = document.getElementById("pRegFirst").value.trim();
-  const last = document.getElementById("pRegLast").value.trim();
-  const email = document.getElementById("pRegEmail").value.trim();
-  const pass = document.getElementById("pRegPassword").value;
+  const first   = document.getElementById("pRegFirst").value.trim();
+  const last    = document.getElementById("pRegLast").value.trim();
+  const email   = document.getElementById("pRegEmail").value.trim();
+  const pass    = document.getElementById("pRegPassword").value;
   const confirm = document.getElementById("pRegConfirm").value;
 
   if (!first || !last || !email || !pass) return showMsg("pRegMsg", "Please fill in all fields.", false);
@@ -211,26 +256,20 @@ window.handleProfileRegister = async function () {
 
   setLoading("pRegBtn", true);
   try {
-    // Create Firebase Auth account
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
-
-    // Update Firebase Auth display name
     await updateProfile(cred.user, { displayName: `${first} ${last}` });
-
-    // Save extra profile data to Firestore
     await setDoc(doc(db, "users", cred.user.uid), {
       firstName: first,
-      lastName: last,
-      email: email,
+      lastName:  last,
+      email:     email,
       createdAt: serverTimestamp(),
     });
-
     showLoggedIn(cred.user, { firstName: first, lastName: last, email });
   } catch (err) {
     const msgs = {
       "auth/email-already-in-use": "An account with this email already exists.",
-      "auth/invalid-email": "Invalid email address.",
-      "auth/weak-password": "Password is too weak.",
+      "auth/invalid-email":        "Invalid email address.",
+      "auth/weak-password":        "Password is too weak.",
     };
     showMsg("pRegMsg", msgs[err.code] || "Registration failed. Please try again.", false);
   } finally {
@@ -243,32 +282,12 @@ window.handleProfileLogout = async function () {
   try {
     await signOut(auth);
     closeProfileModal();
-    const label = document.getElementById("profileNavLabel");
-    if (label) label.textContent = "Account";
+    setNavName("Account");
+    resetNavPhoto();
   } catch (err) {
     console.error("Logout error:", err);
   }
 };
-
-// ─── ADMIN VISIBILITY ─────────────────────────────────────────────
-onAuthStateChanged(auth, async (user) => {
-  const adminLink = document.querySelector('a[href="dashboard.html"]')?.closest('li');
-  if (!adminLink) return;
-
-  // Hide by default for everyone
-  adminLink.style.display = 'none';
-
-  if (user) {
-    try {
-      const snap = await getDoc(doc(db, 'users', user.uid));
-      if (snap.exists() && snap.data().isAdmin === true) {
-        adminLink.style.display = ''; // show only for admin
-      }
-    } catch (err) {
-      console.error('Admin check failed:', err);
-    }
-  }
-});
 
 // ─── AVATAR UPLOAD ────────────────────────────────────────────────
 function initAvatarUpload() {
@@ -279,7 +298,6 @@ function initAvatarUpload() {
   if (avatarInput._bound) return; // prevent duplicate listeners
   avatarInput._bound = true;
 
-  // Clicking the avatar triggers the file picker
   avatarEl.addEventListener("click", () => avatarInput.click());
 
   avatarInput.addEventListener("change", async () => {
@@ -309,19 +327,15 @@ function initAvatarUpload() {
       await setDoc(doc(db, "users", user.uid), { photoURL }, { merge: true });
 
       // Show new image in avatar
-      avatarEl.innerHTML = `<img src="${photoURL}" 
+      avatarEl.innerHTML = `<img src="${photoURL}"
         style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
 
       // Update navbar icon
-      const navIcon = document.querySelector("#profileNavBtn i");
-      if (navIcon) {
-        navIcon.outerHTML = `<img src="${photoURL}" 
-          style="width:28px; height:28px; border-radius:50%; object-fit:cover; vertical-align:middle;">`;
-      }
+      setNavPhoto(photoURL);
 
     } catch (err) {
       console.error("Avatar upload failed:", err);
-      avatarEl.innerHTML = `<span style="font-size:11px;color:red;">Failed ❌</span>`;
+      avatarEl.innerHTML = `<span style="font-size:11px; color:red;">Failed ❌</span>`;
     }
   });
 }
