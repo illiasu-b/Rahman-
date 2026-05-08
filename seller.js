@@ -1,32 +1,51 @@
 
-  import { auth, db } from "./firebase.js";
+import { auth, db } from "./firebase.js";
 
 import {
-onAuthStateChanged,
-signOut,
-updateProfile,
-setPersistence,
-browserLocalPersistence
+  onAuthStateChanged,
+  signOut,
+  updateProfile,
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 import {
-collection,
-addDoc,
-updateDoc,
-deleteDoc,
-doc,
-getDoc,
-onSnapshot,
-query,
-where,
-setDoc,
-getDocs
+  collection,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getDoc,
+  onSnapshot,
+  query,
+  where,
+  setDoc,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-await setPersistence(auth, browserLocalPersistence);
-  // ── STATE ──────────────────────────────────────────────────────
-  let currentSeller = null;
-  let allProducts   = [];
 
+await setPersistence(auth, browserLocalPersistence);
+
+// ✅ ADD IT RIGHT HERE ↓
+export async function registerAsSeller(user, sellerInfo) {
+  await setDoc(doc(db, "users", user.uid), {
+    role: "seller",
+    firstName: sellerInfo.firstName || "",
+    lastName: sellerInfo.lastName || "",
+    storeName: sellerInfo.storeName || "",
+    email: user.email
+  }, { merge: true });
+
+  await setDoc(doc(db, "sellers", user.uid), {
+    uid: user.uid,
+    shopName: sellerInfo.storeName || "",
+    email: user.email,
+    createdAt: new Date()
+  });
+}
+
+// ── STATE ──────────────────────────────────────────────────────
+let currentSeller = null;   // ← your existing code continues here
+let allProducts   = [];
   // ── HELPERS ───────────────────────────────────────────────────
   function showMsg(id, text, ok) {
     const el = document.getElementById(id);
@@ -50,70 +69,111 @@ await setPersistence(auth, browserLocalPersistence);
     return data.secure_url;
   }
 
-  // ── AUTH GUARD ────────────────────────────────────────────────
   onAuthStateChanged(auth, async (user) => {
-    const overlay = document.getElementById("loadingOverlay");
 
-    onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "admin.html";
-    return;
-  }
+  const overlay = document.getElementById("loadingOverlay");
 
-  // continue seller logic
-});
-    try {
-      const snap     = await getDoc(doc(db, "users", user.uid));
-      const userData = snap.exists() ? snap.data() : {};
+  try {
 
-      if (userData?.role !== "seller") {
-        alert("Access denied. This area is for sellers only. ❌");
-        await signOut(auth);
-        window.location.href = "index.html";
-        return;
-      }
-
-      
-      currentSeller = { uid: user.uid, ...userData };
-
-      // Populate UI
-      const firstName = userData.firstName || user.email.split("@")[0];
-      const lastName  = userData.lastName  || "";
-      const initials  = ((firstName[0] || "") + (lastName[0] || "")).toUpperCase() || "S";
-
-      document.getElementById("sellerName").textContent    = firstName;
-      document.getElementById("profileFullName").textContent = `${firstName} ${lastName}`.trim();
-      document.getElementById("profileEmail").textContent  = user.email;
-      document.getElementById("profileFirst").value        = firstName;
-      document.getElementById("profileLast").value         = lastName;
-      document.getElementById("profileStore").value        = userData.storeName || "";
-      document.getElementById("profilePhone").value        = userData.phone     || "";
-      document.getElementById("profileBio").value          = userData.bio       || "";
-
-      // Avatar
-      const sidebarAv = document.getElementById("sidebarAvatar");
-      const profileAv = document.getElementById("profileAvatarBig");
-      if (userData.photoURL) {
-        sidebarAv.innerHTML = `<img src="${userData.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-        profileAv.innerHTML = `<img src="${userData.photoURL}">`;
-      } else {
-        sidebarAv.textContent = initials;
-        profileAv.textContent = initials;
-      }
-
-      // Load products
-      loadSellerProducts(user.uid);
-      populateCategoryDropdown();
-
-    } catch (err) {
-      console.error("Auth error:", err);
-      window.location.href = "admin.html";
-    } finally {
-      overlay.style.opacity = "0";
-      setTimeout(() => overlay.style.display = "none", 400);
+    // Wait for Firebase auth
+    if (!user) {
+      window.location.href = "index.html";
+      return;
     }
-  });
 
+    // Get user document
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    // No user document
+    if (!userSnap.exists()) {
+
+      console.error("User document missing");
+
+      alert("Account data not found.");
+
+      await signOut(auth);
+
+      window.location.href = "index.html";
+      return;
+    }
+
+    const userData = userSnap.data();
+
+    console.log("USER DATA:", userData);
+
+    // Seller role check
+    if (userData.role !== "seller") {
+
+      alert("Access denied. This area is for sellers only. ❌");
+
+      await signOut(auth);
+
+      window.location.href = "index.html";
+
+      return;
+    }
+
+    // SUCCESS
+    currentSeller = {
+      uid: user.uid,
+      ...userData
+    };
+
+    console.log("Seller verified ✅");
+
+    // Populate UI
+    const firstName = userData.firstName || user.email.split("@")[0];
+    const lastName  = userData.lastName || "";
+
+    document.getElementById("sellerName").textContent = firstName;
+
+    document.getElementById("profileFullName").textContent =
+      `${firstName} ${lastName}`.trim();
+
+    document.getElementById("profileEmail").textContent =
+      user.email;
+
+    document.getElementById("profileFirst").value =
+      firstName;
+
+    document.getElementById("profileLast").value =
+      lastName;
+
+    document.getElementById("profileStore").value =
+      userData.storeName || "";
+
+    document.getElementById("profilePhone").value =
+      userData.phone || "";
+
+    document.getElementById("profileBio").value =
+      userData.bio || "";
+
+    // Load seller products
+    loadSellerProducts(user.uid);
+
+    // Categories
+    populateCategoryDropdown();
+
+  } catch (err) {
+
+    console.error("SELLER AUTH ERROR:", err);
+
+    alert("Failed to verify seller account.");
+
+    window.location.href = "index.html";
+
+  } finally {
+
+    if (overlay) {
+      overlay.style.opacity = "0";
+
+      setTimeout(() => {
+        overlay.style.display = "none";
+      }, 400);
+    }
+  }
+});
   // ── LOAD PRODUCTS ─────────────────────────────────────────────
   function loadSellerProducts(uid) {
     const q = query(collection(db, "products"), where("sellerUid", "==", uid));

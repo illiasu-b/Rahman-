@@ -86,14 +86,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Store data-label for setLoading on login/register buttons
   ["pLoginBtn", "pRegBtn"].forEach((id) => {
     const btn = document.getElementById(id);
     if (btn) btn.dataset.label = btn.textContent;
   });
 
-  // ─── WIRE UP SELLER REGISTER BUTTON ───────────────────────────
-  // Done here instead of onclick="" to avoid module scope issues
   const sellerRegBtn = document.getElementById("sellerRegBtn");
   if (sellerRegBtn) sellerRegBtn.addEventListener("click", handleSellerRegister);
 });
@@ -136,7 +133,6 @@ function showLoggedIn(user, userData) {
     ? userData.createdAt.toDate().toLocaleDateString("en-GB", { month: "short", year: "numeric" })
     : new Date().toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 
-  // Avatar — show photo if saved, otherwise initials
   const avatarEl = document.getElementById("pAvatar");
   if (userData?.photoURL) {
     avatarEl.innerHTML = `<img src="${userData.photoURL}"
@@ -151,11 +147,9 @@ function showLoggedIn(user, userData) {
   document.getElementById("pInfoEmail").textContent   = user.email;
   document.getElementById("pInfoJoined").textContent  = joined;
 
-  // Update navbar
   setNavName(firstName);
   if (userData?.photoURL) setNavPhoto(userData.photoURL);
 
-  // Init avatar upload handler
   initAvatarUpload();
 }
 
@@ -164,7 +158,6 @@ onAuthStateChanged(auth, async (user) => {
   const adminLink  = document.querySelector('a[href="dashboard.html"]')?.closest("li");
   const sellerLink = document.querySelector('a[href="seller-dashboard.html"]')?.closest("li");
 
-  // Hide both links by default
   if (adminLink)  adminLink.style.display  = "none";
   if (sellerLink) sellerLink.style.display = "none";
 
@@ -173,36 +166,32 @@ onAuthStateChanged(auth, async (user) => {
       const snap     = await getDoc(doc(db, "users", user.uid));
       const userData = snap.exists() ? snap.data() : {};
 
-      // ─── SELLER: redirect to their dashboard ──────────────────
+      // ── SELLER: show seller link, redirect if not on seller page ──
       if (userData?.role === "seller") {
+        if (sellerLink) sellerLink.style.display = "";
         const onSellerPage = window.location.pathname.includes("seller-dashboard.html");
         if (!onSellerPage) {
           window.location.href = "seller-dashboard.html";
           return;
         }
+        // Already on seller page — stop here, don't show profile modal
+        return;
       }
 
-      // Restore name in navbar
+      // ── ADMIN: show admin link ─────────────────────────────────
+      if (adminLink && userData?.isAdmin === true) {
+        adminLink.style.display = "";
+      }
+
+      // ── Restore navbar name & photo ────────────────────────────
       const firstName = userData?.firstName
         || user.displayName?.split(" ")[0]
         || user.email.split("@")[0]
         || "Account";
       setNavName(firstName);
-
-      // Restore photo in navbar
       if (userData?.photoURL) setNavPhoto(userData.photoURL);
 
-      // Show admin link only for admins
-      if (adminLink && userData?.isAdmin === true) {
-        adminLink.style.display = "";
-      }
-
-      // Show seller link only for sellers
-      if (sellerLink && userData?.role === "seller") {
-        sellerLink.style.display = "";
-      }
-
-      // If modal is open, show profile view
+      // ── If profile modal is open, show logged-in view ──────────
       const overlay = document.getElementById("profileModalOverlay");
       if (overlay && overlay.style.display === "block") {
         showLoggedIn(user, userData);
@@ -310,9 +299,6 @@ window.handleProfileRegister = async function () {
 };
 
 // ─── REGISTER AS SELLER ───────────────────────────────────────────
-// Defined as a regular function (not window.*) and wired up via
-// addEventListener in DOMContentLoaded — this avoids the module
-// scope error that happens with inline onclick=""
 async function handleSellerRegister() {
   clearMsg("pRegMsg");
 
@@ -326,31 +312,41 @@ async function handleSellerRegister() {
   if (pass.length < 6) return showMsg("pRegMsg", "Password must be at least 6 characters.", false);
   if (pass !== confirm) return showMsg("pRegMsg", "Passwords do not match.", false);
 
-  // Manual button control — sellerRegBtn has no data-label so setLoading won't work
   const btn = document.getElementById("sellerRegBtn");
   if (btn) { btn.disabled = true; btn.textContent = "Please wait…"; }
 
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await updateProfile(cred.user, { displayName: `${first} ${last}` });
+console.log("Creating seller document...");
+    // Save user doc with role: "seller"
     await setDoc(doc(db, "users", cred.user.uid), {
       firstName: first,
       lastName:  last,
       email:     email,
       role:      "seller",
-      approved:  true,         // admin must approve before they can log in
+      approved:  true,
       createdAt: serverTimestamp(),
     });
 
-    // Show success message — no redirect, needs admin approval first
-    showMsg("pRegMsg", "Seller account created! Awaiting admin approval before you can log in. ✅", true);
+    // Save sellers collection doc
+    await setDoc(doc(db, "sellers", cred.user.uid), {
+      uid:       cred.user.uid,
+      shopName:  "",
+      email:     email,
+      createdAt: serverTimestamp(),
+    });
 
-    // Clear form fields
-    document.getElementById("pRegFirst").value    = "";
-    document.getElementById("pRegLast").value     = "";
-    document.getElementById("pRegEmail").value    = "";
-    document.getElementById("pRegPassword").value = "";
-    document.getElementById("pRegConfirm").value  = "";
+    // ✅ KEY FIX: Sign out immediately so onAuthStateChanged
+    // doesn't redirect them to the dashboard mid-registration
+    await signOut(auth);
+
+    // Show success and switch to login tab after 2 seconds
+    showMsg("pRegMsg", "Seller account created! You can now log in. ✅", true);
+    setTimeout(() => {
+      switchProfileTab("login");
+      clearMsg("pRegMsg");
+    }, 2000);
 
   } catch (err) {
     const msgs = {
@@ -382,7 +378,7 @@ function initAvatarUpload() {
   const avatarEl    = document.getElementById("pAvatar");
 
   if (!avatarInput || !avatarEl) return;
-  if (avatarInput._bound) return; // prevent duplicate listeners
+  if (avatarInput._bound) return;
   avatarInput._bound = true;
 
   avatarEl.addEventListener("click", () => avatarInput.click());
@@ -410,14 +406,11 @@ function initAvatarUpload() {
 
       if (!photoURL) throw new Error("No URL returned from Cloudinary");
 
-      // Save to Firestore
       await setDoc(doc(db, "users", user.uid), { photoURL }, { merge: true });
 
-      // Show new image in avatar
       avatarEl.innerHTML = `<img src="${photoURL}"
         style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
 
-      // Update navbar icon
       setNavPhoto(photoURL);
 
     } catch (err) {
