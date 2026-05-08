@@ -20,8 +20,25 @@
   <div class="top-logo">
     <img src="rahmangrow_logo.svg" alt="RahmanGrow Logo">
   </div>
-</header>
 
+  <div style="display:flex; align-items:center; gap:16px; margin-left:auto; padding-right:1rem;">
+
+    <!-- Seller Dashboard Icon (hidden by default, shown for sellers only) -->
+    <a id="sellerNavItem" href="seller-dashboard.html"
+      style="display:none; text-decoration:none; color:inherit; align-items:center; gap:6px; font-size:0.9rem;">
+      <i class="fas fa-store-alt"></i>
+      <span>My Store</span>
+    </a>
+
+    <!-- Profile Icon -->
+    <a href="#" id="profileNavBtn" onclick="openProfileModal(); return false;"
+      style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:6px; font-size:0.9rem;">
+      <i class="fas fa-user-circle"></i>
+      <span id="profileNavLabel">Profile</span>
+    </a>
+
+  </div>
+</header>
 <header>
   <nav class="navbar">
 
@@ -46,13 +63,7 @@
         </a>
       </li>
 
-      <!-- Profile Icon -->
-      <li class="profile-item">
-        <a href="#" class="profile-link" id="profileNavBtn" onclick="openProfileModal(); return false;">
-          <i class="fas fa-user-circle"></i>
-          <span id="profileNavLabel">Profile</span>
-        </a>
-      </li>
+      
 
     </ul>
 

@@ -118,10 +118,29 @@ window.switchProfileTab = function (tab) {
 
 // ─── SHOW LOGGED-IN PROFILE ───────────────────────────────────────
 function showLoggedIn(user, userData) {
-  document.getElementById("profileLoginForm").style.display  = "none";
-  document.getElementById("profileRegisterForm").style.display = "none";
-  document.getElementById("authTabs").style.display          = "none";
-  document.getElementById("profileLoggedIn").style.display   = "";
+
+  // ✅ Guard: check all required elements and log any that are missing
+  const required = [
+    "profileLoginForm", "profileRegisterForm", "authTabs",
+    "profileLoggedIn", "pAvatar", "pFullName", "pEmail",
+    "pInfoEmail", "pInfoJoined"
+  ];
+  for (const id of required) {
+    if (!document.getElementById(id)) {
+      console.error("❌ Missing HTML element:", id);
+    }
+  }
+
+  // Safely get each element — won't crash if one is missing
+  const loginForm    = document.getElementById("profileLoginForm");
+  const registerForm = document.getElementById("profileRegisterForm");
+  const authTabs     = document.getElementById("authTabs");
+  const loggedInDiv  = document.getElementById("profileLoggedIn");
+
+  if (loginForm)    loginForm.style.display    = "none";
+  if (registerForm) registerForm.style.display = "none";
+  if (authTabs)     authTabs.style.display     = "none";
+  if (loggedInDiv)  loggedInDiv.style.display  = "";
 
   const firstName = userData?.firstName
     || user.displayName?.split(" ")[0]
@@ -129,23 +148,36 @@ function showLoggedIn(user, userData) {
     || "User";
   const lastName  = userData?.lastName || user.displayName?.split(" ")[1] || "";
   const initials  = (firstName[0] + (lastName[0] || "")).toUpperCase();
-  const joined    = userData?.createdAt?.toDate
-    ? userData.createdAt.toDate().toLocaleDateString("en-GB", { month: "short", year: "numeric" })
-    : new Date().toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 
-  const avatarEl = document.getElementById("pAvatar");
-  if (userData?.photoURL) {
-    avatarEl.innerHTML = `<img src="${userData.photoURL}"
-      style="width:100%; height:100%; object-fit:cover; border-radius:50%;"
-      onerror="this.parentElement.textContent='${initials}'">`;
-  } else {
-    avatarEl.textContent = initials;
+  let joined = "";
+  try {
+    joined = userData?.createdAt?.toDate
+      ? userData.createdAt.toDate().toLocaleDateString("en-GB", { month: "short", year: "numeric" })
+      : new Date().toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+  } catch {
+    joined = "";
   }
 
-  document.getElementById("pFullName").textContent    = `${firstName} ${lastName}`.trim();
-  document.getElementById("pEmail").textContent       = user.email;
-  document.getElementById("pInfoEmail").textContent   = user.email;
-  document.getElementById("pInfoJoined").textContent  = joined;
+  const avatarEl = document.getElementById("pAvatar");
+  if (avatarEl) {
+    if (userData?.photoURL) {
+      avatarEl.innerHTML = `<img src="${userData.photoURL}"
+        style="width:100%; height:100%; object-fit:cover; border-radius:50%;"
+        onerror="this.parentElement.textContent='${initials}'">`;
+    } else {
+      avatarEl.textContent = initials;
+    }
+  }
+
+  const pFullName   = document.getElementById("pFullName");
+  const pEmail      = document.getElementById("pEmail");
+  const pInfoEmail  = document.getElementById("pInfoEmail");
+  const pInfoJoined = document.getElementById("pInfoJoined");
+
+  if (pFullName)   pFullName.textContent   = `${firstName} ${lastName}`.trim();
+  if (pEmail)      pEmail.textContent      = user.email;
+  if (pInfoEmail)  pInfoEmail.textContent  = user.email;
+  if (pInfoJoined) pInfoJoined.textContent = joined;
 
   setNavName(firstName);
   if (userData?.photoURL) setNavPhoto(userData.photoURL);
@@ -156,7 +188,7 @@ function showLoggedIn(user, userData) {
 // ─── UNIFIED AUTH STATE LISTENER ─────────────────────────────────
 onAuthStateChanged(auth, async (user) => {
   const adminLink  = document.querySelector('a[href="dashboard.html"]')?.closest("li");
-  const sellerLink = document.querySelector('a[href="seller-dashboard.html"]')?.closest("li");
+  const sellerLink = document.getElementById("sellerNavItem");
 
   if (adminLink)  adminLink.style.display  = "none";
   if (sellerLink) sellerLink.style.display = "none";
@@ -166,15 +198,14 @@ onAuthStateChanged(auth, async (user) => {
       const snap     = await getDoc(doc(db, "users", user.uid));
       const userData = snap.exists() ? snap.data() : {};
 
-      // ── SELLER: show seller link, redirect if not on seller page ──
+      // ── SELLER: only show the navbar link, no redirect ─────────
+      // Sellers can browse the store freely.
+      // The seller dashboard protects itself via its own auth guard.
       if (userData?.role === "seller") {
         if (sellerLink) sellerLink.style.display = "";
-        const onSellerPage = window.location.pathname.includes("seller-dashboard.html");
-        if (!onSellerPage) {
-          window.location.href = "seller-dashboard.html";
-          return;
-        }
-        // Already on seller page — stop here, don't show profile modal
+        const firstName = userData?.firstName || user.email.split("@")[0];
+        setNavName(firstName);
+        if (userData?.photoURL) setNavPhoto(userData.photoURL);
         return;
       }
 
@@ -240,7 +271,10 @@ window.handleProfileLogin = async function () {
     const snap     = await getDoc(doc(db, "users", cred.user.uid));
     const userData = snap.exists() ? snap.data() : {};
 
-    // Redirect sellers immediately on login
+    console.log("Login - snap exists:", snap.exists());
+    console.log("Login - userData:", userData);
+
+    // Redirect sellers to their dashboard on login
     if (userData?.role === "seller") {
       window.location.href = "seller-dashboard.html";
       return;
@@ -318,8 +352,7 @@ async function handleSellerRegister() {
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await updateProfile(cred.user, { displayName: `${first} ${last}` });
-console.log("Creating seller document...");
-    // Save user doc with role: "seller"
+
     await setDoc(doc(db, "users", cred.user.uid), {
       firstName: first,
       lastName:  last,
@@ -328,27 +361,36 @@ console.log("Creating seller document...");
       approved:  true,
       createdAt: serverTimestamp(),
     });
+    console.log("✅ User doc saved");
 
-    // Save sellers collection doc
     await setDoc(doc(db, "sellers", cred.user.uid), {
       uid:       cred.user.uid,
       shopName:  "",
       email:     email,
       createdAt: serverTimestamp(),
     });
+    console.log("✅ Seller doc saved");
 
-    // ✅ KEY FIX: Sign out immediately so onAuthStateChanged
-    // doesn't redirect them to the dashboard mid-registration
-    await signOut(auth);
+    await setDoc(doc(db, "sellers", cred.user.uid), {
+      uid:       cred.user.uid,
+      shopName:  "",
+      email:     email,
+      createdAt: serverTimestamp(),
+    });
+    console.log("✅ Seller doc saved");
 
-    // Show success and switch to login tab after 2 seconds
-    showMsg("pRegMsg", "Seller account created! You can now log in. ✅", true);
+    // ✅ Redirect straight to seller dashboard after registration
+    showMsg("pRegMsg", "Seller account created! Redirecting... ✅", true);
+    console.log("✅ Registration complete, redirecting...");
     setTimeout(() => {
-      switchProfileTab("login");
-      clearMsg("pRegMsg");
-    }, 2000);
+      window.location.href = "seller-dashboard.html";
+    }, 1500);
 
+    // ✅ Redirect straight to seller dashboard after registration
+console.log("✅ Registration complete, redirecting...");
+window.location.href = "seller-dashboard.html";
   } catch (err) {
+    console.error("❌ Seller registration error:", err.code, err.message);
     const msgs = {
       "auth/email-already-in-use": "An account with this email already exists.",
       "auth/invalid-email":        "Invalid email address.",
