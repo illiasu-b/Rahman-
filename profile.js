@@ -78,7 +78,6 @@ window.closeProfileModal = function () {
   if (overlay) overlay.style.display = "none";
 };
 
-// Close on backdrop click
 document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("profileModalOverlay");
   if (overlay) {
@@ -86,10 +85,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.target === overlay) closeProfileModal();
     });
   }
+
+  // Store data-label for setLoading on login/register buttons
   ["pLoginBtn", "pRegBtn"].forEach((id) => {
     const btn = document.getElementById(id);
     if (btn) btn.dataset.label = btn.textContent;
   });
+
+  // ─── WIRE UP SELLER REGISTER BUTTON ───────────────────────────
+  // Done here instead of onclick="" to avoid module scope issues
+  const sellerRegBtn = document.getElementById("sellerRegBtn");
+  if (sellerRegBtn) sellerRegBtn.addEventListener("click", handleSellerRegister);
 });
 
 // ─── TAB SWITCHING ────────────────────────────────────────────────
@@ -155,15 +161,26 @@ function showLoggedIn(user, userData) {
 
 // ─── UNIFIED AUTH STATE LISTENER ─────────────────────────────────
 onAuthStateChanged(auth, async (user) => {
-  const adminLink = document.querySelector('a[href="dashboard.html"]')?.closest("li");
+  const adminLink  = document.querySelector('a[href="dashboard.html"]')?.closest("li");
+  const sellerLink = document.querySelector('a[href="seller-dashboard.html"]')?.closest("li");
 
-  // Hide admin link by default
-  if (adminLink) adminLink.style.display = "none";
+  // Hide both links by default
+  if (adminLink)  adminLink.style.display  = "none";
+  if (sellerLink) sellerLink.style.display = "none";
 
   if (user) {
     try {
       const snap     = await getDoc(doc(db, "users", user.uid));
       const userData = snap.exists() ? snap.data() : {};
+
+      // ─── SELLER: redirect to their dashboard ──────────────────
+      if (userData?.role === "seller") {
+        const onSellerPage = window.location.pathname.includes("seller-dashboard.html");
+        if (!onSellerPage) {
+          window.location.href = "seller-dashboard.html";
+          return;
+        }
+      }
 
       // Restore name in navbar
       const firstName = userData?.firstName
@@ -175,9 +192,14 @@ onAuthStateChanged(auth, async (user) => {
       // Restore photo in navbar
       if (userData?.photoURL) setNavPhoto(userData.photoURL);
 
-      // Show admin link only for admin
+      // Show admin link only for admins
       if (adminLink && userData?.isAdmin === true) {
         adminLink.style.display = "";
+      }
+
+      // Show seller link only for sellers
+      if (sellerLink && userData?.role === "seller") {
+        sellerLink.style.display = "";
       }
 
       // If modal is open, show profile view
@@ -194,7 +216,8 @@ onAuthStateChanged(auth, async (user) => {
   } else {
     setNavName("Account");
     resetNavPhoto();
-    if (adminLink) adminLink.style.display = "none";
+    if (adminLink)  adminLink.style.display  = "none";
+    if (sellerLink) sellerLink.style.display = "none";
   }
 });
 
@@ -224,9 +247,17 @@ window.handleProfileLogin = async function () {
 
   setLoading("pLoginBtn", true);
   try {
-    const cred = await signInWithEmailAndPassword(auth, email, pass);
-    const snap = await getDoc(doc(db, "users", cred.user.uid));
-    showLoggedIn(cred.user, snap.exists() ? snap.data() : {});
+    const cred     = await signInWithEmailAndPassword(auth, email, pass);
+    const snap     = await getDoc(doc(db, "users", cred.user.uid));
+    const userData = snap.exists() ? snap.data() : {};
+
+    // Redirect sellers immediately on login
+    if (userData?.role === "seller") {
+      window.location.href = "seller-dashboard.html";
+      return;
+    }
+
+    showLoggedIn(cred.user, userData);
   } catch (err) {
     const msgs = {
       "auth/user-not-found":     "No account found with this email.",
@@ -241,7 +272,7 @@ window.handleProfileLogin = async function () {
   }
 };
 
-// ─── REGISTER ─────────────────────────────────────────────────────
+// ─── REGISTER (regular user) ──────────────────────────────────────
 window.handleProfileRegister = async function () {
   clearMsg("pRegMsg");
   const first   = document.getElementById("pRegFirst").value.trim();
@@ -262,6 +293,7 @@ window.handleProfileRegister = async function () {
       firstName: first,
       lastName:  last,
       email:     email,
+      role:      "user",
       createdAt: serverTimestamp(),
     });
     showLoggedIn(cred.user, { firstName: first, lastName: last, email });
@@ -276,6 +308,61 @@ window.handleProfileRegister = async function () {
     setLoading("pRegBtn", false);
   }
 };
+
+// ─── REGISTER AS SELLER ───────────────────────────────────────────
+// Defined as a regular function (not window.*) and wired up via
+// addEventListener in DOMContentLoaded — this avoids the module
+// scope error that happens with inline onclick=""
+async function handleSellerRegister() {
+  clearMsg("pRegMsg");
+
+  const first   = document.getElementById("pRegFirst").value.trim();
+  const last    = document.getElementById("pRegLast").value.trim();
+  const email   = document.getElementById("pRegEmail").value.trim();
+  const pass    = document.getElementById("pRegPassword").value;
+  const confirm = document.getElementById("pRegConfirm").value;
+
+  if (!first || !last || !email || !pass) return showMsg("pRegMsg", "Please fill in all fields.", false);
+  if (pass.length < 6) return showMsg("pRegMsg", "Password must be at least 6 characters.", false);
+  if (pass !== confirm) return showMsg("pRegMsg", "Passwords do not match.", false);
+
+  // Manual button control — sellerRegBtn has no data-label so setLoading won't work
+  const btn = document.getElementById("sellerRegBtn");
+  if (btn) { btn.disabled = true; btn.textContent = "Please wait…"; }
+
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: `${first} ${last}` });
+    await setDoc(doc(db, "users", cred.user.uid), {
+      firstName: first,
+      lastName:  last,
+      email:     email,
+      role:      "seller",
+      approved:  true,         // admin must approve before they can log in
+      createdAt: serverTimestamp(),
+    });
+
+    // Show success message — no redirect, needs admin approval first
+    showMsg("pRegMsg", "Seller account created! Awaiting admin approval before you can log in. ✅", true);
+
+    // Clear form fields
+    document.getElementById("pRegFirst").value    = "";
+    document.getElementById("pRegLast").value     = "";
+    document.getElementById("pRegEmail").value    = "";
+    document.getElementById("pRegPassword").value = "";
+    document.getElementById("pRegConfirm").value  = "";
+
+  } catch (err) {
+    const msgs = {
+      "auth/email-already-in-use": "An account with this email already exists.",
+      "auth/invalid-email":        "Invalid email address.",
+      "auth/weak-password":        "Password is too weak.",
+    };
+    showMsg("pRegMsg", msgs[err.code] || "Registration failed. Please try again.", false);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = "Register as Seller"; }
+  }
+}
 
 // ─── LOGOUT ───────────────────────────────────────────────────────
 window.handleProfileLogout = async function () {
