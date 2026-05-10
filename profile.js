@@ -118,20 +118,6 @@ window.switchProfileTab = function (tab) {
 
 // ─── SHOW LOGGED-IN PROFILE ───────────────────────────────────────
 function showLoggedIn(user, userData) {
-
-  // ✅ Guard: check all required elements and log any that are missing
-  const required = [
-    "profileLoginForm", "profileRegisterForm", "authTabs",
-    "profileLoggedIn", "pAvatar", "pFullName", "pEmail",
-    "pInfoEmail", "pInfoJoined"
-  ];
-  for (const id of required) {
-    if (!document.getElementById(id)) {
-      console.error("❌ Missing HTML element:", id);
-    }
-  }
-
-  // Safely get each element — won't crash if one is missing
   const loginForm    = document.getElementById("profileLoginForm");
   const registerForm = document.getElementById("profileRegisterForm");
   const authTabs     = document.getElementById("authTabs");
@@ -198,11 +184,9 @@ onAuthStateChanged(auth, async (user) => {
       const snap     = await getDoc(doc(db, "users", user.uid));
       const userData = snap.exists() ? snap.data() : {};
 
-      // ── SELLER: only show the navbar link, no redirect ─────────
-      // Sellers can browse the store freely.
-      // The seller dashboard protects itself via its own auth guard.
+      // ── SELLER: show navbar link only, no redirect ─────────────
       if (userData?.role === "seller") {
-        if (sellerLink) sellerLink.style.display = "";
+        if (sellerLink) sellerLink.style.display = "flex";
         const firstName = userData?.firstName || user.email.split("@")[0];
         setNavName(firstName);
         if (userData?.photoURL) setNavPhoto(userData.photoURL);
@@ -270,9 +254,6 @@ window.handleProfileLogin = async function () {
     const cred     = await signInWithEmailAndPassword(auth, email, pass);
     const snap     = await getDoc(doc(db, "users", cred.user.uid));
     const userData = snap.exists() ? snap.data() : {};
-
-    console.log("Login - snap exists:", snap.exists());
-    console.log("Login - userData:", userData);
 
     // Redirect sellers to their dashboard on login
     if (userData?.role === "seller") {
@@ -353,6 +334,7 @@ async function handleSellerRegister() {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await updateProfile(cred.user, { displayName: `${first} ${last}` });
 
+    // Save user doc with role: "seller"
     await setDoc(doc(db, "users", cred.user.uid), {
       firstName: first,
       lastName:  last,
@@ -363,6 +345,7 @@ async function handleSellerRegister() {
     });
     console.log("✅ User doc saved");
 
+    // Save sellers collection doc (once only)
     await setDoc(doc(db, "sellers", cred.user.uid), {
       uid:       cred.user.uid,
       shopName:  "",
@@ -371,24 +354,12 @@ async function handleSellerRegister() {
     });
     console.log("✅ Seller doc saved");
 
-    await setDoc(doc(db, "sellers", cred.user.uid), {
-      uid:       cred.user.uid,
-      shopName:  "",
-      email:     email,
-      createdAt: serverTimestamp(),
-    });
-    console.log("✅ Seller doc saved");
-
-    // ✅ Redirect straight to seller dashboard after registration
+    // Show message then redirect to dashboard
     showMsg("pRegMsg", "Seller account created! Redirecting... ✅", true);
-    console.log("✅ Registration complete, redirecting...");
     setTimeout(() => {
       window.location.href = "seller-dashboard.html";
     }, 1500);
 
-    // ✅ Redirect straight to seller dashboard after registration
-console.log("✅ Registration complete, redirecting...");
-window.location.href = "seller-dashboard.html";
   } catch (err) {
     console.error("❌ Seller registration error:", err.code, err.message);
     const msgs = {
@@ -397,7 +368,6 @@ window.location.href = "seller-dashboard.html";
       "auth/weak-password":        "Password is too weak.",
     };
     showMsg("pRegMsg", msgs[err.code] || "Registration failed. Please try again.", false);
-  } finally {
     if (btn) { btn.disabled = false; btn.textContent = "Register as Seller"; }
   }
 }
