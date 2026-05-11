@@ -62,8 +62,6 @@
         </a>
       </li>
 
-      
-
     </ul>
 
   </nav>
@@ -173,6 +171,15 @@
         <input type="password" id="pLoginPassword" placeholder="••••••••" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
       </div>
       <button id="pLoginBtn" onclick="handleProfileLogin()" data-label="Sign In" style="width:100%; padding:0.85rem; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:0.5rem;">Sign In</button>
+
+      <!-- ✅ Forgot password — inside login form -->
+      <p style="text-align:center; margin-top:10px; font-size:0.85rem;">
+        <a href="#" onclick="handleForgotPassword(); return false;"
+          style="color:#2e7d32; text-decoration:none;">
+          Forgot password?
+        </a>
+      </p>
+
       <div id="pLoginMsg" style="display:none;"></div>
     </div>
 
@@ -204,11 +211,9 @@
         </div>
       </div>
 
-      <!-- Register button — stays as is, uses onclick (not a module scope issue) -->
       <button id="pRegBtn" onclick="handleProfileRegister()" data-label="Create Account" style="width:100%; padding:0.85rem; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer;">Create Account</button>
       <div id="pRegMsg" style="display:none;"></div>
 
-      <!-- ✅ SELLER REGISTER — uses id, wired up in profile.js DOMContentLoaded -->
       <p style="text-align:center; margin-top:12px; font-size:0.82rem; color:#888;">
         Want to sell on our platform?
         <button id="sellerRegBtn"
@@ -301,7 +306,6 @@
   const loginBtn   = document.getElementById("adminLoginBtn");
   const errorMsg   = document.getElementById("adminError");
 
-  // Tap 5x within 3s to reveal panel
   trigger.addEventListener("click", () => {
     tapCount++;
     clearTimeout(tapTimer);
@@ -317,7 +321,6 @@
     }
   });
 
-  // Admin login
   loginBtn.addEventListener("click", async () => {
     const email = emailInput.value.trim();
     const pass  = passInput.value;

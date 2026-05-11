@@ -108,7 +108,13 @@
     <button id="logoutBtn">Logout</button>
     <button id="exportSubs">Export Emails</button>
 
-    
+    <button class="section-toggle" data-target="pendingSellersSection">
+  <span><i class="fas fa-user-clock" style="margin-right:8px;"></i>Pending Seller Approvals</span>
+  <span class="arrow">▼</span>
+</button>
+<div class="collapsible-section" id="pendingSellersSection">
+  <div id="pendingSellersList" style="margin:10px 0;"></div>
+</div>
 
     <!-- ── CATEGORY MANAGER ── -->
     <button class="section-toggle" data-target="categorySection">
@@ -225,6 +231,10 @@
   <!-- SCRIPTS -->
   <script type="module" src="firebase.js"></script>
   <script type="module" src="dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("qJKglsuqxDYbvs15S"); // ← replace with your public key
+</script>
   
 
   <!-- CATEGORY MANAGER SCRIPT -->

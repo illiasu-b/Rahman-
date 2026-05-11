@@ -11,9 +11,9 @@ import {
   addDoc,
   deleteDoc,
   getDoc,
-  setDoc
+  setDoc,
+  where          // ← ADD THIS
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
 
 // ================= CLOUDINARY UPLOAD =================
 async function uploadToCloudinary(file) {
@@ -39,25 +39,27 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   const adminEmails = [
-  "rahman@gmail.com",
-  "secondadmin@gmail.com",   // ← add more here
-  "thirdadmin@gmail.com"
-];
+    "rahman@gmail.com",
+    "secondadmin@gmail.com",
+    "thirdadmin@gmail.com"
+  ];
 
-if (!adminEmails.includes(user.email)) {
-  alert("You are not admin ❌");
-  window.location.href = "index.html";
-  return;
-}
+  if (!adminEmails.includes(user.email)) {
+    alert("You are not admin ❌");
+    window.location.href = "index.html";
+    return;
+  }
+
+  console.log("Admin verified ✅");
 
   await loadOrders();
   await loadSubscribers();
   initStockManager();
   initAnalytics();
-  initCategoryManager();   // ✅ NEW: Load category manager
-  populateCategoryDropdown(); // ✅ NEW: Fill the category <select> in the add-product form
+  initCategoryManager();
+  populateCategoryDropdown();
+  await loadPendingSellers();
 });
-
 
 // ================= CATEGORY MANAGER =================
 // Categories are stored in Firestore under a "categories" collection.
@@ -169,7 +171,6 @@ async function populateCategoryDropdown() {
 }
 
 
-// ================= ADD PRODUCT =================
 // ================= ADD PRODUCT =================
 // Replace your existing productForm submit handler in dashboard.js with this
 
@@ -361,6 +362,118 @@ window.deleteProduct = async (id) => {
   alert("Deleted 🗑️");
 };
 
+async function loadPendingSellers() {
+  const q = query(
+    collection(db, "users"),
+    where("role", "==", "seller"),
+    where("approved", "==", false)
+  );
+
+  const snapshot = await getDocs(q);
+  const list = document.getElementById("pendingSellersList");
+
+  // ✅ Update button badge count
+  const btn = document.querySelector('[data-target="pendingSellersSection"] span:first-child');
+  if (btn) btn.innerHTML = `<i class="fas fa-user-clock" style="margin-right:8px;"></i>Pending Seller Approvals ${snapshot.size > 0 ? `<span style="background:#ef4444;color:white;border-radius:10px;padding:2px 8px;font-size:0.8rem;margin-left:6px;">${snapshot.size}</span>` : ""}`;
+
+  if (!list) return;
+
+  if (snapshot.empty) {
+    list.innerHTML = "<p style='color:#888;'>No pending sellers.</p>";
+    return;
+  }
+
+  list.innerHTML = snapshot.docs.map(d => {
+    const s = d.data();
+    return `
+      <div style="padding:12px; border:1px solid #eee; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong>${s.firstName} ${s.lastName}</strong><br>
+          <span style="color:#888; font-size:0.85rem;">${s.email}</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button onclick="approveSeller('${d.id}')"
+            style="padding:6px 14px; background:#2e7d32; color:white; border:none; border-radius:6px; cursor:pointer;">
+            Approve
+          </button>
+          <button onclick="rejectSeller('${d.id}')"
+            style="padding:6px 14px; background:#c0392b; color:white; border:none; border-radius:6px; cursor:pointer;">
+            Reject
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// ================= APPROVE / REJECT SELLERS =================
+window.approveSeller = async (uid) => {
+  if (!confirm("Approve this seller?")) return;
+  try {
+    await updateDoc(doc(db, "users", uid), { approved: true });
+    alert("Seller approved ✅");
+    await loadPendingSellers();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to approve seller ❌");
+  }
+};
+
+window.rejectSeller = async (uid) => {
+  if (!confirm("Reject this seller?")) return;
+  try {
+    await updateDoc(doc(db, "users", uid), { role: "user", approved: false });
+    alert("Seller rejected.");
+    await loadPendingSellers();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to reject seller ❌");
+  }
+};
+
+// ================= APPROVE / REJECT SELLERS =================
+window.approveSeller = async (uid) => {
+  if (!confirm("Approve this seller?")) return;
+  try {
+    // Get seller data first
+    const snap   = await getDoc(doc(db, "users", uid));
+    const seller = snap.data();
+
+    // Update approved status
+    await updateDoc(doc(db, "users", uid), { approved: true });
+
+    // ✅ Send approval email via EmailJS
+    await emailjs.send(
+      "service_xdxa7ee",    // ← replace with your EmailJS service ID
+      "template_fmymhqn",   // ← replace with your EmailJS template ID
+      {
+        to_name:       seller.firstName || "Seller",
+        to_email:      seller.email,
+        dashboard_url: "https://yoursite.com/seller-dashboard.html" // ← your actual URL
+      }
+    );
+
+    alert("Seller approved and notified by email ✅");
+    await loadPendingSellers();
+
+  } catch (err) {
+    console.error(err);
+    alert("Failed to approve seller ❌");
+  }
+};
+
+window.rejectSeller = async (uid) => {
+  if (!confirm("Reject this seller?")) return;
+  try {
+    await updateDoc(doc(db, "users", uid), { role: "user", approved: false });
+    alert("Seller rejected.");
+    await loadPendingSellers();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to reject seller ❌");
+  }
+};
+
 
 // ================= LOAD ORDERS =================
 async function loadOrders() {
@@ -519,6 +632,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
 
 
 // ================= LOAD PRODUCTS BY CATEGORY =================

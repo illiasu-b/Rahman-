@@ -77,16 +77,23 @@ onAuthStateChanged(auth, async (user) => {
     console.log("USER DATA:", userData);
 
     if (userData.role !== "seller") {
-      alert("Access denied. This area is for sellers only. ❌");
-      await signOut(auth);
-      window.location.href = "index.html";
-      return;
-    }
+  alert("Access denied. This area is for sellers only. ❌");
+  await signOut(auth);
+  window.location.href = "index.html";
+  return;
+}
 
-    // SUCCESS
-    currentSeller = { uid: user.uid, ...userData };
-    console.log("Seller verified ✅");
+// ✅ ADD THIS — block unapproved sellers
+if (userData.approved !== true) {
+  alert("Your seller account is pending admin approval. Please check back later. ⏳");
+  await signOut(auth);
+  window.location.href = "index.html";
+  return;
+}
 
+// SUCCESS
+currentSeller = { uid: user.uid, ...userData };
+console.log("Seller verified ✅");
     // Populate UI
     const firstName = userData.firstName || user.email.split("@")[0];
     const lastName  = userData.lastName  || "";

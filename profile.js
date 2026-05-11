@@ -6,7 +6,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  updateProfile
+  updateProfile,
+  sendPasswordResetEmail    // ← ADD THIS
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 import {
@@ -276,6 +277,28 @@ window.handleProfileLogin = async function () {
   }
 };
 
+// ─── FORGOT PASSWORD ──────────────────────────────────────────────
+window.handleForgotPassword = async function () {
+  const email = document.getElementById("pLoginEmail")?.value.trim();
+
+  if (!email) {
+    showMsg("pLoginMsg", "Please enter your email address first.", false);
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showMsg("pLoginMsg", "Password reset email sent! Check your inbox. ✅", true);
+  } catch (err) {
+    const msgs = {
+      "auth/user-not-found": "No account found with this email.",
+      "auth/invalid-email":  "Invalid email address.",
+    };
+    showMsg("pLoginMsg", msgs[err.code] || "Failed to send reset email. Try again.", false);
+  }
+};
+
+
 // ─── REGISTER (regular user) ──────────────────────────────────────
 window.handleProfileRegister = async function () {
   clearMsg("pRegMsg");
@@ -340,7 +363,7 @@ async function handleSellerRegister() {
       lastName:  last,
       email:     email,
       role:      "seller",
-      approved:  true,
+      approved:  false,
       createdAt: serverTimestamp(),
     });
     console.log("✅ User doc saved");
@@ -354,11 +377,13 @@ async function handleSellerRegister() {
     });
     console.log("✅ Seller doc saved");
 
-    // Show message then redirect to dashboard
-    showMsg("pRegMsg", "Seller account created! Redirecting... ✅", true);
-    setTimeout(() => {
-      window.location.href = "seller-dashboard.html";
-    }, 1500);
+    // Sign out and show pending message — redirect only after admin approves
+await signOut(auth);
+showMsg("pRegMsg", "Application submitted! Awaiting admin approval before you can log in. ⏳", true);
+setTimeout(() => {
+  switchProfileTab("login");
+  clearMsg("pRegMsg");
+}, 3000);
 
   } catch (err) {
     console.error("❌ Seller registration error:", err.code, err.message);
