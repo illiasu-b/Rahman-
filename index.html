@@ -23,20 +23,28 @@
 
   <div style="display:flex; align-items:center; gap:16px; margin-left:auto; padding-right:1rem;">
 
-    <!-- Seller Dashboard Icon (hidden by default, shown for sellers only) -->
-<a id="sellerNavItem" href="seller-dashboard.html"
-  style="display:none; text-decoration:none; color:white; align-items:center; gap:6px; font-size:0.9rem;">
-  <i class="fas fa-store-alt"></i>
-  <span>My Store</span>
-</a>
+  <!-- Seller Dashboard Icon (hidden by default, shown for sellers only) -->
+  <a id="sellerNavItem" href="seller-dashboard.html"
+    style="display:none; text-decoration:none; color:white; align-items:center; gap:6px; font-size:0.9rem;">
+    <i class="fas fa-store-alt"></i>
+    <span>Store</span>
+  </a>
 
-<!-- Profile Icon -->
-<a href="#" id="profileNavBtn" onclick="openProfileModal(); return false;"
-  style="text-decoration:none; color:white; display:flex; align-items:center; gap:6px; font-size:0.9rem;">
-  <i class="fas fa-user-circle"></i>
-  <span id="profileNavLabel">Profile</span>
-</a> 
-  </div>
+  <!-- Track Order Icon -->
+  <a href="track.html"
+    style="text-decoration:none; color:white; display:flex; align-items:center; gap:6px; font-size:0.9rem;">
+    <i class="fas fa-search"></i>
+    <span>Track</span>
+  </a>
+
+  <!-- Profile Icon -->
+  <a href="#" id="profileNavBtn" onclick="openProfileModal(); return false;"
+    style="text-decoration:none; color:white; display:flex; align-items:center; gap:6px; font-size:0.9rem;">
+    <i class="fas fa-user-circle"></i>
+    <span id="profileNavLabel">Profile</span>
+  </a>
+
+</div>
 </header>
 <header>
   <nav class="navbar">
@@ -54,6 +62,13 @@
         </a>
       </li>
 
+      <!-- Wishlist -->
+  <li>
+    <a href="#" onclick="showWishlist(); return false;">
+      <i class="fas fa-heart"></i>
+      <span>Wishlist</span>
+    </a>
+  </li>
       <!-- Cart Icon -->
       <li class="cart-item">
         <a href="order.html" class="cart-link">
@@ -272,6 +287,23 @@
 
       <button onclick="handleProfileLogout()" style="width:100%; padding:0.75rem; background:transparent; color:#c0392b; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; font-weight:600; cursor:pointer;">Sign Out</button>
     </div>
+
+    <button onclick="showOrderHistory()"
+  style="width:100%; padding:0.75rem; background:#2e7d32; color:#fff;
+         border:none; border-radius:8px; font-size:0.95rem; font-weight:600;
+         cursor:pointer; margin-bottom:0.6rem;">
+  <i class="fas fa-history"></i> My Orders
+</button>
+
+<!-- Order History Section -->
+<div id="orderHistorySection" style="display:none; text-align:left; margin-top:1rem;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+    <h4 style="margin:0; font-size:1rem;">Order History</h4>
+    <a href="#" onclick="hideOrderHistory(); return false;"
+      style="color:#888; font-size:0.85rem; text-decoration:none;">← Back</a>
+  </div>
+  <div id="orderHistoryList"></div>
+</div>
 
   </div>
 </div>

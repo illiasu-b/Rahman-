@@ -188,15 +188,47 @@
     </div>
 
     <!-- ── STOCK & ANALYTICS ── -->
-    <button class="section-toggle" data-target="analyticsSection">
-      <span><i class="fas fa-chart-bar" style="margin-right:8px;"></i>Stock &amp; Analytics</span>
-      <span class="arrow">▼</span>
-    </button>
-    <div class="collapsible-section" id="analyticsSection">
-      <div id="lowStockAlerts"></div>
-      <div id="stockManager" style="margin-top:10px;"></div>
-      <div id="analytics" style="margin-top:10px;"></div>
+<button class="section-toggle" data-target="analyticsSection">
+  <span><i class="fas fa-chart-bar" style="margin-right:8px;"></i>Stock &amp; Analytics</span>
+  <span class="arrow">▼</span>
+</button>
+<div class="collapsible-section" id="analyticsSection">
+  <div id="lowStockAlerts"></div>
+  <div id="stockManager" style="margin-top:10px;"></div>
+
+  <!-- ✅ CHARTS -->
+  <div id="analytics" style="margin-top:10px;"></div>
+
+  <!-- Summary Cards -->
+  <div id="analyticsSummary" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:1.5rem;"></div>
+
+  <!-- Revenue Chart -->
+  <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px; margin-bottom:1rem;">
+    <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
+      <i class="fas fa-chart-line" style="color:#2e7d32; margin-right:6px;"></i>Revenue Over Time (Last 7 Days)
+    </h4>
+    <canvas id="revenueChart" height="100"></canvas>
+  </div>
+
+  <!-- Top Products Chart -->
+  <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px; margin-bottom:1rem;">
+    <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
+      <i class="fas fa-trophy" style="color:#f59e0b; margin-right:6px;"></i>Top 5 Products by Revenue
+    </h4>
+    <canvas id="topProductsChart" height="120"></canvas>
+  </div>
+
+  <!-- Orders by Status -->
+  <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px;">
+    <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
+      <i class="fas fa-chart-pie" style="color:#1d4ed8; margin-right:6px;"></i>Orders by Status
+    </h4>
+    <div style="max-width:300px; margin:0 auto;">
+      <canvas id="orderStatusChart"></canvas>
     </div>
+  </div>
+</div>
+
 
     <!-- ── ORDERS ── -->
     <button class="section-toggle" data-target="ordersSection">

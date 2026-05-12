@@ -14,9 +14,13 @@ import {
   doc,
   setDoc,
   getDoc,
-  serverTimestamp
+  serverTimestamp,
+  collection,    // ← ADD
+  query,         // ← ADD
+  where,         // ← ADD
+  getDocs,       // ← ADD
+  orderBy        // ← ADD
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
 // ─── HELPERS ──────────────────────────────────────────────────────
 function showMsg(id, text, ok) {
   const el = document.getElementById(id);
@@ -298,6 +302,83 @@ window.handleForgotPassword = async function () {
   }
 };
 
+// ─── ORDER HISTORY ────────────────────────────────────────────────
+window.showOrderHistory = async function () {
+  const section = document.getElementById("orderHistorySection");
+  const list    = document.getElementById("orderHistoryList");
+  const user    = auth.currentUser;
+
+  if (!user || !section || !list) return;
+
+  section.style.display = "";
+  list.innerHTML = `<p style="color:#888; text-align:center;">Loading...</p>`;
+
+  try {
+    const q    = query(
+      collection(db, "orders"),
+      where("email", "==", user.email),
+      orderBy("createdAt", "desc")
+    );
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      list.innerHTML = `<p style="color:#888; text-align:center; padding:1rem;">
+        No orders yet. <a href="shop.html">Start shopping</a>
+      </p>`;
+      return;
+    }
+
+    list.innerHTML = snap.docs.map(d => {
+      const o    = d.data();
+      const date = o.createdAt?.toDate?.()
+        ? o.createdAt.toDate().toLocaleDateString("en-GH", {
+            day: "numeric", month: "short", year: "numeric"
+          })
+        : "N/A";
+
+      const items = Array.isArray(o.items)
+        ? o.items.map(i => `${i.name} x${i.qty}`).join(", ")
+        : "—";
+
+      const payColor      = o.status?.includes("Paid") ? "#2e7d32" : "#f59e0b";
+      const deliveryColor = o.deliveryStatus?.includes("Delivered") ? "#2e7d32" : "#f59e0b";
+
+      return `
+        <div style="background:#f9f9f9; border-radius:10px; padding:1rem;
+                    margin-bottom:0.8rem; border:1px solid #eee;">
+          <div style="display:flex; justify-content:space-between;
+                      align-items:center; margin-bottom:0.5rem;">
+            <span style="font-size:0.75rem; color:#aaa;">ID: ${d.id.slice(0,8)}...</span>
+            <span style="font-size:0.8rem; color:#888;">${date}</span>
+          </div>
+          <div style="font-size:0.85rem; margin-bottom:0.5rem; color:#555;">${items}</div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span style="background:${payColor}22; color:${payColor};
+                           padding:2px 8px; border-radius:20px; font-size:0.78rem; font-weight:600;">
+                ${o.status || "Pending"}
+              </span>
+              <span style="background:${deliveryColor}22; color:${deliveryColor};
+                           padding:2px 8px; border-radius:20px; font-size:0.78rem; font-weight:600;">
+                ${o.deliveryStatus || "Pending Delivery"}
+              </span>
+            </div>
+            <strong style="color:#2e7d32;">₵${Number(o.total || 0).toFixed(2)}</strong>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+  } catch (err) {
+    console.error("Order history error:", err);
+    list.innerHTML = `<p style="color:#c0392b;">Failed to load orders.</p>`;
+  }
+};
+
+window.hideOrderHistory = function () {
+  const section = document.getElementById("orderHistorySection");
+  if (section) section.style.display = "none";
+};
 
 // ─── REGISTER (regular user) ──────────────────────────────────────
 window.handleProfileRegister = async function () {

@@ -406,30 +406,6 @@ async function loadPendingSellers() {
   }).join("");
 }
 
-// ================= APPROVE / REJECT SELLERS =================
-window.approveSeller = async (uid) => {
-  if (!confirm("Approve this seller?")) return;
-  try {
-    await updateDoc(doc(db, "users", uid), { approved: true });
-    alert("Seller approved ✅");
-    await loadPendingSellers();
-  } catch (err) {
-    console.error(err);
-    alert("Failed to approve seller ❌");
-  }
-};
-
-window.rejectSeller = async (uid) => {
-  if (!confirm("Reject this seller?")) return;
-  try {
-    await updateDoc(doc(db, "users", uid), { role: "user", approved: false });
-    alert("Seller rejected.");
-    await loadPendingSellers();
-  } catch (err) {
-    console.error(err);
-    alert("Failed to reject seller ❌");
-  }
-};
 
 // ================= APPROVE / REJECT SELLERS =================
 window.approveSeller = async (uid) => {
@@ -598,27 +574,188 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // ================= ANALYTICS =================
+let revenueChartInstance    = null;
+let topProductsChartInstance = null;
+let orderStatusChartInstance = null;
+
 function initAnalytics() {
-  const analyticsDiv = document.getElementById("analytics");
-  if (!analyticsDiv) return;
-
   onSnapshot(collection(db, "orders"), (snapshot) => {
-    let total = 0;
-    let count = snapshot.size;
+    const orders = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    snapshot.forEach((docSnap) => {
-      const o = docSnap.data();
-      total += o.total || 0;
-    });
-
-    analyticsDiv.innerHTML = `
-      <h3>Sales Analytics</h3>
-      <p>Total Revenue: ₵${total}</p>
-      <p>Total Orders: ${count}</p>
-    `;
+    renderSummaryCards(orders);
+    renderRevenueChart(orders);
+    renderTopProductsChart(orders);
+    renderOrderStatusChart(orders);
   });
 }
 
+// ── SUMMARY CARDS ─────────────────────────────────────────────
+function renderSummaryCards(orders) {
+  const container = document.getElementById("analyticsSummary");
+  if (!container) return;
+
+  const totalRevenue  = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+  const totalOrders   = orders.length;
+  const paidOrders    = orders.filter(o => o.status === "Paid").length;
+  const pendingOrders = orders.filter(o => o.status !== "Paid").length;
+
+  const cards = [
+    { label: "Total Revenue",   value: `₵${totalRevenue.toFixed(2)}`, icon: "fa-coins",         color: "#2e7d32" },
+    { label: "Total Orders",    value: totalOrders,                    icon: "fa-receipt",        color: "#1d4ed8" },
+    { label: "Paid Orders",     value: paidOrders,                     icon: "fa-check-circle",   color: "#059669" },
+    { label: "Pending Orders",  value: pendingOrders,                  icon: "fa-clock",          color: "#f59e0b" },
+  ];
+
+  container.innerHTML = cards.map(c => `
+    <div style="flex:1; min-width:140px; background:#fff; border:1px solid #eee;
+                border-radius:10px; padding:14px; text-align:center;">
+      <i class="fas ${c.icon}" style="font-size:1.4rem; color:${c.color}; margin-bottom:6px;"></i>
+      <div style="font-size:1.4rem; font-weight:700; color:${c.color};">${c.value}</div>
+      <div style="font-size:0.78rem; color:#888; margin-top:2px;">${c.label}</div>
+    </div>
+  `).join("");
+}
+
+// ── REVENUE OVER TIME ─────────────────────────────────────────
+function renderRevenueChart(orders) {
+  const canvas = document.getElementById("revenueChart");
+  if (!canvas) return;
+
+  // Build last 7 days labels
+  const days   = [];
+  const totals = {};
+
+  for (let i = 6; i >= 0; i--) {
+    const d     = new Date();
+    d.setDate(d.getDate() - i);
+    const label = d.toLocaleDateString("en-GH", { weekday: "short", day: "numeric" });
+    const key   = d.toDateString();
+    days.push({ label, key });
+    totals[key] = 0;
+  }
+
+  orders.forEach(o => {
+    const date = o.createdAt?.toDate?.();
+    if (!date) return;
+    const key = date.toDateString();
+    if (totals[key] !== undefined) {
+      totals[key] += o.total || 0;
+    }
+  });
+
+  const labels = days.map(d => d.label);
+  const data   = days.map(d => totals[d.key]);
+
+  if (revenueChartInstance) revenueChartInstance.destroy();
+
+  revenueChartInstance = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        label:           "Revenue (₵)",
+        data,
+        borderColor:     "#2e7d32",
+        backgroundColor: "rgba(46,125,50,0.08)",
+        borderWidth:     2,
+        pointRadius:     4,
+        pointBackgroundColor: "#2e7d32",
+        fill:            true,
+        tension:         0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => `₵${v}` } }
+      }
+    }
+  });
+}
+
+// ── TOP PRODUCTS ──────────────────────────────────────────────
+function renderTopProductsChart(orders) {
+  const canvas = document.getElementById("topProductsChart");
+  if (!canvas) return;
+
+  const productRevenue = {};
+
+  orders.forEach(o => {
+    if (!Array.isArray(o.items)) return;
+    o.items.forEach(item => {
+      const name    = item.name || "Unknown";
+      const revenue = (item.price || 0) * (item.qty || 1);
+      productRevenue[name] = (productRevenue[name] || 0) + revenue;
+    });
+  });
+
+  const sorted = Object.entries(productRevenue)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  const labels = sorted.map(([name]) => name);
+  const data   = sorted.map(([, rev]) => rev);
+
+  if (topProductsChartInstance) topProductsChartInstance.destroy();
+
+  topProductsChartInstance = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label:           "Revenue (₵)",
+        data,
+        backgroundColor: [
+          "#2e7d32", "#1d4ed8", "#f59e0b", "#7c3aed", "#059669"
+        ],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => `₵${v}` } }
+      }
+    }
+  });
+}
+
+// ── ORDERS BY STATUS ──────────────────────────────────────────
+function renderOrderStatusChart(orders) {
+  const canvas = document.getElementById("orderStatusChart");
+  if (!canvas) return;
+
+  const statusCount = {};
+  orders.forEach(o => {
+    const s = o.status || "Pending Payment";
+    statusCount[s] = (statusCount[s] || 0) + 1;
+  });
+
+  const labels = Object.keys(statusCount);
+  const data   = Object.values(statusCount);
+
+  if (orderStatusChartInstance) orderStatusChartInstance.destroy();
+
+  orderStatusChartInstance = new Chart(canvas, {
+    type: "doughnut",
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: ["#2e7d32", "#f59e0b", "#ef4444", "#1d4ed8", "#059669"],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "bottom", labels: { font: { size: 12 } } }
+      }
+    }
+  });
+}
 
 // ================= COLLAPSE PANEL =================
 document.addEventListener("DOMContentLoaded", () => {

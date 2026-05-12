@@ -4,9 +4,9 @@ import {
   addDoc,
   serverTimestamp,
   doc,
-  runTransaction
+  runTransaction,
+  getDoc        // ← ADD THIS
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
 import { auth } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
@@ -309,6 +309,65 @@ function showAccountPrompt(customer) {
 }
 
 // ======================
+// NOTIFY SELLERS
+// ======================
+async function notifySellers(cart, customer, orderId) {
+  try {
+    // Group cart items by sellerUid
+    const sellerItems = {};
+
+    for (const item of cart) {
+      if (!item.id) continue;
+
+      // Get product to find sellerUid
+      const productSnap = await getDoc(doc(db, "products", item.id));
+      if (!productSnap.exists()) continue;
+
+      const product   = productSnap.data();
+      const sellerUid = product.sellerUid;
+      if (!sellerUid) continue;
+
+      if (!sellerItems[sellerUid]) {
+        sellerItems[sellerUid] = [];
+      }
+      sellerItems[sellerUid].push({ ...item, productData: product });
+    }
+
+    // For each seller, get their info and send email
+    for (const [sellerUid, items] of Object.entries(sellerItems)) {
+      const sellerSnap = await getDoc(doc(db, "users", sellerUid));
+      if (!sellerSnap.exists()) continue;
+
+      const seller = sellerSnap.data();
+      if (!seller.email) continue;
+
+      // Send one email per product item
+      for (const item of items) {
+        await emailjs.send(
+          "service_xdxa7ee",       // ← your service ID
+          "template_qpmhck7", // ← replace with new template ID
+          {
+            seller_name:    seller.firstName || "Seller",
+            seller_email:   seller.email,
+            product_name:   item.name,
+            qty:            item.qty,
+            price:          `${item.currency || "GHS"} ${Number(item.price).toFixed(2)}`,
+            customer_name:  customer.name,
+            customer_phone: customer.phone,
+            customer_address: customer.address,
+            order_id:       orderId
+          }
+        );
+        console.log(`✅ Seller notified: ${seller.email} for ${item.name}`);
+      }
+    }
+  } catch (err) {
+    console.error("Failed to notify sellers:", err);
+    // Don't throw — order already placed, notification failure shouldn't block
+  }
+}
+
+// ======================
 // PAY NOW FLOW
 // ======================
 if (payNowBtn) {
@@ -327,23 +386,29 @@ if (payNowBtn) {
       try {
         const total = getTotal(cart);
 
-        await addDoc(collection(db, "orders"), {
-          ...customer,
-          items:      cart,
-          total,
-          paymentRef: paymentReference,
-          status:     "Paid",
-          createdAt:  serverTimestamp()
-        });
+        const orderRef = await addDoc(collection(db, "orders"), {
+  ...customer,
+  items:      cart,
+  total,
+  paymentRef: paymentReference,
+  status:     "Paid",
+  createdAt:  serverTimestamp()
+});
+
+const orderId = orderRef.id;
+alert(`Payment successful! ✅\n\nYour Order ID:\n${orderId}\n\nSave this ID to track your order.`);
 
         await reduceStock(cart);
 
-        localStorage.removeItem("cart");
-        updateCartBadge();
-        renderCart();
-        orderForm?.reset();
+// ✅ Notify sellers
+await notifySellers(cart, customer, orderRef.id);
 
-        showAccountPrompt(customer);
+localStorage.removeItem("cart");
+updateCartBadge();
+renderCart();
+orderForm?.reset();
+
+showAccountPrompt(customer);
 
       } catch (err) {
         console.error("Checkout failed:", err);
@@ -369,27 +434,33 @@ if (orderForm) {
     try {
       const total = getTotal(cart);
 
-      await addDoc(collection(db, "orders"), {
-        ...customer,
-        items:      cart,
-        total,
-        paymentRef: null,
-        status:     "Pending Payment",
-        createdAt:  serverTimestamp()
-      });
+      const orderRef = await addDoc(collection(db, "orders"), {
+  ...customer,
+  items:      cart,
+  total,
+  paymentRef: null,
+  status:     "Pending Payment",
+  createdAt:  serverTimestamp()
+});
 
-      localStorage.removeItem("cart");
-      updateCartBadge();
-      renderCart();
-      orderForm.reset();
+const orderId = orderRef.id;
+alert(`Order placed successfully! ✅\n\nYour Order ID:\n${orderId}\n\nSave this ID to track your order.`);
 
-      showAccountPrompt(customer);
+// ✅ Notify sellers
+await notifySellers(cart, customer, orderId);
 
-    } catch (err) {
-      console.error("Order failed:", err.code, err.message);
-      alert(err.message || "Failed to place order ❌");
-    }
-  });
+localStorage.removeItem("cart");
+updateCartBadge();
+renderCart();
+orderForm.reset();
+
+showAccountPrompt(customer);
+
+} catch (err) {
+  console.error("Order failed:", err.code, err.message);
+  alert(err.message || "Failed to place order ❌");
+}
+});
 }
 
 // ======================
