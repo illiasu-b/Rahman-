@@ -1,5 +1,10 @@
 import { auth, db } from "./firebase.js";
-import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+import {
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
 import {
   collection,
   getDocs,
@@ -12,8 +17,43 @@ import {
   deleteDoc,
   getDoc,
   setDoc,
-  where          // ← ADD THIS
+  where
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+// ── AUTH GUARD ────────────────────────────────────────────────
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  const userSnap = await getDoc(doc(db, "users", user.uid));
+  if (!userSnap.exists()) {
+    await signOut(auth);
+    window.location.href = "index.html";
+    return;
+  }
+
+  const userData = userSnap.data();
+
+  if (userData.role !== "admin") {
+    alert("Access denied. Admins only. ❌");
+    await signOut(auth);
+    window.location.href = "index.html";
+    return;
+  }
+
+  console.log("Admin verified ✅");
+
+  // ✅ Admin verified — load everything
+  await loadOrders();
+  await loadSubscribers();
+  initStockManager();
+  initAnalytics();
+  initCategoryManager();
+  populateCategoryDropdown();
+  await loadPendingSellers();
+});
 
 // ================= CLOUDINARY UPLOAD =================
 async function uploadToCloudinary(file) {
@@ -30,48 +70,13 @@ async function uploadToCloudinary(file) {
   return data.secure_url;
 }
 
-
-// ================= AUTH CHECK =================
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "admin.html";
-    return;
-  }
-
-  const adminEmails = [
-    "rahman@gmail.com",
-    "secondadmin@gmail.com",
-    "thirdadmin@gmail.com"
-  ];
-
-  if (!adminEmails.includes(user.email)) {
-    alert("You are not admin ❌");
-    window.location.href = "index.html";
-    return;
-  }
-
-  console.log("Admin verified ✅");
-
-  await loadOrders();
-  await loadSubscribers();
-  initStockManager();
-  initAnalytics();
-  initCategoryManager();
-  populateCategoryDropdown();
-  await loadPendingSellers();
-});
-
 // ================= CATEGORY MANAGER =================
-// Categories are stored in Firestore under a "categories" collection.
-// Each doc: { name: "Electronics", slug: "electronics", createdAt: Date }
-
 function initCategoryManager() {
   const catForm = document.getElementById("categoryForm");
   const catList = document.getElementById("categoryList");
 
   if (!catForm || !catList) return;
 
-  // Listen for real-time category updates
   onSnapshot(collection(db, "categories"), (snapshot) => {
     catList.innerHTML = "";
 
@@ -93,11 +98,9 @@ function initCategoryManager() {
       catList.appendChild(item);
     });
 
-    // After updating the list, also refresh the dropdown in the product form
     populateCategoryDropdown();
   });
 
-  // Handle add category form submit
   catForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -106,10 +109,9 @@ function initCategoryManager() {
 
     if (!name) return alert("Enter a category name");
 
-    const slug = name.toLowerCase().replace(/\s+/g, "-"); // e.g. "New Arrivals" → "new-arrivals"
+    const slug = name.toLowerCase().replace(/\s+/g, "-");
 
     try {
-      // Use slug as the document ID so it's always unique
       await setDoc(doc(db, "categories", slug), {
         name,
         slug,
@@ -125,7 +127,6 @@ function initCategoryManager() {
   });
 }
 
-
 // ================= DELETE CATEGORY =================
 window.deleteCategory = async (id, slug) => {
   if (!confirm(`Delete category "${slug}"? Products in this category will NOT be deleted but will have no category.`)) return;
@@ -139,9 +140,7 @@ window.deleteCategory = async (id, slug) => {
   }
 };
 
-
 // ================= POPULATE CATEGORY DROPDOWN =================
-// Reads from Firestore "categories" and fills the <select id="category"> in the product form
 async function populateCategoryDropdown() {
   const select = document.getElementById("category");
   if (!select) return;
@@ -149,7 +148,6 @@ async function populateCategoryDropdown() {
   try {
     const snapshot = await getDocs(collection(db, "categories"));
 
-    // Keep any non-option placeholder
     select.innerHTML = `<option value="" disabled selected>-- Select Category --</option>`;
 
     if (snapshot.empty) {
@@ -160,8 +158,8 @@ async function populateCategoryDropdown() {
     snapshot.forEach((docSnap) => {
       const cat = docSnap.data();
       const option = document.createElement("option");
-      option.value = cat.slug;         // stored value e.g. "electronics"
-      option.textContent = cat.name;   // displayed text e.g. "Electronics"
+      option.value = cat.slug;
+      option.textContent = cat.name;
       select.appendChild(option);
     });
 
@@ -170,10 +168,7 @@ async function populateCategoryDropdown() {
   }
 }
 
-
 // ================= ADD PRODUCT =================
-// Replace your existing productForm submit handler in dashboard.js with this
-
 document.addEventListener("DOMContentLoaded", () => {
   const productForm = document.getElementById("productForm");
 
@@ -186,8 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const stock    = document.getElementById("stock")?.value;
       const currency = document.getElementById("currency")?.value;
       const category = document.getElementById("category")?.value?.trim().toLowerCase();
-      const discount = document.getElementById("discount")?.value || 0;   // ✅ NEW
-      const cartLink = document.getElementById("cartLink")?.value?.trim() || "shop.html"; // ✅ NEW
+      const discount = document.getElementById("discount")?.value || 0;
+      const cartLink = document.getElementById("cartLink")?.value?.trim() || "shop.html";
 
       if (!name || !price || !stock || !category) {
         alert("Please fill all fields including category");
@@ -207,7 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         if (category === "promo") {
-          // ✅ Promo products go to "promotions" collection
           await addDoc(collection(db, "promotions"), {
             name,
             price:     Number(price),
@@ -215,16 +209,12 @@ document.addEventListener("DOMContentLoaded", () => {
             currency:  currency || "GHS",
             category,
             imageURL,
-            discount:  Number(discount),  // ✅ NEW: e.g. 20 means 20% off
-            cartLink,                      // ✅ NEW: link for Add to Cart button
+            discount:  Number(discount),
+            cartLink,
             active:    true,
             createdAt: new Date()
           });
-
-          console.log(`✅ Promo product "${name}" saved to promotions collection`);
-
         } else {
-          // ✅ All other products go to "products" collection
           await addDoc(collection(db, "products"), {
             name,
             price:     Number(price),
@@ -234,8 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
             imageURL,
             createdAt: new Date()
           });
-
-          console.log(`✅ Product "${name}" saved to products collection with category: ${category}`);
         }
 
         alert("Product added ✅");
@@ -252,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ================= STOCK MANAGER =================
 function initStockManager() {
-  const lowStockDiv    = document.getElementById("lowStockAlerts");
+  const lowStockDiv     = document.getElementById("lowStockAlerts");
   const stockManagerDiv = document.getElementById("stockManager");
 
   if (!lowStockDiv || !stockManagerDiv) return;
@@ -301,7 +289,6 @@ function initStockManager() {
   });
 }
 
-
 // ================= UPDATE STOCK =================
 window.updateStock = async (id) => {
   const input = document.getElementById(`stock-${id}`);
@@ -314,7 +301,6 @@ window.updateStock = async (id) => {
   alert("Stock updated ✅");
 };
 
-
 // ================= EDIT PRODUCT =================
 window.editProduct = async (id) => {
   try {
@@ -324,8 +310,7 @@ window.editProduct = async (id) => {
 
     const data = snap.data();
 
-    // Load current categories from Firestore for the prompt hint
-    const catSnap = await getDocs(collection(db, "categories"));
+    const catSnap  = await getDocs(collection(db, "categories"));
     const catSlugs = catSnap.docs.map(d => d.data().slug).join(", ");
 
     const newName     = prompt("Edit name:", data.name);
@@ -354,7 +339,6 @@ window.editProduct = async (id) => {
   }
 };
 
-
 // ================= DELETE PRODUCT =================
 window.deleteProduct = async (id) => {
   if (!confirm("Delete this product?")) return;
@@ -362,6 +346,7 @@ window.deleteProduct = async (id) => {
   alert("Deleted 🗑️");
 };
 
+// ================= PENDING SELLERS =================
 async function loadPendingSellers() {
   const q = query(
     collection(db, "users"),
@@ -370,9 +355,8 @@ async function loadPendingSellers() {
   );
 
   const snapshot = await getDocs(q);
-  const list = document.getElementById("pendingSellersList");
+  const list     = document.getElementById("pendingSellersList");
 
-  // ✅ Update button badge count
   const btn = document.querySelector('[data-target="pendingSellersSection"] span:first-child');
   if (btn) btn.innerHTML = `<i class="fas fa-user-clock" style="margin-right:8px;"></i>Pending Seller Approvals ${snapshot.size > 0 ? `<span style="background:#ef4444;color:white;border-radius:10px;padding:2px 8px;font-size:0.8rem;margin-left:6px;">${snapshot.size}</span>` : ""}`;
 
@@ -406,26 +390,22 @@ async function loadPendingSellers() {
   }).join("");
 }
 
-
 // ================= APPROVE / REJECT SELLERS =================
 window.approveSeller = async (uid) => {
   if (!confirm("Approve this seller?")) return;
   try {
-    // Get seller data first
     const snap   = await getDoc(doc(db, "users", uid));
     const seller = snap.data();
 
-    // Update approved status
     await updateDoc(doc(db, "users", uid), { approved: true });
 
-    // ✅ Send approval email via EmailJS
     await emailjs.send(
-      "service_xdxa7ee",    // ← replace with your EmailJS service ID
-      "template_fmymhqn",   // ← replace with your EmailJS template ID
+      "service_xdxa7ee",
+      "template_fmymhqn",
       {
         to_name:       seller.firstName || "Seller",
         to_email:      seller.email,
-        dashboard_url: "https://yoursite.com/seller-dashboard.html" // ← your actual URL
+        dashboard_url: "https://yoursite.com/seller-dashboard.html"
       }
     );
 
@@ -449,7 +429,6 @@ window.rejectSeller = async (uid) => {
     alert("Failed to reject seller ❌");
   }
 };
-
 
 // ================= LOAD ORDERS =================
 async function loadOrders() {
@@ -500,7 +479,6 @@ async function loadOrders() {
   }
 }
 
-
 // ================= LOAD SUBSCRIBERS =================
 async function loadSubscribers() {
   const subscribersTable = document.getElementById("subscribersTable");
@@ -528,18 +506,16 @@ async function loadSubscribers() {
   }
 }
 
-
 // ================= LOGOUT =================
 document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
-      window.location.href = "admin.html";
+      window.location.href = "index.html";
     });
   }
 });
-
 
 // ================= SELECT ALL ORDERS =================
 document.addEventListener("DOMContentLoaded", () => {
@@ -551,7 +527,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
 
 // ================= DELETE SELECTED ORDERS =================
 document.addEventListener("DOMContentLoaded", () => {
@@ -572,9 +547,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
 // ================= ANALYTICS =================
-let revenueChartInstance    = null;
+let revenueChartInstance     = null;
 let topProductsChartInstance = null;
 let orderStatusChartInstance = null;
 
@@ -589,7 +563,6 @@ function initAnalytics() {
   });
 }
 
-// ── SUMMARY CARDS ─────────────────────────────────────────────
 function renderSummaryCards(orders) {
   const container = document.getElementById("analyticsSummary");
   if (!container) return;
@@ -600,10 +573,10 @@ function renderSummaryCards(orders) {
   const pendingOrders = orders.filter(o => o.status !== "Paid").length;
 
   const cards = [
-    { label: "Total Revenue",   value: `₵${totalRevenue.toFixed(2)}`, icon: "fa-coins",         color: "#2e7d32" },
-    { label: "Total Orders",    value: totalOrders,                    icon: "fa-receipt",        color: "#1d4ed8" },
-    { label: "Paid Orders",     value: paidOrders,                     icon: "fa-check-circle",   color: "#059669" },
-    { label: "Pending Orders",  value: pendingOrders,                  icon: "fa-clock",          color: "#f59e0b" },
+    { label: "Total Revenue",  value: `₵${totalRevenue.toFixed(2)}`, icon: "fa-coins",       color: "#2e7d32" },
+    { label: "Total Orders",   value: totalOrders,                    icon: "fa-receipt",      color: "#1d4ed8" },
+    { label: "Paid Orders",    value: paidOrders,                     icon: "fa-check-circle", color: "#059669" },
+    { label: "Pending Orders", value: pendingOrders,                  icon: "fa-clock",        color: "#f59e0b" },
   ];
 
   container.innerHTML = cards.map(c => `
@@ -616,12 +589,10 @@ function renderSummaryCards(orders) {
   `).join("");
 }
 
-// ── REVENUE OVER TIME ─────────────────────────────────────────
 function renderRevenueChart(orders) {
   const canvas = document.getElementById("revenueChart");
   if (!canvas) return;
 
-  // Build last 7 days labels
   const days   = [];
   const totals = {};
 
@@ -638,9 +609,7 @@ function renderRevenueChart(orders) {
     const date = o.createdAt?.toDate?.();
     if (!date) return;
     const key = date.toDateString();
-    if (totals[key] !== undefined) {
-      totals[key] += o.total || 0;
-    }
+    if (totals[key] !== undefined) totals[key] += o.total || 0;
   });
 
   const labels = days.map(d => d.label);
@@ -653,28 +622,25 @@ function renderRevenueChart(orders) {
     data: {
       labels,
       datasets: [{
-        label:           "Revenue (₵)",
+        label:                "Revenue (₵)",
         data,
-        borderColor:     "#2e7d32",
-        backgroundColor: "rgba(46,125,50,0.08)",
-        borderWidth:     2,
-        pointRadius:     4,
+        borderColor:          "#2e7d32",
+        backgroundColor:      "rgba(46,125,50,0.08)",
+        borderWidth:          2,
+        pointRadius:          4,
         pointBackgroundColor: "#2e7d32",
-        fill:            true,
-        tension:         0.4
+        fill:                 true,
+        tension:              0.4
       }]
     },
     options: {
       responsive: true,
       plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { callback: v => `₵${v}` } }
-      }
+      scales: { y: { beginAtZero: true, ticks: { callback: v => `₵${v}` } } }
     }
   });
 }
 
-// ── TOP PRODUCTS ──────────────────────────────────────────────
 function renderTopProductsChart(orders) {
   const canvas = document.getElementById("topProductsChart");
   if (!canvas) return;
@@ -690,10 +656,7 @@ function renderTopProductsChart(orders) {
     });
   });
 
-  const sorted = Object.entries(productRevenue)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5);
-
+  const sorted = Object.entries(productRevenue).sort((a, b) => b[1] - a[1]).slice(0, 5);
   const labels = sorted.map(([name]) => name);
   const data   = sorted.map(([, rev]) => rev);
 
@@ -706,23 +669,18 @@ function renderTopProductsChart(orders) {
       datasets: [{
         label:           "Revenue (₵)",
         data,
-        backgroundColor: [
-          "#2e7d32", "#1d4ed8", "#f59e0b", "#7c3aed", "#059669"
-        ],
-        borderRadius: 6
+        backgroundColor: ["#2e7d32", "#1d4ed8", "#f59e0b", "#7c3aed", "#059669"],
+        borderRadius:    6
       }]
     },
     options: {
       responsive: true,
       plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { callback: v => `₵${v}` } }
-      }
+      scales: { y: { beginAtZero: true, ticks: { callback: v => `₵${v}` } } }
     }
   });
 }
 
-// ── ORDERS BY STATUS ──────────────────────────────────────────
 function renderOrderStatusChart(orders) {
   const canvas = document.getElementById("orderStatusChart");
   if (!canvas) return;
@@ -745,14 +703,12 @@ function renderOrderStatusChart(orders) {
       datasets: [{
         data,
         backgroundColor: ["#2e7d32", "#f59e0b", "#ef4444", "#1d4ed8", "#059669"],
-        borderWidth: 2
+        borderWidth:     2
       }]
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { position: "bottom", labels: { font: { size: 12 } } }
-      }
+      plugins: { legend: { position: "bottom", labels: { font: { size: 12 } } } }
     }
   });
 }
@@ -770,11 +726,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
-
 // ================= LOAD PRODUCTS BY CATEGORY =================
-// Call this on any page that wants to display products filtered by category.
-// Example: loadProductsByCategory("promo", "promoTable")
 export async function loadProductsByCategory(categorySlug, tableId) {
   const table = document.getElementById(tableId);
   if (!table) return;

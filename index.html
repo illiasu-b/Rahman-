@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rahma Farms</title>
-<link rel="stylesheet" href="style.css" />
-  
+  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="search.css" />
   <link rel="stylesheet" href="testimonial.css"/>
   <link rel="stylesheet" href="subscribe.css"/>
@@ -17,70 +16,77 @@
 <body>
 
   <header class="top-navbar">
-  <div class="top-logo">
-    <img src="rahmangrow_logo (3).svg" alt="RahmanGrow Logo">
-  </div>
-
-  <div style="display:flex; align-items:center; gap:16px; margin-left:auto; padding-right:1rem;">
-
-  <!-- Seller Dashboard Icon -->
-  <a id="sellerNavItem" href="seller-dashboard.html"
-    style="display:none; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
-    <i class="fas fa-store-alt"></i>
-    <span style="font-size:0.65rem;">Store</span>
-  </a>
-
-  <!-- Track Order Icon -->
-  <a href="track.html"
-    style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
-    <i class="fas fa-search"></i>
-    <span style="font-size:0.65rem;">Track</span>
-  </a>
-
-  <!-- Profile Icon -->
-  <a href="#" id="profileNavBtn" onclick="openProfileModal(); return false;"
-    style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
-    <i class="fas fa-user-circle"></i>
-    <span style="font-size:0.65rem;" id="profileNavLabel">Profile</span>
-  </a>
-
-</div>
-</header>
-<header>
-  <nav class="navbar">
-
-    <div class="logo">
-      <a href="index.html"></a>
+    <div class="top-logo">
+      <img src="rahmangrow_logo (3).svg" alt="RahmanGrow Logo">
     </div>
 
-    <ul class="nav-links" id="nav-links">
+    <div style="display:flex; align-items:center; gap:16px; margin-left:auto; padding-right:1rem;">
 
-      <li>
-        <a href="shop.html">
-          <i class="fas fa-store"></i>
-          <span>Shop</span>
-        </a>
-      </li>
+      <!-- Seller Dashboard Icon -->
+      <a id="sellerNavItem" href="seller-dashboard.html"
+        style="display:none; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
+        <i class="fas fa-store-alt"></i>
+        <span style="font-size:0.65rem;">Store</span>
+      </a>
 
-      <!-- Wishlist -->
-  <li>
-    <a href="#" onclick="showWishlist(); return false;">
-      <i class="fas fa-heart"></i>
-      <span>Wishlist</span>
-    </a>
-  </li>
-      <!-- Cart Icon -->
-      <li class="cart-item">
-        <a href="order.html" class="cart-link">
-          <i class="fas fa-shopping-cart"></i>
-          <span id="cartBadge">0</span>
-        </a>
-      </li>
+      <!-- Track Order Icon -->
+      <a href="track.html"
+        style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
+        <i class="fas fa-search"></i>
+        <span style="font-size:0.65rem;">Track</span>
+      </a>
 
-    </ul>
+      <!-- Profile Icon -->
+      <a href="#" id="profileNavBtn" onclick="openProfileModal(); return false;"
+        style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
+        <i class="fas fa-user-circle"></i>
+        <span style="font-size:0.65rem;" id="profileNavLabel">Profile</span>
+      </a>
 
-  </nav>
-</header>
+    </div>
+  </header>
+
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <a href="index.html"></a>
+      </div>
+
+      <ul class="nav-links" id="nav-links">
+        <li>
+          <a href="shop.html">
+            <i class="fas fa-store"></i>
+            <span>Shop</span>
+          </a>
+        </li>
+
+        <!-- Wishlist -->
+        <li>
+          <a href="#" onclick="showWishlist(); return false;">
+            <i class="fas fa-heart"></i>
+            <span>Wishlist</span>
+          </a>
+        </li>
+
+        <!-- Cart Icon -->
+        <li class="cart-item">
+          <a href="order.html" class="cart-link">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cartBadge">0</span>
+          </a>
+        </li>
+
+        <!-- Admin Dashboard Icon — hidden by default, shown only for admin -->
+        <li id="adminNavItem" style="display:none;">
+          <a href="dashboard.html">
+            <i class="fas fa-shield-alt"></i>
+            <span>Admin</span>
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+  </header>
 
 <!-- Cart Table -->
 <div id="cartDetails" style="display:none;">
@@ -121,12 +127,9 @@
 
 <!-- ================= TESTIMONIALS ================= -->
 <section class="testimonials-section">
-
   <h2>What Our Customers Say</h2>
-
   <div id="testimonial-form">
     <h3>Rate Our Service</h3>
-
     <div class="star-rating" id="starRating">
       <span data-value="1">★</span>
       <span data-value="2">★</span>
@@ -134,13 +137,10 @@
       <span data-value="4">★</span>
       <span data-value="5">★</span>
     </div>
-
     <input type="text" id="customerName" placeholder="Your Name" />
     <textarea id="customerReview" placeholder="Write your review..."></textarea>
-
     <button id="submitReview">Submit Review</button>
   </div>
-
   <div class="testimonials-container" id="testimonialsContainer"></div>
 </section>
 
@@ -152,7 +152,6 @@
       <p>Learn more about our store and what we do.</p>
     </a>
   </div>
-
   <div class="link-card">
     <a href="contact.html">
       <i class="fas fa-phone fa-2x"></i>
@@ -186,15 +185,9 @@
         <input type="password" id="pLoginPassword" placeholder="••••••••" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
       </div>
       <button id="pLoginBtn" onclick="handleProfileLogin()" data-label="Sign In" style="width:100%; padding:0.85rem; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:0.5rem;">Sign In</button>
-
-      <!-- ✅ Forgot password — inside login form -->
       <p style="text-align:center; margin-top:10px; font-size:0.85rem;">
-        <a href="#" onclick="handleForgotPassword(); return false;"
-          style="color:#2e7d32; text-decoration:none;">
-          Forgot password?
-        </a>
+        <a href="#" onclick="handleForgotPassword(); return false;" style="color:#2e7d32; text-decoration:none;">Forgot password?</a>
       </p>
-
       <div id="pLoginMsg" style="display:none;"></div>
     </div>
 
@@ -225,14 +218,11 @@
           <input type="password" id="pRegConfirm" placeholder="••••••••" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
         </div>
       </div>
-
       <button id="pRegBtn" onclick="handleProfileRegister()" data-label="Create Account" style="width:100%; padding:0.85rem; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer;">Create Account</button>
       <div id="pRegMsg" style="display:none;"></div>
-
       <p style="text-align:center; margin-top:12px; font-size:0.82rem; color:#888;">
         Want to sell on our platform?
-        <button id="sellerRegBtn"
-          style="background:none; border:none; color:#2e7d32; cursor:pointer; font-size:0.82rem; font-weight:600; padding:0; text-decoration:underline;">
+        <button id="sellerRegBtn" style="background:none; border:none; color:#2e7d32; cursor:pointer; font-size:0.82rem; font-weight:600; padding:0; text-decoration:underline;">
           Register as Seller
         </button>
       </p>
@@ -260,25 +250,19 @@
 
       <!-- Hidden Admin Trigger -->
       <div style="margin-bottom: 0.8rem;">
-        <span id="adminTrigger"
-          style="display:inline-block; font-size:0.78rem; color:#ccc; cursor:pointer; user-select:none;">
+        <span id="adminTrigger" style="display:inline-block; font-size:0.78rem; color:#ccc; cursor:pointer; user-select:none;">
           <i class="fas fa-cog"></i> Account Settings
         </span>
-
-        <div id="adminLoginPanel" style="display:none; margin-top:10px; padding:14px;
-          background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; text-align:left;">
+        <div id="adminLoginPanel" style="display:none; margin-top:10px; padding:14px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:10px; text-align:left;">
           <p style="font-size:12px; font-weight:600; color:#6b7280; margin-bottom:10px;">
             <i class="fas fa-lock" style="margin-right:5px;"></i>Admin Access
           </p>
           <input type="email" id="adminEmailInput" placeholder="Admin email"
-            style="width:100%; padding:8px 10px; margin-bottom:7px; border:1px solid #d1d5db;
-            border-radius:7px; font-size:13px; outline:none; box-sizing:border-box;" />
+            style="width:100%; padding:8px 10px; margin-bottom:7px; border:1px solid #d1d5db; border-radius:7px; font-size:13px; outline:none; box-sizing:border-box;" />
           <input type="password" id="adminPassInput" placeholder="Password"
-            style="width:100%; padding:8px 10px; margin-bottom:7px; border:1px solid #d1d5db;
-            border-radius:7px; font-size:13px; outline:none; box-sizing:border-box;" />
+            style="width:100%; padding:8px 10px; margin-bottom:7px; border:1px solid #d1d5db; border-radius:7px; font-size:13px; outline:none; box-sizing:border-box;" />
           <button id="adminLoginBtn"
-            style="width:100%; padding:8px; background:#1d4ed8; color:#fff; border:none;
-            border-radius:7px; font-size:13px; font-weight:600; cursor:pointer;">
+            style="width:100%; padding:8px; background:#1d4ed8; color:#fff; border:none; border-radius:7px; font-size:13px; font-weight:600; cursor:pointer;">
             Login as Admin
           </button>
           <p id="adminError" style="display:none; color:#dc2626; font-size:12px; margin-top:6px;"></p>
@@ -289,21 +273,18 @@
     </div>
 
     <button onclick="showOrderHistory()"
-  style="width:100%; padding:0.75rem; background:#2e7d32; color:#fff;
-         border:none; border-radius:8px; font-size:0.95rem; font-weight:600;
-         cursor:pointer; margin-bottom:0.6rem;">
-  <i class="fas fa-history"></i> My Orders
-</button>
+      style="width:100%; padding:0.75rem; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-size:0.95rem; font-weight:600; cursor:pointer; margin-bottom:0.6rem;">
+      <i class="fas fa-history"></i> My Orders
+    </button>
 
-<!-- Order History Section -->
-<div id="orderHistorySection" style="display:none; text-align:left; margin-top:1rem;">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-    <h4 style="margin:0; font-size:1rem;">Order History</h4>
-    <a href="#" onclick="hideOrderHistory(); return false;"
-      style="color:#888; font-size:0.85rem; text-decoration:none;">← Back</a>
-  </div>
-  <div id="orderHistoryList"></div>
-</div>
+    <!-- Order History Section -->
+    <div id="orderHistorySection" style="display:none; text-align:left; margin-top:1rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h4 style="margin:0; font-size:1rem;">Order History</h4>
+        <a href="#" onclick="hideOrderHistory(); return false;" style="color:#888; font-size:0.85rem; text-decoration:none;">← Back</a>
+      </div>
+      <div id="orderHistoryList"></div>
+    </div>
 
   </div>
 </div>
@@ -319,15 +300,20 @@
 <script type="module" src="profile.js"></script>
 <script type="module" src="wishlist.js"></script>
 
+<!-- ================= ADMIN LOGIN + NAV ICON ================= -->
 <script type="module">
-  import { auth } from "./firebase.js";
+  import { auth, db } from "./firebase.js";
   import {
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+  import {
+    doc,
+    getDoc
+  } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-  const ADMIN_EMAIL    = "rahman@gmail.com";
-  const REQUIRED_TAPS  = 5;
-  const TAP_WINDOW_MS  = 3000;
+  const REQUIRED_TAPS = 5;
+  const TAP_WINDOW_MS = 3000;
 
   let tapCount = 0;
   let tapTimer = null;
@@ -339,6 +325,29 @@
   const loginBtn   = document.getElementById("adminLoginBtn");
   const errorMsg   = document.getElementById("adminError");
 
+  // ── Show/hide admin nav icon based on login state ──────────
+  onAuthStateChanged(auth, async (user) => {
+    const adminNavItem = document.getElementById("adminNavItem");
+    if (!adminNavItem) return;
+
+    if (!user) {
+      adminNavItem.style.display = "none";
+      return;
+    }
+
+    try {
+      const userSnap = await getDoc(doc(db, "users", user.uid));
+      if (userSnap.exists() && userSnap.data().role === "admin") {
+        adminNavItem.style.display = "flex";
+      } else {
+        adminNavItem.style.display = "none";
+      }
+    } catch {
+      adminNavItem.style.display = "none";
+    }
+  });
+
+  // ── Secret tap to reveal admin panel ───────────────────────
   trigger.addEventListener("click", () => {
     tapCount++;
     clearTimeout(tapTimer);
@@ -354,6 +363,7 @@
     }
   });
 
+  // ── Admin login button ──────────────────────────────────────
   loginBtn.addEventListener("click", async () => {
     const email = emailInput.value.trim();
     const pass  = passInput.value;
@@ -370,18 +380,20 @@
     loginBtn.disabled    = true;
 
     try {
-      const result = await signInWithEmailAndPassword(auth, email, pass);
+      const result   = await signInWithEmailAndPassword(auth, email, pass);
+      const userSnap = await getDoc(doc(db, "users", result.user.uid));
+      const userData = userSnap.exists() ? userSnap.data() : {};
 
-      if (result.user.email !== ADMIN_EMAIL) {
+      if (userData.role === "admin") {
+        window.location.href = "dashboard.html";
+      } else {
+        // Not an admin — sign them out and show error
         await auth.signOut();
         errorMsg.textContent   = "Not an admin account.";
         errorMsg.style.display = "block";
         loginBtn.textContent   = "Login as Admin";
         loginBtn.disabled      = false;
-        return;
       }
-
-      window.location.href = "dashboard.html";
 
     } catch (err) {
       const msg =
