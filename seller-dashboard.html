@@ -32,88 +32,35 @@
     }
 
     /* ── TOP BAR WRAP ── */
-    .top-bar-wrap {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 300;
-    }
-
-    .top-navbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 8px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .top-logo img {
-      width: 60px;
-      height: auto;
-      display: block;
-    }
-
-    .top-nav a {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
+    .top-bar-wrap { position: fixed; top: 0; left: 0; right: 0; z-index: 300; }
+    .top-navbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .top-logo img { width: 60px; height: auto; display: block; }
+    .top-nav a { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
     .top-nav a:hover { color: var(--accent); }
-    .top-nav a i     { font-size: 1rem; }
-    .top-nav a span  { font-size: 0.65rem; }
+    .top-nav a i    { font-size: 1rem; }
+    .top-nav a span { font-size: 0.65rem; }
 
     /* ── SIDEBAR ── */
-    /* top & height set dynamically by fixLayout() */
-    .sidebar {
-      position: fixed;
-      left: 0;
-      width: 240px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      z-index: 100;
-      transition: transform 0.3s ease;
-    }
-
+    .sidebar { position: fixed; left: 0; width: 240px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; transition: transform 0.3s ease; }
     .sidebar-logo { padding: 28px 24px 20px; border-bottom: 1px solid var(--border); }
     .sidebar-logo span { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: -0.5px; color: var(--accent); }
     .sidebar-logo small { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 2px; letter-spacing: 0.5px; text-transform: uppercase; }
-
     .seller-info { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
     .seller-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: #000; flex-shrink: 0; overflow: hidden; }
     .seller-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
     .seller-meta strong { display: block; font-size: 0.9rem; font-weight: 600; color: var(--text); }
     .seller-meta span { font-size: 0.75rem; color: var(--accent); background: rgba(240,180,41,0.12); padding: 2px 8px; border-radius: 20px; display: inline-block; margin-top: 3px; }
-
     .nav-links { flex: 1; padding: 16px 0; overflow-y: auto; }
     .nav-links a { display: flex; align-items: center; gap: 12px; padding: 11px 24px; color: var(--muted); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: all 0.2s; border-left: 3px solid transparent; cursor: pointer; position: relative; }
     .nav-links a:hover, .nav-links a.active { color: var(--text); background: rgba(255,255,255,0.04); border-left-color: var(--accent); }
     .nav-links a i { width: 18px; text-align: center; font-size: 0.9rem; }
-
-    #pendingOrdersBadge {
-      display: none; align-items: center; justify-content: center;
-      background: var(--danger); color: #fff;
-      font-size: 0.65rem; font-weight: 700;
-      width: 18px; height: 18px; border-radius: 50%;
-      margin-left: auto;
-    }
-
+    #pendingOrdersBadge { display: none; align-items: center; justify-content: center; background: var(--danger); color: #fff; font-size: 0.65rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; margin-left: auto; }
     .sidebar-logout { padding: 16px 24px; border-top: 1px solid var(--border); }
     .btn-logout { width: 100%; padding: 10px; background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 500; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
     .btn-logout:hover { background: rgba(239,68,68,0.2); }
 
     /* ── MAIN ── */
-    /* margin-left: 240px always; padding-top set by fixLayout() */
     .main { margin-left: 240px; min-height: 100vh; }
-
     .topbar { position: sticky; top: 0; background: rgba(13,15,20,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; z-index: 50; }
     .topbar h1 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.3px; }
     .topbar-right { display: flex; align-items: center; gap: 12px; }
@@ -262,6 +209,59 @@
     .rev-stat-sub { font-size: 0.7rem; color: var(--muted); margin-top: 3px; }
     .rev-bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
+    /* ── PERFORMANCE ── */
+    .perf-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .perf-stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; transition: transform 0.2s, border-color 0.2s; }
+    .perf-stat:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .perf-stat i { font-size: 1.2rem; }
+    .perf-stat-val { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+    .perf-stat-lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .perf-tip { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 8px; font-size: 0.84rem; line-height: 1.4; }
+    .perf-tip i { margin-top: 2px; flex-shrink: 0; }
+    .perf-tip-success { background: rgba(34,197,94,0.08);  color: #22c55e; border: 1px solid rgba(34,197,94,0.2);  }
+    .perf-tip-warn    { background: rgba(245,158,11,0.08); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+    .perf-tip-danger  { background: rgba(239,68,68,0.08);  color: #ef4444; border: 1px solid rgba(239,68,68,0.2);  }
+    .perf-tip-info    { background: rgba(79,142,247,0.08); color: #4f8ef7; border: 1px solid rgba(79,142,247,0.2); }
+    .perf-sort-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 0.78rem; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; text-transform: capitalize; }
+    .perf-sort-btn:hover  { border-color: var(--accent); color: var(--accent); }
+    .perf-sort-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+    /* ── BULK PRODUCT MANAGEMENT ── */
+    .bulk-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .bulk-search { flex: 1; min-width: 180px; padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.88rem; font-family: 'DM Sans', sans-serif; }
+    .bulk-search:focus { outline: none; border-color: var(--accent); }
+    .bulk-select { padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.88rem; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+    .bulk-count-bar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: rgba(240,180,41,0.08); border: 1px solid rgba(240,180,41,0.2); border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem; color: var(--accent); }
+    .bulk-count-bar strong { font-family: 'Syne', sans-serif; }
+    #bulkActions { display: none; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+    .bulk-action-btn { padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.82rem; font-weight: 600; font-family: 'DM Sans', sans-serif; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    .bulk-action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .bulk-btn-edit   { background: var(--accent); color: #000; }
+    .bulk-btn-edit:hover:not(:disabled) { background: #e0a520; }
+    .bulk-btn-export { background: rgba(79,142,247,0.12); color: #4f8ef7; border: 1px solid rgba(79,142,247,0.2); }
+    .bulk-btn-export:hover:not(:disabled) { background: rgba(79,142,247,0.22); }
+    .bulk-btn-delete { background: rgba(239,68,68,0.12); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+    .bulk-btn-delete:hover:not(:disabled) { background: rgba(239,68,68,0.22); }
+    .bulk-btn-refresh { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid var(--border); }
+    .bulk-btn-refresh:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+    .bulk-row-selected { background: rgba(240,180,41,0.05) !important; }
+    .bulk-row-selected:hover { background: rgba(240,180,41,0.08) !important; }
+    #bulkMsg { display: none; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin-top: 12px; }
+
+    /* Bulk Edit Modal */
+    #bulkEditModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 300; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    #bulkEditModal.open { display: flex; }
+    .bulk-modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; animation: fadeIn 0.25s ease; }
+    .bulk-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .bulk-modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); }
+    .bulk-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .bulk-field-row label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+    .bulk-field-row input, .bulk-field-row select { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.88rem; font-family: 'DM Sans', sans-serif; }
+    .bulk-field-full { margin-bottom: 14px; }
+    .bulk-field-full label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+    .bulk-field-full input { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 0.88rem; font-family: 'DM Sans', sans-serif; }
+    .bulk-hint { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .sidebar { transform: translateX(-100%); }
@@ -273,17 +273,313 @@
       .form-grid { grid-template-columns: 1fr; }
       .rev-stats { grid-template-columns: 1fr 1fr; }
       .rev-bottom-grid { grid-template-columns: 1fr; }
+      .perf-stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .bulk-toolbar { flex-direction: column; align-items: stretch; }
+      #bulkActions { margin-left: 0; width: 100%; }
     }
     @media (max-width: 560px) {
       .stats-row { grid-template-columns: 1fr; }
       .order-stats { grid-template-columns: 1fr 1fr; }
       .rev-stats { grid-template-columns: 1fr; }
+      .perf-stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .bulk-field-row { grid-template-columns: 1fr; }
       .content { padding: 16px; }
       .topbar { padding: 14px 16px; }
     }
+    
+
+/* ── BULK TOOLBAR ── */
+.bulk-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.bulk-search {
+  flex: 1;
+  min-width: 180px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #2a2f3f);
+  background: var(--surface, #161920);
+  color: var(--text, #eef0f6);
+  font-size: 0.88rem;
+  font-family: 'DM Sans', Arial, sans-serif;
+}
+
+.bulk-search:focus { outline: none; border-color: var(--accent, #f0b429); }
+
+.bulk-select {
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #2a2f3f);
+  background: var(--surface, #161920);
+  color: var(--text, #eef0f6);
+  font-size: 0.88rem;
+  font-family: 'DM Sans', Arial, sans-serif;
+  cursor: pointer;
+}
+
+/* ── SELECTION COUNT BAR ── */
+.bulk-count-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(240,180,41,0.08);
+  border: 1px solid rgba(240,180,41,0.2);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: var(--accent, #f0b429);
+}
+
+.bulk-count-bar strong { font-family: 'Syne', sans-serif; }
+
+/* ── BULK ACTION BUTTONS ── */
+#bulkActions {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.bulk-action-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: 'DM Sans', Arial, sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.bulk-action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.bulk-btn-edit   { background: var(--accent, #f0b429); color: #000; }
+.bulk-btn-edit:hover:not(:disabled) { background: #e0a520; }
+
+.bulk-btn-export { background: rgba(79,142,247,0.12); color: #4f8ef7; border: 1px solid rgba(79,142,247,0.2); }
+.bulk-btn-export:hover:not(:disabled) { background: rgba(79,142,247,0.22); }
+
+.bulk-btn-delete { background: rgba(239,68,68,0.12); color: var(--danger, #ef4444); border: 1px solid rgba(239,68,68,0.2); }
+.bulk-btn-delete:hover:not(:disabled) { background: rgba(239,68,68,0.22); }
+
+.bulk-btn-refresh { background: rgba(255,255,255,0.06); color: var(--muted, #6b7280); border: 1px solid var(--border, #2a2f3f); }
+.bulk-btn-refresh:hover { background: rgba(255,255,255,0.1); color: var(--text, #eef0f6); }
+
+/* ── SELECTED ROW ── */
+.bulk-row-selected { background: rgba(240,180,41,0.05) !important; }
+.bulk-row-selected:hover { background: rgba(240,180,41,0.08) !important; }
+
+/* ── BULK EDIT MODAL ── */
+#bulkEditModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+#bulkEditModal.open { display: flex; }
+
+.bulk-modal {
+  background: var(--card, #1c2030);
+  border: 1px solid var(--border, #2a2f3f);
+  border-radius: 16px;
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fadeIn 0.25s ease;
+}
+
+.bulk-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.bulk-modal-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text, #eef0f6);
+}
+
+.bulk-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.bulk-field-row label {
+  font-size: 0.75rem;
+  color: var(--muted, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.bulk-field-row input,
+.bulk-field-row select {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #2a2f3f);
+  background: var(--surface, #161920);
+  color: var(--text, #eef0f6);
+  font-size: 0.88rem;
+  font-family: 'DM Sans', Arial, sans-serif;
+}
+
+.bulk-field-full {
+  margin-bottom: 14px;
+}
+
+.bulk-field-full label {
+  font-size: 0.75rem;
+  color: var(--muted, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.bulk-field-full input,
+.bulk-field-full select {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #2a2f3f);
+  background: var(--surface, #161920);
+  color: var(--text, #eef0f6);
+  font-size: 0.88rem;
+  font-family: 'DM Sans', Arial, sans-serif;
+}
+
+.bulk-hint {
+  font-size: 0.72rem;
+  color: var(--muted, #6b7280);
+  margin-top: 4px;
+}
+
+/* ── MSG ── */
+#bulkMsg {
+  display: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+/* ── ADMIN LIGHT THEME OVERRIDES ── */
+.admin-bulk .bulk-search,
+.admin-bulk .bulk-select {
+  background: #fff;
+  border-color: #ddd;
+  color: #111;
+}
+
+.admin-bulk .bulk-modal { background: #fff; border-color: #ddd; }
+.admin-bulk .bulk-modal-title { color: #111; }
+.admin-bulk .bulk-field-row input,
+.admin-bulk .bulk-field-row select,
+.admin-bulk .bulk-field-full input,
+.admin-bulk .bulk-field-full select { background: #f9fafb; border-color: #ddd; color: #111; }
+.admin-bulk .bulk-field-row label,
+.admin-bulk .bulk-field-full label { color: #6b7280; }
+.admin-bulk .bulk-count-bar { background: rgba(46,125,50,0.08); border-color: rgba(46,125,50,0.2); color: #2e7d32; }
+.admin-bulk .bulk-btn-edit { background: #2e7d32; color: #fff; }
+.admin-bulk .bulk-btn-edit:hover { background: #1b5e20; }
+.admin-bulk .bulk-row-selected { background: rgba(46,125,50,0.05) !important; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .bulk-toolbar { flex-direction: column; align-items: stretch; }
+  #bulkActions { margin-left: 0; width: 100%; }
+  .bulk-field-row { grid-template-columns: 1fr; }
+}
   </style>
 </head>
 <body>
+
+<!-- ── BULK EDIT MODAL ── -->
+<div id="bulkEditModal">
+  <div class="bulk-modal">
+    <div class="bulk-modal-header">
+      <span class="bulk-modal-title">
+        <i class="fas fa-pen" style="color:var(--accent);margin-right:8px;"></i>
+        Bulk Edit <span id="beCount"></span> Products
+      </span>
+      <button onclick="closeBulkEditModal()"
+        style="width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:20px;">
+      Only filled fields will be updated. Leave blank to keep existing values.
+    </p>
+    <div class="bulk-field-row">
+      <div>
+        <label>Price Action</label>
+        <select id="bePriceAction">
+          <option value="set">Set to exact value</option>
+          <option value="increase">Increase by amount</option>
+          <option value="decrease">Decrease by amount</option>
+          <option value="percent">Increase by %</option>
+        </select>
+      </div>
+      <div>
+        <label>Price Value</label>
+        <input type="number" id="bePrice" placeholder="Leave blank to skip" min="0" step="0.01">
+      </div>
+    </div>
+    <p class="bulk-hint" style="margin-bottom:14px;">e.g. "Increase by amount" + 5 → adds GHS 5 to each price</p>
+    <div class="bulk-field-row">
+      <div>
+        <label>Stock Action</label>
+        <select id="beStockAction">
+          <option value="set">Set to exact value</option>
+          <option value="add">Add to stock</option>
+          <option value="subtract">Subtract from stock</option>
+        </select>
+      </div>
+      <div>
+        <label>Stock Value</label>
+        <input type="number" id="beStock" placeholder="Leave blank to skip" min="0">
+      </div>
+    </div>
+    <div class="bulk-field-full">
+      <label>Category (replaces existing)</label>
+      <input type="text" id="beCategory" placeholder="Leave blank to skip — e.g. electronics">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">
+      <button onclick="closeBulkEditModal()"
+        style="padding:9px 18px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:0.88rem;font-family:'DM Sans',sans-serif;">
+        Cancel
+      </button>
+      <button id="beApplyBtn" onclick="applyBulkEdit()"
+        style="padding:9px 18px;border-radius:8px;border:none;background:var(--accent);color:#000;cursor:pointer;font-size:0.88rem;font-weight:600;font-family:'DM Sans',sans-serif;display:inline-flex;align-items:center;gap:6px;">
+        <i class="fas fa-check"></i> Apply Changes
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- ── FIXED TOP BAR ── -->
 <div class="top-bar-wrap" id="topBarWrap">
@@ -331,18 +627,9 @@
       </div>
     </div>
     <div class="form-grid">
-      <div class="form-group">
-        <label>Product Name</label>
-        <input type="text" id="editName" placeholder="Product name">
-      </div>
-      <div class="form-group">
-        <label>Price</label>
-        <input type="number" id="editPrice" placeholder="0.00">
-      </div>
-      <div class="form-group">
-        <label>Stock</label>
-        <input type="number" id="editStock" placeholder="0">
-      </div>
+      <div class="form-group"><label>Product Name</label><input type="text" id="editName" placeholder="Product name"></div>
+      <div class="form-group"><label>Price</label><input type="number" id="editPrice" placeholder="0.00"></div>
+      <div class="form-group"><label>Stock</label><input type="number" id="editStock" placeholder="0"></div>
       <div class="form-group">
         <label>Currency</label>
         <select id="editCurrency">
@@ -351,10 +638,7 @@
           <option value="EUR">EUR (€)</option>
         </select>
       </div>
-      <div class="form-group full">
-        <label>Category</label>
-        <input type="text" id="editCategory" placeholder="e.g. electronics">
-      </div>
+      <div class="form-group full"><label>Category</label><input type="text" id="editCategory" placeholder="e.g. electronics"></div>
     </div>
     <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">
       <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
@@ -404,6 +688,12 @@
     </a>
     <a onclick="showPanel('revenue')" id="nav-revenue">
       <i class="fas fa-chart-line"></i> Revenue
+    </a>
+    <a onclick="showPanel('performance')" id="nav-performance">
+      <i class="fas fa-trophy"></i> Performance
+    </a>
+    <a onclick="showPanel('bulk')" id="nav-bulk">
+      <i class="fas fa-layer-group"></i> Bulk Products
     </a>
     <a onclick="showPanel('profile')" id="nav-profile">
       <i class="fas fa-user-circle"></i> My Profile
@@ -496,10 +786,7 @@
               <label>Product Name</label>
               <input type="text" id="sName" placeholder="e.g. Wireless Earbuds Pro" required>
             </div>
-            <div class="form-group">
-              <label>Price</label>
-              <input type="number" id="sPrice" placeholder="0.00" min="0" step="0.01" required>
-            </div>
+            <div class="form-group"><label>Price</label><input type="number" id="sPrice" placeholder="0.00" min="0" step="0.01" required></div>
             <div class="form-group">
               <label>Currency</label>
               <select id="sCurrency">
@@ -508,10 +795,7 @@
                 <option value="EUR">EUR (€)</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Stock Quantity</label>
-              <input type="number" id="sStock" placeholder="0" min="0" required>
-            </div>
+            <div class="form-group"><label>Stock Quantity</label><input type="number" id="sStock" placeholder="0" min="0" required></div>
             <div class="form-group">
               <label>Category</label>
               <select id="sCategory" required>
@@ -566,26 +850,11 @@
     <!-- ── ORDERS PANEL ── -->
     <div class="panel" id="panel-orders">
       <div class="order-stats">
-        <div class="order-stat">
-          <div class="label">Total Orders</div>
-          <div class="value" id="oStatTotal" style="color:var(--text);">—</div>
-        </div>
-        <div class="order-stat">
-          <div class="label">Pending</div>
-          <div class="value" id="oStatPending" style="color:var(--accent);">—</div>
-        </div>
-        <div class="order-stat">
-          <div class="label">Shipped</div>
-          <div class="value" id="oStatShipped" style="color:var(--blue);">—</div>
-        </div>
-        <div class="order-stat">
-          <div class="label">Delivered</div>
-          <div class="value" id="oStatDelivered" style="color:var(--success);">—</div>
-        </div>
-        <div class="order-stat">
-          <div class="label">Cancelled</div>
-          <div class="value" id="oStatCancelled" style="color:var(--danger);">—</div>
-        </div>
+        <div class="order-stat"><div class="label">Total Orders</div><div class="value" id="oStatTotal" style="color:var(--text);">—</div></div>
+        <div class="order-stat"><div class="label">Pending</div><div class="value" id="oStatPending" style="color:var(--accent);">—</div></div>
+        <div class="order-stat"><div class="label">Shipped</div><div class="value" id="oStatShipped" style="color:var(--blue);">—</div></div>
+        <div class="order-stat"><div class="label">Delivered</div><div class="value" id="oStatDelivered" style="color:var(--success);">—</div></div>
+        <div class="order-stat"><div class="label">Cancelled</div><div class="value" id="oStatCancelled" style="color:var(--danger);">—</div></div>
       </div>
       <div class="order-tabs">
         <button class="order-tab active" data-status="all"       onclick="filterOrders('all')">       <i class="fas fa-list"></i> All</button>
@@ -598,10 +867,7 @@
         <div class="table-wrap">
           <table>
             <thead>
-              <tr>
-                <th>Order ID</th><th>Customer</th><th>Items</th>
-                <th>Total</th><th>Status</th><th>Date</th><th>Action</th>
-              </tr>
+              <tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Action</th></tr>
             </thead>
             <tbody id="ordersTableBody">
               <tr><td colspan="7"><div class="empty-state"><i class="fas fa-shopping-bag"></i><p>No orders yet</p></div></td></tr>
@@ -623,35 +889,19 @@
       <div class="rev-stats">
         <div class="rev-stat-card">
           <div class="rev-stat-icon" style="background:rgba(240,180,41,0.12);color:var(--accent);"><i class="fas fa-coins"></i></div>
-          <div>
-            <div class="rev-stat-label">Total Revenue</div>
-            <div class="rev-stat-value" id="revTotalSales">—</div>
-            <div class="rev-stat-sub">From delivered orders</div>
-          </div>
+          <div><div class="rev-stat-label">Total Revenue</div><div class="rev-stat-value" id="revTotalSales">—</div><div class="rev-stat-sub">From delivered orders</div></div>
         </div>
         <div class="rev-stat-card">
           <div class="rev-stat-icon" style="background:rgba(79,142,247,0.12);color:#4f8ef7;"><i class="fas fa-shopping-bag"></i></div>
-          <div>
-            <div class="rev-stat-label">Total Orders</div>
-            <div class="rev-stat-value" id="revOrderCount">—</div>
-            <div class="rev-stat-sub">All statuses</div>
-          </div>
+          <div><div class="rev-stat-label">Total Orders</div><div class="rev-stat-value" id="revOrderCount">—</div><div class="rev-stat-sub">All statuses</div></div>
         </div>
         <div class="rev-stat-card">
           <div class="rev-stat-icon" style="background:rgba(34,197,94,0.12);color:var(--success);"><i class="fas fa-chart-bar"></i></div>
-          <div>
-            <div class="rev-stat-label">Avg Order Value</div>
-            <div class="rev-stat-value" id="revAvgOrder">—</div>
-            <div class="rev-stat-sub">Per delivered order</div>
-          </div>
+          <div><div class="rev-stat-label">Avg Order Value</div><div class="rev-stat-value" id="revAvgOrder">—</div><div class="rev-stat-sub">Per delivered order</div></div>
         </div>
         <div class="rev-stat-card">
           <div class="rev-stat-icon" style="background:rgba(239,68,68,0.12);color:var(--danger);"><i class="fas fa-clock"></i></div>
-          <div>
-            <div class="rev-stat-label">Pending Revenue</div>
-            <div class="rev-stat-value" id="revPending">—</div>
-            <div class="rev-stat-sub">Awaiting delivery</div>
-          </div>
+          <div><div class="rev-stat-label">Pending Revenue</div><div class="rev-stat-value" id="revPending">—</div><div class="rev-stat-sub">Awaiting delivery</div></div>
         </div>
       </div>
       <div class="card" style="margin-bottom:24px;">
@@ -666,9 +916,7 @@
           <div class="table-wrap">
             <table>
               <thead><tr><th>Product</th><th style="text-align:center;">Qty Sold</th><th style="text-align:right;">Revenue</th></tr></thead>
-              <tbody id="revTopProductsBody">
-                <tr><td colspan="3"><div class="empty-state"><i class="fas fa-box-open"></i><p>No data</p></div></td></tr>
-              </tbody>
+              <tbody id="revTopProductsBody"><tr><td colspan="3"><div class="empty-state"><i class="fas fa-box-open"></i><p>No data</p></div></td></tr></tbody>
             </table>
           </div>
         </div>
@@ -677,14 +925,74 @@
           <div class="table-wrap">
             <table>
               <thead><tr><th>Seller</th><th style="text-align:center;">Orders</th><th style="text-align:right;">Revenue</th></tr></thead>
-              <tbody id="revTopSellersBody">
-                <tr><td colspan="3"><div class="empty-state"><i class="fas fa-users"></i><p>No data</p></div></td></tr>
-              </tbody>
+              <tbody id="revTopSellersBody"><tr><td colspan="3"><div class="empty-state"><i class="fas fa-users"></i><p>No data</p></div></td></tr></tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- ── PERFORMANCE PANEL ── -->
+    <div class="panel" id="panel-performance">
+      <div id="perfScorecardWrap">
+        <div class="empty-state">
+          <i class="fas fa-chart-bar"></i>
+          <p>Loading your performance data…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BULK PRODUCTS PANEL ── -->
+    <div class="panel" id="panel-bulk">
+
+      <!-- Toolbar -->
+      <div class="bulk-toolbar">
+        <input class="bulk-search" type="text" placeholder="Search by name, category…"
+          oninput="bulkSearch(this.value)">
+        <select class="bulk-select" id="bulkCatFilter" onchange="bulkFilterCat(this.value)">
+          <option value="">All Categories</option>
+        </select>
+        <button class="bulk-action-btn bulk-btn-refresh" onclick="bulkRefresh()">
+          <i class="fas fa-rotate-right"></i> Refresh
+        </button>
+        <div id="bulkActions">
+          <button class="bulk-action-btn bulk-btn-edit"
+            onclick="openBulkEditModal(); document.getElementById('beCount').textContent = '(' + document.getElementById('bulkSelectedCount').textContent + ')'">
+            <i class="fas fa-pen"></i> Edit Selected
+          </button>
+          <button class="bulk-action-btn bulk-btn-export" onclick="bulkExport()">
+            <i class="fas fa-file-csv"></i> Export CSV
+          </button>
+          <button class="bulk-action-btn bulk-btn-delete" id="bulkDeleteBtn" onclick="bulkDelete()">
+            <i class="fas fa-trash"></i> Delete Selected
+          </button>
+        </div>
+      </div>
+
+      <!-- Selection count bar -->
+      <div class="bulk-count-bar">
+        <i class="fas fa-check-square"></i>
+        <span><strong id="bulkSelectedCount">0</strong> product(s) selected</span>
+        <button onclick="bulkToggleAll(false)"
+          style="margin-left:auto;background:none;border:none;color:inherit;cursor:pointer;font-size:0.8rem;text-decoration:underline;">
+          Clear selection
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div id="bulkTableWrap">
+          <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <p>Loading products…</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div id="bulkMsg"></div>
+
+    </div><!-- /panel-bulk -->
 
     <!-- ── PROFILE PANEL ── -->
     <div class="panel" id="panel-profile">
@@ -723,7 +1031,7 @@
 <script type="module" src="profile.js"></script>
 <script type="module" src="seller.js"></script>
 
-<!-- ── LAYOUT FIX — runs after DOM is ready ── -->
+<!-- ── LAYOUT FIX ── -->
 <script>
   function fixLayout() {
     const wrap    = document.getElementById('topBarWrap');
@@ -731,8 +1039,8 @@
     const main    = document.getElementById('mainContent');
     if (!wrap || !sidebar || !main) return;
     const h = wrap.offsetHeight;
-    sidebar.style.top    = h + 'px';
-    sidebar.style.height = 'calc(100vh - ' + h + 'px)';
+    sidebar.style.top     = h + 'px';
+    sidebar.style.height  = 'calc(100vh - ' + h + 'px)';
     main.style.paddingTop = h + 'px';
   }
   document.addEventListener('DOMContentLoaded', fixLayout);

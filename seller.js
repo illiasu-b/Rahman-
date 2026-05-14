@@ -1,6 +1,8 @@
 
 import { auth, db } from "./firebase.js";
 import { initRevenue } from "./revenue.js";
+import { initPerformance } from "./performance.js";
+import { initBulkProducts } from "./bulk.js";
 
 import {
   onAuthStateChanged,
@@ -100,6 +102,8 @@ onAuthStateChanged(auth, async (user) => {
     if (userData.approved !== true) { alert("Your seller account is pending admin approval. ⏳"); await signOut(auth); window.location.href = "index.html"; return; }
 
     currentSeller = { uid: user.uid, ...userData };
+    initPerformance({ role: "seller", sellerUid: user.uid, sellerData: userData });
+    initBulkProducts({ role: "seller", sellerUid: user.uid });
 
     const firstName = userData.firstName || user.email.split("@")[0];
     const lastName  = userData.lastName  || "";
@@ -713,7 +717,8 @@ document.getElementById("sellerLogoutBtn").addEventListener("click", async () =>
 
 // ── PANEL SWITCHING ───────────────────────────────────────────────────────────
 const panelTitles = { overview: "Overview", products: "My Products", add: "Add Product", orders: "Orders",
-  revenue: "Revenue", profile: "My Profile" };
+  revenue: "Revenue", performance: "My performance",
+  bulk: "Bulk Products", profile: "My Profile"};
 
 window.showPanel = (name) => {
   document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
