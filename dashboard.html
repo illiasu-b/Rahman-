@@ -75,6 +75,103 @@
       max-width: 1100px;
       margin: 0 auto;
     }
+
+    /* ── REVENUE CSS ── */
+    .rev-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .rev-tab {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      background: transparent;
+      color: #6b7280;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rev-tab:hover  { border-color: #2e7d32; color: #2e7d32; }
+    .rev-tab.active { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+
+    .rev-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .rev-stat-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .rev-stat-card:hover {
+      transform: translateY(-2px);
+      border-color: #2e7d32;
+    }
+
+    .rev-stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .rev-stat-label {
+      font-size: 0.72rem;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 4px;
+    }
+
+    .rev-stat-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #111;
+      line-height: 1.2;
+    }
+
+    .rev-stat-sub {
+      font-size: 0.7rem;
+      color: #6b7280;
+      margin-top: 3px;
+    }
+
+    .rev-bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .rev-stats       { grid-template-columns: 1fr 1fr; }
+      .rev-bottom-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .rev-stats { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 
@@ -83,7 +180,7 @@
   <!-- TOP LOGO BAR -->
   <header class="top-navbar">
     <div class="top-logo">
-      <img src="rahmangrow_logo.svg" alt="RahmanGrow Logo">
+      <img src="rahmangrow_logo (3).svg" alt="RahmanGrow Logo">
     </div>
   </header>
 
@@ -109,12 +206,12 @@
     <button id="exportSubs">Export Emails</button>
 
     <button class="section-toggle" data-target="pendingSellersSection">
-  <span><i class="fas fa-user-clock" style="margin-right:8px;"></i>Pending Seller Approvals</span>
-  <span class="arrow">▼</span>
-</button>
-<div class="collapsible-section" id="pendingSellersSection">
-  <div id="pendingSellersList" style="margin:10px 0;"></div>
-</div>
+      <span><i class="fas fa-user-clock" style="margin-right:8px;"></i>Pending Seller Approvals</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="pendingSellersSection">
+      <div id="pendingSellersList" style="margin:10px 0;"></div>
+    </div>
 
     <!-- ── CATEGORY MANAGER ── -->
     <button class="section-toggle" data-target="categorySection">
@@ -188,47 +285,41 @@
     </div>
 
     <!-- ── STOCK & ANALYTICS ── -->
-<button class="section-toggle" data-target="analyticsSection">
-  <span><i class="fas fa-chart-bar" style="margin-right:8px;"></i>Stock &amp; Analytics</span>
-  <span class="arrow">▼</span>
-</button>
-<div class="collapsible-section" id="analyticsSection">
-  <div id="lowStockAlerts"></div>
-  <div id="stockManager" style="margin-top:10px;"></div>
+    <button class="section-toggle" data-target="analyticsSection">
+      <span><i class="fas fa-chart-bar" style="margin-right:8px;"></i>Stock &amp; Analytics</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="analyticsSection">
+      <div id="lowStockAlerts"></div>
+      <div id="stockManager" style="margin-top:10px;"></div>
 
-  <!-- ✅ CHARTS -->
-  <div id="analytics" style="margin-top:10px;"></div>
+      <div id="analytics" style="margin-top:10px;"></div>
 
-  <!-- Summary Cards -->
-  <div id="analyticsSummary" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:1.5rem;"></div>
+      <div id="analyticsSummary" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:1.5rem;"></div>
 
-  <!-- Revenue Chart -->
-  <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px; margin-bottom:1rem;">
-    <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
-      <i class="fas fa-chart-line" style="color:#2e7d32; margin-right:6px;"></i>Revenue Over Time (Last 7 Days)
-    </h4>
-    <canvas id="revenueChart" height="100"></canvas>
-  </div>
+      <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px; margin-bottom:1rem;">
+        <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
+          <i class="fas fa-chart-line" style="color:#2e7d32; margin-right:6px;"></i>Revenue Over Time (Last 7 Days)
+        </h4>
+        <canvas id="revenueChart" height="100"></canvas>
+      </div>
 
-  <!-- Top Products Chart -->
-  <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px; margin-bottom:1rem;">
-    <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
-      <i class="fas fa-trophy" style="color:#f59e0b; margin-right:6px;"></i>Top 5 Products by Revenue
-    </h4>
-    <canvas id="topProductsChart" height="120"></canvas>
-  </div>
+      <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px; margin-bottom:1rem;">
+        <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
+          <i class="fas fa-trophy" style="color:#f59e0b; margin-right:6px;"></i>Top 5 Products by Revenue
+        </h4>
+        <canvas id="topProductsChart" height="120"></canvas>
+      </div>
 
-  <!-- Orders by Status -->
-  <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px;">
-    <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
-      <i class="fas fa-chart-pie" style="color:#1d4ed8; margin-right:6px;"></i>Orders by Status
-    </h4>
-    <div style="max-width:300px; margin:0 auto;">
-      <canvas id="orderStatusChart"></canvas>
+      <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px;">
+        <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
+          <i class="fas fa-chart-pie" style="color:#1d4ed8; margin-right:6px;"></i>Orders by Status
+        </h4>
+        <div style="max-width:300px; margin:0 auto;">
+          <canvas id="orderStatusChart"></canvas>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
 
     <!-- ── ORDERS ── -->
     <button class="section-toggle" data-target="ordersSection">
@@ -258,16 +349,142 @@
       </div>
     </div>
 
+    <!-- ── REVENUE DASHBOARD ── -->
+    <button class="section-toggle" data-target="revenueSection">
+      <span><i class="fas fa-chart-line" style="margin-right:8px;"></i>Revenue Dashboard</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="revenueSection">
+
+      <!-- Filter tabs -->
+      <div class="rev-tabs">
+        <button class="rev-tab" data-filter="today" onclick="setRevenueFilter('today')">
+          <i class="fas fa-sun"></i> Today
+        </button>
+        <button class="rev-tab" data-filter="week" onclick="setRevenueFilter('week')">
+          <i class="fas fa-calendar-week"></i> Week
+        </button>
+        <button class="rev-tab active" data-filter="month" onclick="setRevenueFilter('month')">
+          <i class="fas fa-calendar"></i> Month
+        </button>
+        <button class="rev-tab" data-filter="year" onclick="setRevenueFilter('year')">
+          <i class="fas fa-chart-line"></i> Year
+        </button>
+        <button class="rev-tab" data-filter="all" onclick="setRevenueFilter('all')">
+          <i class="fas fa-infinity"></i> All Time
+        </button>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="rev-stats">
+        <div class="rev-stat-card">
+          <div class="rev-stat-icon" style="background:rgba(46,125,50,0.12);color:#2e7d32;">
+            <i class="fas fa-coins"></i>
+          </div>
+          <div>
+            <div class="rev-stat-label">Total Revenue</div>
+            <div class="rev-stat-value" id="revTotalSales">—</div>
+            <div class="rev-stat-sub">From delivered orders</div>
+          </div>
+        </div>
+        <div class="rev-stat-card">
+          <div class="rev-stat-icon" style="background:rgba(79,142,247,0.12);color:#4f8ef7;">
+            <i class="fas fa-shopping-bag"></i>
+          </div>
+          <div>
+            <div class="rev-stat-label">Total Orders</div>
+            <div class="rev-stat-value" id="revOrderCount">—</div>
+            <div class="rev-stat-sub">All statuses</div>
+          </div>
+        </div>
+        <div class="rev-stat-card">
+          <div class="rev-stat-icon" style="background:rgba(34,197,94,0.12);color:#22c55e;">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <div>
+            <div class="rev-stat-label">Avg Order Value</div>
+            <div class="rev-stat-value" id="revAvgOrder">—</div>
+            <div class="rev-stat-sub">Per delivered order</div>
+          </div>
+        </div>
+        <div class="rev-stat-card">
+          <div class="rev-stat-icon" style="background:rgba(239,68,68,0.12);color:#ef4444;">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div>
+            <div class="rev-stat-label">Pending Revenue</div>
+            <div class="rev-stat-value" id="revPending">—</div>
+            <div class="rev-stat-sub">Awaiting delivery</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sales chart -->
+      <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:16px;margin-bottom:16px;">
+        <h4 style="margin:0 0 12px;font-size:0.95rem;color:#444;">
+          <i class="fas fa-chart-area" style="color:#2e7d32;margin-right:6px;"></i>Sales Over Time
+        </h4>
+        <div id="revChartWrap" style="min-height:140px;display:flex;flex-direction:column;justify-content:flex-end;">
+          <p style="text-align:center;color:#888;font-size:0.85rem;">Loading chart…</p>
+        </div>
+      </div>
+
+      <!-- Top Products + Top Sellers -->
+      <div class="rev-bottom-grid">
+
+        <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:16px;">
+          <h4 style="margin:0 0 12px;font-size:0.95rem;color:#444;">
+            <i class="fas fa-fire" style="color:#f59e0b;margin-right:6px;"></i>Top Products
+          </h4>
+          <table style="width:100%;border-collapse:collapse;font-size:0.87rem;">
+            <thead>
+              <tr style="background:#f3f4f6;">
+                <th style="padding:8px;text-align:left;">Product</th>
+                <th style="padding:8px;text-align:center;">Qty Sold</th>
+                <th style="padding:8px;text-align:right;">Revenue</th>
+              </tr>
+            </thead>
+            <tbody id="revTopProductsBody">
+              <tr><td colspan="3" style="text-align:center;padding:16px;color:#888;">No data yet</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:16px;">
+          <h4 style="margin:0 0 12px;font-size:0.95rem;color:#444;">
+            <i class="fas fa-trophy" style="color:#f59e0b;margin-right:6px;"></i>Top Sellers
+          </h4>
+          <table style="width:100%;border-collapse:collapse;font-size:0.87rem;">
+            <thead>
+              <tr style="background:#f3f4f6;">
+                <th style="padding:8px;text-align:left;">Seller</th>
+                <th style="padding:8px;text-align:center;">Orders</th>
+                <th style="padding:8px;text-align:right;">Revenue</th>
+              </tr>
+            </thead>
+            <tbody id="revTopSellersBody">
+              <tr><td colspan="3" style="text-align:center;padding:16px;color:#888;">No data yet</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div><!-- /rev-bottom-grid -->
+
+    </div><!-- /revenueSection -->
+
   </div><!-- end dashboardWrap -->
 
   <!-- SCRIPTS -->
   <script type="module" src="firebase.js"></script>
   <script type="module" src="dashboard.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script>
-  emailjs.init("qJKglsuqxDYbvs15S"); // ← replace with your public key
+  <script>
+    emailjs.init("qJKglsuqxDYbvs15S");
+  </script>
+  <script type="module">
+  import { initRevenue } from "./revenue.js";
+  initRevenue({ role: "admin", sellerUid: null });
 </script>
-  
 
   <!-- CATEGORY MANAGER SCRIPT -->
   <script type="module">
@@ -434,9 +651,14 @@
     };
   </script>
 
+  <!-- REVENUE MODULE SCRIPT -->
+  <script type="module">
+    import { initRevenue } from "./revenue.js";
+    initRevenue({ role: "admin", sellerUid: null });
+  </script>
+
   <!-- TOGGLE + MENU SCRIPT -->
   <script>
-    // Section accordion toggles
     document.querySelectorAll(".section-toggle").forEach((btn) => {
       btn.addEventListener("click", () => {
         const target = document.getElementById(btn.dataset.target);
@@ -445,7 +667,6 @@
       });
     });
 
-    // Mobile menu toggle
     document.addEventListener("DOMContentLoaded", () => {
       const toggle   = document.getElementById("menu-toggle");
       const navLinks = document.getElementById("nav-links");

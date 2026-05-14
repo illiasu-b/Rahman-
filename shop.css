@@ -10,15 +10,16 @@ html, body {
   max-width: 100%;
   font-family: Arial, sans-serif;
 }
-
 body {
+  padding-top: 60px; /* match your navbar height */
   padding-bottom: 80px;
 }
 
-/* ================= TOP NAVBAR ================= */
 .top-navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   background: darkgrey;
   display: flex;

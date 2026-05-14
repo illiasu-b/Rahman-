@@ -1,0 +1,49 @@
+<svg width="220" height="200" viewBox="0 0 220 200" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>RahmanGrow logo</title>
+  <desc>RahmanGrow brand logo — stylized sprouting leaf icon above the brand name</desc>
+
+  <style>
+    .brand-rahman { font-family: Georgia, serif; font-size: 28px; font-weight: 700; fill: #1a3a1a; letter-spacing: -0.5px; }
+    .brand-grow   { font-family: Georgia, serif; font-size: 28px; font-weight: 700; fill: #2d8a3e; letter-spacing: -0.5px; }
+    @media (prefers-color-scheme: dark) {
+      .brand-rahman { fill: #d4edda; }
+      .brand-grow   { fill: #5cbf6e; }
+    }
+  </style>
+
+  <!-- Icon block — centered at x=110 -->
+  <g transform="translate(110, 88)">
+
+    <!-- Rounded square background -->
+    <rect x="-52" y="-62" width="104" height="104" rx="24" fill="#e8f5e9"/>
+
+    <!-- Stem -->
+    <line x1="0" y1="42" x2="0" y2="-8" stroke="#2d8a3e" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Leaf -->
+    <path d="M0 8 Q-28 -8 -26 -42 Q-8 -28 0 -8 Q8 -28 26 -42 Q28 -8 0 8Z" fill="#2d8a3e"/>
+
+    <!-- Leaf veins -->
+    <path d="M0 -8 Q-13 -4 -26 -42" fill="none" stroke="#1a5c28" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M0 -8 Q13 -4 26 -42"  fill="none" stroke="#1a5c28" stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- Soil mounds -->
+    <ellipse cx="-16" cy="30" rx="14" ry="6" fill="#8d6e3a" opacity="0.35"/>
+    <ellipse cx="16"  cy="34" rx="9"  ry="4" fill="#8d6e3a" opacity="0.2"/>
+
+    <!-- Roots -->
+    <line x1="-10" y1="42" x2="-20" y2="34" stroke="#8d6e3a" stroke-width="2" stroke-linecap="round"/>
+    <line x1="10"  y1="42" x2="18"  y2="36" stroke="#8d6e3a" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Sun dots -->
+    <circle cx="22"  cy="-46" r="5"   fill="#f9a825"/>
+    <circle cx="28"  cy="-35" r="3.5" fill="#f9a825" opacity="0.7"/>
+    <circle cx="16"  cy="-55" r="2.5" fill="#f9a825" opacity="0.5"/>
+  </g>
+
+  <!-- Brand name: "Rahman" + "Grow" on same baseline, centered -->
+  <text text-anchor="middle" x="110" y="156">
+    <tspan class="brand-rahman">Rahman</tspan><tspan class="brand-grow">Grow</tspan>
+  </text>
+
+</svg>
