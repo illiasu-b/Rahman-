@@ -3,18 +3,16 @@
   box-sizing: border-box;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  max-width: 100%;
-  font-family: Arial, sans-serif;
-}
-body {
-  padding-top: 60px; /* match your navbar height */
-  padding-bottom: 80px;
+html {
+  scroll-behavior: smooth;
 }
 
+body {
+  padding-top: 70px;   /* reduced from 120px */
+  padding-bottom: 70px;
+}
+
+/* ================= TOP NAVBAR ================= */
 .top-navbar {
   position: fixed;
   top: 0;
@@ -22,20 +20,25 @@ body {
   right: 0;
   width: 100%;
   background: darkgrey;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
   z-index: 200;
-  padding: 6px 10px;
+
+  padding: 4px 8px;   /* smaller padding */
+  min-height: 55px;   /* compact navbar */
 }
 
+/* ================= LOGO ================= */
 .top-logo img {
-  width: 140px;
+  width: 90px;        /* reduced from 140px */
   max-width: 100%;
   height: auto;
   object-fit: contain;
+  display: block;
 }
-
 /* ================= BOTTOM NAVBAR ================= */
 .navbar {
   display: flex;

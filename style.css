@@ -16,7 +16,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  padding-top: 60px; /* match your navbar height */
+  padding-top: 120px; /* match your navbar height */
   padding-bottom: 80px;
 }
 
