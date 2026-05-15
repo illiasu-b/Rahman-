@@ -6,7 +6,32 @@
   <title>My Shop</title>
   <link rel="stylesheet" href="shop.css" />
   <link rel="stylesheet" href="search.css" />
+  <link rel="stylesheet" href="darkmode.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ── WHATSAPP BUTTON ── */
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 16px;
+      background: #25d366;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      width: 100%;
+      margin-top: 8px;
+      box-sizing: border-box;
+    }
+    .wa-btn:hover { background: #1ebe5d; transform: translateY(-1px); }
+    .wa-btn i { font-size: 1rem; }
+  </style>
 </head>
 <body>
 
@@ -18,28 +43,28 @@
 
     <div style="display:flex; align-items:center; gap:16px; margin-left:auto; padding-right:1rem;">
 
-  <!-- Seller Dashboard Icon -->
-  <a id="sellerNavItem" href="seller-dashboard.html"
-    style="display:none; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
-    <i class="fas fa-store-alt"></i>
-    <span style="font-size:0.65rem;">Store</span>
-  </a>
+      <!-- Seller Dashboard Icon -->
+      <a id="sellerNavItem" href="seller-dashboard.html"
+        style="display:none; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
+        <i class="fas fa-store-alt"></i>
+        <span style="font-size:0.65rem;">Store</span>
+      </a>
 
-  <!-- Track Order Icon -->
-  <a href="track.html"
-    style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
-    <i class="fas fa-search"></i>
-    <span style="font-size:0.65rem;">Track</span>
-  </a>
+      <!-- Track Order Icon -->
+      <a href="track.html"
+        style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
+        <i class="fas fa-search"></i>
+        <span style="font-size:0.65rem;">Track</span>
+      </a>
 
-  <!-- Profile Icon -->
-  <a href="#" id="profileNavBtn" onclick="openProfileModal(); return false;"
-    style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
-    <i class="fas fa-user-circle"></i>
-    <span style="font-size:0.65rem;" id="profileNavLabel">Profile</span>
-  </a>
+      <!-- Profile Icon -->
+      <a href="#" id="profileNavBtn" onclick="openProfileModal(); return false;"
+        style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
+        <i class="fas fa-user-circle"></i>
+        <span style="font-size:0.65rem;" id="profileNavLabel">Profile</span>
+      </a>
 
-</div>
+    </div>
   </header>
 
   <!-- ================= BOTTOM NAVBAR ================= -->
@@ -50,29 +75,30 @@
       </div>
 
       <ul class="nav-links" id="nav-links">
-  <li>
-    <a href="index.html">
-      <i class="fas fa-house"></i>
-      <span>Home</span>
-    </a>
-  </li>
+        <li>
+          <a href="index.html">
+            <i class="fas fa-house"></i>
+            <span>Home</span>
+          </a>
+        </li>
 
-  <!-- Wishlist -->
-  <li>
-    <a href="#" onclick="showWishlist(); return false;">
-      <i class="fas fa-heart"></i>
-      <span>Wishlist</span>
-    </a>
-  </li>
+        <!-- Wishlist -->
+        <li>
+          <a href="#" onclick="showWishlist(); return false;">
+            <i class="fas fa-heart"></i>
+            <span>Wishlist</span>
+          </a>
+        </li>
 
-  <!-- Cart Icon -->
-  <li class="cart-item">
-    <a href="order.html" class="cart-link">
-      <i class="fas fa-shopping-cart"></i>
-      <span id="cartBadge">0</span>
-    </a>
-  </li>
-</ul>
+        <!-- Cart Icon -->
+        <li class="cart-item">
+          <a href="order.html" class="cart-link">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cartBadge">0</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </header>
 
   <!-- ================= SHOP PAGE ================= -->
@@ -132,12 +158,9 @@
           <input type="password" id="pLoginPassword" placeholder="••••••••" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
         </div>
         <button id="pLoginBtn" onclick="handleProfileLogin()" data-label="Sign In" style="width:100%; padding:0.85rem; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:0.5rem;">Sign In</button>
-
-        <!-- Forgot password -->
         <p style="text-align:center; margin-top:10px; font-size:0.85rem;">
           <a href="#" onclick="handleForgotPassword(); return false;" style="color:#2e7d32; text-decoration:none;">Forgot password?</a>
         </p>
-
         <div id="pLoginMsg" style="display:none;"></div>
       </div>
 
@@ -200,9 +223,7 @@
 
         <!-- My Orders Button -->
         <button onclick="showOrderHistory()"
-          style="width:100%; padding:0.75rem; background:#2e7d32; color:#fff;
-                 border:none; border-radius:8px; font-size:0.95rem; font-weight:600;
-                 cursor:pointer; margin-bottom:0.6rem;">
+          style="width:100%; padding:0.75rem; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-size:0.95rem; font-weight:600; cursor:pointer; margin-bottom:0.6rem;">
           <i class="fas fa-history"></i> My Orders
         </button>
 
@@ -229,6 +250,21 @@
   <script type="module" src="profile.js"></script>
   <script type="module" src="reviews.js"></script>
   <script type="module" src="wishlist.js"></script>
+  <script type="module" src="darkmode.js"></script>
+
+  <!-- ================= WHATSAPP HELPER ================= -->
+  <script>
+    const STORE_WHATSAPP = "233240391997";
+
+    // Called from product cards in shop.js
+    window.buyViaWhatsApp = function(name, price, currency, sellerWhatsapp) {
+      const number  = sellerWhatsapp || STORE_WHATSAPP;
+      const message = encodeURIComponent(
+        `Hello RahmanGrow! 👋\n\nI'd like to order:\n• ${name} — ${currency} ${Number(price).toFixed(2)}\n\nPlease confirm my order. Thank you!`
+      );
+      window.open(`https://wa.me/${number}?text=${message}`, "_blank");
+    };
+  </script>
 
 </body>
 </html>

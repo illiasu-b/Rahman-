@@ -1,0 +1,300 @@
+/* darkmode.css — Rahma Farms dark theme
+   Activated by: <body class="dark-mode">
+   Toggle button injects itself automatically via darkmode.js
+*/
+
+/* ─── Dark palette variables ──────────────────── */
+body.dark-mode {
+  --dm-bg:          #121212;
+  --dm-surface:     #1e1e1e;
+  --dm-card:        #252525;
+  --dm-border:      rgba(255,255,255,0.08);
+  --dm-text:        #e8e6e0;
+  --dm-text-muted:  #9a9a9a;
+  --dm-gold:        #c9a85c;
+  --dm-green:       #5a8a63;
+  --dm-nav:         #1a1a1a;
+}
+
+/* ─── Base ────────────────────────────────────── */
+body.dark-mode {
+  background-color: var(--dm-bg);
+  color: var(--dm-text);
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4 {
+  color: var(--dm-text);
+}
+
+body.dark-mode p {
+  color: var(--dm-text-muted);
+}
+
+body.dark-mode a {
+  color: var(--dm-text);
+}
+
+/* ─── Top navbar ──────────────────────────────── */
+body.dark-mode .top-navbar {
+  background: #111111;
+  border-bottom: 1px solid var(--dm-border);
+}
+
+/* ─── Bottom / sticky nav ─────────────────────── */
+body.dark-mode .navbar {
+  background: var(--dm-nav);
+  border-top: 1px solid var(--dm-border);
+}
+
+body.dark-mode .nav-links li a {
+  color: #cccccc;
+}
+
+body.dark-mode .nav-links li a:hover,
+body.dark-mode .nav-links li a.active {
+  color: var(--dm-gold);
+}
+
+/* ─── Search bar ──────────────────────────────── */
+body.dark-mode .search-bar input,
+body.dark-mode .search-container input {
+  background: var(--dm-surface);
+  border-color: var(--dm-border);
+  color: var(--dm-text);
+}
+
+body.dark-mode .search-bar input::placeholder,
+body.dark-mode .search-container input::placeholder {
+  color: #666;
+}
+
+body.dark-mode .search-bar input:focus,
+body.dark-mode .search-container input:focus {
+  border-color: var(--dm-green);
+}
+
+body.dark-mode .search-bar button,
+body.dark-mode .search-container button {
+  background: #333;
+}
+
+body.dark-mode .search-bar button:hover,
+body.dark-mode .search-container button:hover {
+  background: #444;
+}
+
+/* ─── Cart details ────────────────────────────── */
+body.dark-mode #cartDetails {
+  background: var(--dm-card);
+  border-color: var(--dm-border);
+  box-shadow: none;
+}
+
+body.dark-mode #cartDetails th {
+  background: #2a2a2a;
+  color: var(--dm-text);
+  border-bottom-color: var(--dm-border);
+}
+
+body.dark-mode #cartDetails td {
+  color: var(--dm-text-muted);
+  border-bottom-color: var(--dm-border);
+}
+
+body.dark-mode #cartDetails p {
+  color: var(--dm-text);
+}
+
+/* ─── Testimonials section ────────────────────── */
+body.dark-mode .testimonials-section {
+  background: #181818;
+}
+
+body.dark-mode .testimonials-section h2 {
+  color: var(--dm-text-muted);
+}
+
+body.dark-mode #testimonial-form {
+  background: var(--dm-card);
+  border-color: var(--dm-border);
+}
+
+body.dark-mode #customerName,
+body.dark-mode #customerReview {
+  background: #1a1a1a;
+  border-color: var(--dm-border);
+  color: var(--dm-text);
+}
+
+body.dark-mode #customerName::placeholder,
+body.dark-mode #customerReview::placeholder {
+  color: #555;
+}
+
+body.dark-mode #submitReview {
+  background: var(--dm-gold);
+  color: #111;
+}
+
+body.dark-mode #submitReview:hover {
+  background: #b08940;
+}
+
+/* ─── Home links section ──────────────────────── */
+body.dark-mode .home-links .link-card {
+  background: rgba(30, 30, 30, 0.92);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+
+body.dark-mode .home-links .link-card a {
+  color: var(--dm-text);
+}
+
+body.dark-mode .home-links .link-card i {
+  color: var(--dm-gold);
+}
+
+body.dark-mode .home-links .link-card h3 {
+  color: var(--dm-text);
+}
+
+body.dark-mode .home-links .link-card p {
+  color: var(--dm-text-muted);
+}
+
+/* ─── Subscribe form ──────────────────────────── */
+body.dark-mode #subscribe-form {
+  background: var(--dm-card);
+  border-color: var(--dm-border);
+  box-shadow: none;
+}
+
+body.dark-mode #subscribe-form label {
+  color: #666;
+}
+
+body.dark-mode #subscribe-form input {
+  background: #1a1a1a;
+  border-color: var(--dm-border);
+  color: var(--dm-text);
+}
+
+body.dark-mode #subscribe-form input:focus {
+  border-color: #555;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.04);
+}
+
+body.dark-mode #showSubscribeBtn {
+  background: #2a2a2a;
+  color: var(--dm-text);
+}
+
+body.dark-mode #showSubscribeBtn:hover {
+  background: #333;
+}
+
+body.dark-mode #subscribe-form button[type="submit"] {
+  background: #2a2a2a;
+}
+
+body.dark-mode #subscribe-form button[type="submit"]:hover {
+  background: #3a3a3a;
+}
+
+/* ─── Promo banner text ───────────────────────── */
+body.dark-mode #promo-banner-container h2 {
+  color: var(--dm-text);
+}
+
+body.dark-mode #promo-banner-container p {
+  color: var(--dm-text-muted);
+}
+
+/* ─── Profile modal ───────────────────────────── */
+body.dark-mode #profileModalOverlay > div {
+  background: var(--dm-card) !important;
+  color: var(--dm-text) !important;
+}
+
+body.dark-mode #profileModalOverlay h3 {
+  color: var(--dm-text) !important;
+}
+
+body.dark-mode #profileModalOverlay input {
+  background: #1e1e1e !important;
+  border-color: var(--dm-border) !important;
+  color: var(--dm-text) !important;
+}
+
+body.dark-mode #profileModalOverlay input::placeholder {
+  color: #555 !important;
+}
+
+body.dark-mode #profileModalOverlay > div > div[style*="background:#f9f9f9"] {
+  background: #1a1a1a !important;
+}
+
+body.dark-mode #profileModalOverlay span[style*="color:#888"] {
+  color: var(--dm-text-muted) !important;
+}
+
+/* ─── Scrollbar ───────────────────────────────── */
+body.dark-mode ::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* ─── Toggle button ───────────────────────────── */
+#darkModeToggle {
+  position: fixed;
+  bottom: 70px;   /* sits just above the bottom nav on mobile */
+  right: 16px;
+  z-index: 9999;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: #2e2e2e;
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  transition: background 0.2s, transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#darkModeToggle:hover {
+  background: #444;
+  transform: scale(1.08);
+}
+
+/* On desktop the bottom nav is at top, so move button */
+@media (min-width: 768px) {
+  #darkModeToggle {
+    bottom: 24px;
+    right: 24px;
+  }
+}
+
+/* Dark mode — button turns lighter */
+body.dark-mode #darkModeToggle {
+  background: #3a3a3a;
+  color: #f0c060;
+}
+
+body.dark-mode #darkModeToggle:hover {
+  background: #4a4a4a;
+}

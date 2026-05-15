@@ -102,6 +102,7 @@ onAuthStateChanged(auth, async (user) => {
     if (userData.approved !== true) { alert("Your seller account is pending admin approval. ⏳"); await signOut(auth); window.location.href = "index.html"; return; }
 
     currentSeller = { uid: user.uid, ...userData };
+window._sellerUid = user.uid; // used by export-orders.js
     initPerformance({ role: "seller", sellerUid: user.uid, sellerData: userData });
     initBulkProducts({ role: "seller", sellerUid: user.uid });
 

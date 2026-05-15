@@ -6,6 +6,8 @@
   <title>Seller Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <!-- SheetJS for Excel export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -161,6 +163,75 @@
     .order-stat .label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
     .order-stat .value { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700; }
 
+    /* ── EXPORT TOOLBAR ── */
+    .export-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+    .export-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-right: 4px;
+    }
+    .export-select {
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      width: auto;
+    }
+    .export-select:focus { outline: none; border-color: var(--accent); }
+    .export-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.84rem;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .export-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .export-btn--excel {
+      background: rgba(34,197,94,0.12);
+      color: var(--success);
+      border: 1px solid rgba(34,197,94,0.25);
+    }
+    .export-btn--excel:hover:not(:disabled) {
+      background: rgba(34,197,94,0.22);
+      transform: translateY(-1px);
+    }
+    .export-btn--csv {
+      background: rgba(79,142,247,0.12);
+      color: var(--blue);
+      border: 1px solid rgba(79,142,247,0.25);
+    }
+    .export-btn--csv:hover:not(:disabled) {
+      background: rgba(79,142,247,0.22);
+      transform: translateY(-1px);
+    }
+
     /* ── PROMO TOGGLE ── */
     .promo-toggle { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
     .promo-toggle input[type="checkbox"] { width: auto; accent-color: var(--accent); }
@@ -276,6 +347,8 @@
       .perf-stat-grid { grid-template-columns: repeat(2, 1fr); }
       .bulk-toolbar { flex-direction: column; align-items: stretch; }
       #bulkActions { margin-left: 0; width: 100%; }
+      .export-toolbar { flex-direction: column; align-items: stretch; }
+      .export-btn { justify-content: center; }
     }
     @media (max-width: 560px) {
       .stats-row { grid-template-columns: 1fr; }
@@ -286,234 +359,6 @@
       .content { padding: 16px; }
       .topbar { padding: 14px 16px; }
     }
-    
-
-/* ── BULK TOOLBAR ── */
-.bulk-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-
-.bulk-search {
-  flex: 1;
-  min-width: 180px;
-  padding: 9px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--border, #2a2f3f);
-  background: var(--surface, #161920);
-  color: var(--text, #eef0f6);
-  font-size: 0.88rem;
-  font-family: 'DM Sans', Arial, sans-serif;
-}
-
-.bulk-search:focus { outline: none; border-color: var(--accent, #f0b429); }
-
-.bulk-select {
-  padding: 9px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--border, #2a2f3f);
-  background: var(--surface, #161920);
-  color: var(--text, #eef0f6);
-  font-size: 0.88rem;
-  font-family: 'DM Sans', Arial, sans-serif;
-  cursor: pointer;
-}
-
-/* ── SELECTION COUNT BAR ── */
-.bulk-count-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  background: rgba(240,180,41,0.08);
-  border: 1px solid rgba(240,180,41,0.2);
-  border-radius: 8px;
-  margin-bottom: 12px;
-  font-size: 0.85rem;
-  color: var(--accent, #f0b429);
-}
-
-.bulk-count-bar strong { font-family: 'Syne', sans-serif; }
-
-/* ── BULK ACTION BUTTONS ── */
-#bulkActions {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-left: auto;
-}
-
-.bulk-action-btn {
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.82rem;
-  font-weight: 600;
-  font-family: 'DM Sans', Arial, sans-serif;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
-}
-
-.bulk-action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-.bulk-btn-edit   { background: var(--accent, #f0b429); color: #000; }
-.bulk-btn-edit:hover:not(:disabled) { background: #e0a520; }
-
-.bulk-btn-export { background: rgba(79,142,247,0.12); color: #4f8ef7; border: 1px solid rgba(79,142,247,0.2); }
-.bulk-btn-export:hover:not(:disabled) { background: rgba(79,142,247,0.22); }
-
-.bulk-btn-delete { background: rgba(239,68,68,0.12); color: var(--danger, #ef4444); border: 1px solid rgba(239,68,68,0.2); }
-.bulk-btn-delete:hover:not(:disabled) { background: rgba(239,68,68,0.22); }
-
-.bulk-btn-refresh { background: rgba(255,255,255,0.06); color: var(--muted, #6b7280); border: 1px solid var(--border, #2a2f3f); }
-.bulk-btn-refresh:hover { background: rgba(255,255,255,0.1); color: var(--text, #eef0f6); }
-
-/* ── SELECTED ROW ── */
-.bulk-row-selected { background: rgba(240,180,41,0.05) !important; }
-.bulk-row-selected:hover { background: rgba(240,180,41,0.08) !important; }
-
-/* ── BULK EDIT MODAL ── */
-#bulkEditModal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.75);
-  z-index: 300;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(4px);
-}
-
-#bulkEditModal.open { display: flex; }
-
-.bulk-modal {
-  background: var(--card, #1c2030);
-  border: 1px solid var(--border, #2a2f3f);
-  border-radius: 16px;
-  padding: 28px;
-  width: 100%;
-  max-width: 480px;
-  max-height: 90vh;
-  overflow-y: auto;
-  animation: fadeIn 0.25s ease;
-}
-
-.bulk-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.bulk-modal-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
-  color: var(--text, #eef0f6);
-}
-
-.bulk-field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.bulk-field-row label {
-  font-size: 0.75rem;
-  color: var(--muted, #6b7280);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.bulk-field-row input,
-.bulk-field-row select {
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border, #2a2f3f);
-  background: var(--surface, #161920);
-  color: var(--text, #eef0f6);
-  font-size: 0.88rem;
-  font-family: 'DM Sans', Arial, sans-serif;
-}
-
-.bulk-field-full {
-  margin-bottom: 14px;
-}
-
-.bulk-field-full label {
-  font-size: 0.75rem;
-  color: var(--muted, #6b7280);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.bulk-field-full input,
-.bulk-field-full select {
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border, #2a2f3f);
-  background: var(--surface, #161920);
-  color: var(--text, #eef0f6);
-  font-size: 0.88rem;
-  font-family: 'DM Sans', Arial, sans-serif;
-}
-
-.bulk-hint {
-  font-size: 0.72rem;
-  color: var(--muted, #6b7280);
-  margin-top: 4px;
-}
-
-/* ── MSG ── */
-#bulkMsg {
-  display: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  margin-top: 12px;
-}
-
-/* ── ADMIN LIGHT THEME OVERRIDES ── */
-.admin-bulk .bulk-search,
-.admin-bulk .bulk-select {
-  background: #fff;
-  border-color: #ddd;
-  color: #111;
-}
-
-.admin-bulk .bulk-modal { background: #fff; border-color: #ddd; }
-.admin-bulk .bulk-modal-title { color: #111; }
-.admin-bulk .bulk-field-row input,
-.admin-bulk .bulk-field-row select,
-.admin-bulk .bulk-field-full input,
-.admin-bulk .bulk-field-full select { background: #f9fafb; border-color: #ddd; color: #111; }
-.admin-bulk .bulk-field-row label,
-.admin-bulk .bulk-field-full label { color: #6b7280; }
-.admin-bulk .bulk-count-bar { background: rgba(46,125,50,0.08); border-color: rgba(46,125,50,0.2); color: #2e7d32; }
-.admin-bulk .bulk-btn-edit { background: #2e7d32; color: #fff; }
-.admin-bulk .bulk-btn-edit:hover { background: #1b5e20; }
-.admin-bulk .bulk-row-selected { background: rgba(46,125,50,0.05) !important; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 600px) {
-  .bulk-toolbar { flex-direction: column; align-items: stretch; }
-  #bulkActions { margin-left: 0; width: 100%; }
-  .bulk-field-row { grid-template-columns: 1fr; }
-}
   </style>
 </head>
 <body>
@@ -849,6 +694,32 @@
 
     <!-- ── ORDERS PANEL ── -->
     <div class="panel" id="panel-orders">
+
+      <!-- ★ EXPORT TOOLBAR ★ -->
+      <div class="export-toolbar">
+        <span class="export-label">
+          <i class="fas fa-file-export"></i> Export Orders
+        </span>
+        <select id="exportStatusFilter" class="export-select">
+          <option value="all">All Statuses</option>
+          <option value="Paid">Paid</option>
+          <option value="Pending Payment">Pending Payment</option>
+          <option value="Shipped">Shipped</option>
+          <option value="Delivered">Delivered</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+        <button id="exportOrdersBtn"
+          onclick="exportOrders('xlsx', window._sellerUid || null, document.getElementById('exportStatusFilter').value)"
+          class="export-btn export-btn--excel">
+          <i class="fas fa-file-excel"></i> Excel
+        </button>
+        <button
+          onclick="exportOrders('csv', window._sellerUid || null, document.getElementById('exportStatusFilter').value)"
+          class="export-btn export-btn--csv">
+          <i class="fas fa-file-csv"></i> CSV
+        </button>
+      </div>
+
       <div class="order-stats">
         <div class="order-stat"><div class="label">Total Orders</div><div class="value" id="oStatTotal" style="color:var(--text);">—</div></div>
         <div class="order-stat"><div class="label">Pending</div><div class="value" id="oStatPending" style="color:var(--accent);">—</div></div>
@@ -856,6 +727,7 @@
         <div class="order-stat"><div class="label">Delivered</div><div class="value" id="oStatDelivered" style="color:var(--success);">—</div></div>
         <div class="order-stat"><div class="label">Cancelled</div><div class="value" id="oStatCancelled" style="color:var(--danger);">—</div></div>
       </div>
+
       <div class="order-tabs">
         <button class="order-tab active" data-status="all"       onclick="filterOrders('all')">       <i class="fas fa-list"></i> All</button>
         <button class="order-tab"        data-status="pending"   onclick="filterOrders('pending')">   <i class="fas fa-clock"></i> Pending</button>
@@ -863,6 +735,7 @@
         <button class="order-tab"        data-status="delivered" onclick="filterOrders('delivered')"> <i class="fas fa-circle-check"></i> Delivered</button>
         <button class="order-tab"        data-status="cancelled" onclick="filterOrders('cancelled')"> <i class="fas fa-ban"></i> Cancelled</button>
       </div>
+
       <div class="card" style="padding:0;overflow:hidden;">
         <div class="table-wrap">
           <table>
@@ -944,8 +817,6 @@
 
     <!-- ── BULK PRODUCTS PANEL ── -->
     <div class="panel" id="panel-bulk">
-
-      <!-- Toolbar -->
       <div class="bulk-toolbar">
         <input class="bulk-search" type="text" placeholder="Search by name, category…"
           oninput="bulkSearch(this.value)">
@@ -969,7 +840,6 @@
         </div>
       </div>
 
-      <!-- Selection count bar -->
       <div class="bulk-count-bar">
         <i class="fas fa-check-square"></i>
         <span><strong id="bulkSelectedCount">0</strong> product(s) selected</span>
@@ -979,7 +849,6 @@
         </button>
       </div>
 
-      <!-- Table -->
       <div class="card" style="padding:0;overflow:hidden;">
         <div id="bulkTableWrap">
           <div class="empty-state">
@@ -989,10 +858,8 @@
         </div>
       </div>
 
-      <!-- Message -->
       <div id="bulkMsg"></div>
-
-    </div><!-- /panel-bulk -->
+    </div>
 
     <!-- ── PROFILE PANEL ── -->
     <div class="panel" id="panel-profile">
@@ -1030,6 +897,7 @@
 
 <script type="module" src="profile.js"></script>
 <script type="module" src="seller.js"></script>
+<script type="module" src="export-orders.js"></script>
 
 <!-- ── LAYOUT FIX ── -->
 <script>
