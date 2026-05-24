@@ -26,13 +26,11 @@ window.toggleWishlist = async function (productId, productName, productPrice, pr
   const exists      = items.find(i => i.id === productId);
 
   if (exists) {
-    // Remove from wishlist
     await updateDoc(wishlistRef, {
       items: arrayRemove(exists)
     });
     updateWishlistBtn(productId, false);
   } else {
-    // Add to wishlist
     const item = {
       id:       productId,
       name:     productName,
@@ -57,9 +55,15 @@ window.toggleWishlist = async function (productId, productName, productPrice, pr
 function updateWishlistBtn(productId, saved) {
   const btn = document.getElementById(`wishlist_${productId}`);
   if (!btn) return;
-  btn.innerHTML     = saved ? "❤️" : "🤍";
-  btn.title         = saved ? "Remove from wishlist" : "Add to wishlist";
-  btn.style.color   = saved ? "#ef4444" : "#888";
+  btn.innerHTML          = saved
+    ? `<i class="fas fa-heart"></i>`
+    : `<i class="far fa-heart"></i>`;
+  btn.title              = saved ? "Remove from wishlist" : "Add to wishlist";
+  btn.style.color        = saved ? "#ef4444" : "#1f2937";
+  btn.style.fontSize     = "1.1rem";
+  btn.style.background   = "rgba(255,255,255,0.85)";
+  btn.style.borderRadius = "50%";
+  btn.style.padding      = "6px 8px";
 }
 
 // ==========================
@@ -117,7 +121,6 @@ window.showWishlist = async function () {
     if (e.target === overlay) overlay.remove();
   });
 
-  // Load wishlist items
   const snap  = await getDoc(doc(db, "wishlists", user.uid));
   const items = snap.exists() ? (snap.data().items || []) : [];
   const list  = document.getElementById("wishlistItems");
@@ -190,7 +193,6 @@ window.removeFromWishlist = async function (productId) {
     await updateDoc(wishlistRef, { items: arrayRemove(item) });
   }
 
-  // Refresh modal
   showWishlist();
   updateWishlistBtn(productId, false);
 };
