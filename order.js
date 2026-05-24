@@ -5,7 +5,7 @@ import {
   serverTimestamp,
   doc,
   runTransaction,
-  getDoc        // ← ADD THIS
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { auth } from "./firebase.js";
 import {
@@ -127,14 +127,33 @@ function renderCart() {
           </div>
         </div>
       </div>
-      <div style="font-weight:600;">
-        ${item.currency || "GHS"} ${(Number(item.price) * Number(item.qty)).toFixed(2)}
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="font-weight:600;">
+          ${item.currency || "GHS"} ${(Number(item.price) * Number(item.qty)).toFixed(2)}
+        </div>
+        <button onclick="removeFromCart('${item.id}')"
+          style="background:none; border:1px solid #ef4444; color:#ef4444;
+                 border-radius:6px; padding:4px 10px; font-size:0.8rem;
+                 cursor:pointer;">
+          Remove
+        </button>
       </div>
     </div>
   `).join("");
 
   if (cartTotal) cartTotal.textContent = getTotal(cart).toFixed(2);
 }
+
+// ======================
+// REMOVE FROM CART
+// ======================
+window.removeFromCart = function (productId) {
+  let cart = getCart();
+  cart = cart.filter(item => item.id !== productId);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartBadge();
+  renderCart();
+};
 
 // ======================
 // ACTUAL POPUP BUILDER
@@ -291,19 +310,11 @@ function _showPrompt(customer) {
 
 // ======================
 // POST-ORDER ACCOUNT PROMPT
-// ✅ Waits for Firebase auth state to resolve before deciding
 // ======================
 function showAccountPrompt(customer) {
   const unsubscribe = onAuthStateChanged(auth, (user) => {
-    unsubscribe(); // stop listening after first check
-
-    if (user) {
-      // Already logged in — no need to show signup prompt
-      console.log("User already logged in, skipping prompt");
-      return;
-    }
-
-    // Not logged in — show the popup
+    unsubscribe();
+    if (user) return;
     _showPrompt(customer);
   });
 }
@@ -313,13 +324,10 @@ function showAccountPrompt(customer) {
 // ======================
 async function notifySellers(cart, customer, orderId) {
   try {
-    // Group cart items by sellerUid
     const sellerItems = {};
 
     for (const item of cart) {
       if (!item.id) continue;
-
-      // Get product to find sellerUid
       const productSnap = await getDoc(doc(db, "products", item.id));
       if (!productSnap.exists()) continue;
 
@@ -327,13 +335,10 @@ async function notifySellers(cart, customer, orderId) {
       const sellerUid = product.sellerUid;
       if (!sellerUid) continue;
 
-      if (!sellerItems[sellerUid]) {
-        sellerItems[sellerUid] = [];
-      }
+      if (!sellerItems[sellerUid]) sellerItems[sellerUid] = [];
       sellerItems[sellerUid].push({ ...item, productData: product });
     }
 
-    // For each seller, get their info and send email
     for (const [sellerUid, items] of Object.entries(sellerItems)) {
       const sellerSnap = await getDoc(doc(db, "users", sellerUid));
       if (!sellerSnap.exists()) continue;
@@ -341,21 +346,20 @@ async function notifySellers(cart, customer, orderId) {
       const seller = sellerSnap.data();
       if (!seller.email) continue;
 
-      // Send one email per product item
       for (const item of items) {
         await emailjs.send(
-          "service_xdxa7ee",       // ← your service ID
-          "template_qpmhck7", // ← replace with new template ID
+          "service_xdxa7ee",
+          "template_qpmhck7",
           {
-            seller_name:    seller.firstName || "Seller",
-            seller_email:   seller.email,
-            product_name:   item.name,
-            qty:            item.qty,
-            price:          `${item.currency || "GHS"} ${Number(item.price).toFixed(2)}`,
-            customer_name:  customer.name,
-            customer_phone: customer.phone,
+            seller_name:      seller.firstName || "Seller",
+            seller_email:     seller.email,
+            product_name:     item.name,
+            qty:              item.qty,
+            price:            `${item.currency || "GHS"} ${Number(item.price).toFixed(2)}`,
+            customer_name:    customer.name,
+            customer_phone:   customer.phone,
             customer_address: customer.address,
-            order_id:       orderId
+            order_id:         orderId
           }
         );
         console.log(`✅ Seller notified: ${seller.email} for ${item.name}`);
@@ -363,7 +367,6 @@ async function notifySellers(cart, customer, orderId) {
     }
   } catch (err) {
     console.error("Failed to notify sellers:", err);
-    // Don't throw — order already placed, notification failure shouldn't block
   }
 }
 
@@ -384,31 +387,27 @@ if (payNowBtn) {
       const cart = getCart();
 
       try {
-        const total = getTotal(cart);
-
+        const total    = getTotal(cart);
         const orderRef = await addDoc(collection(db, "orders"), {
-  ...customer,
-  items:      cart,
-  total,
-  paymentRef: paymentReference,
-  status:     "Paid",
-  createdAt:  serverTimestamp()
-});
+          ...customer,
+          items:      cart,
+          total,
+          paymentRef: paymentReference,
+          status:     "Paid",
+          createdAt:  serverTimestamp()
+        });
 
-const orderId = orderRef.id;
-alert(`Payment successful! ✅\n\nYour Order ID:\n${orderId}\n\nSave this ID to track your order.`);
+        const orderId = orderRef.id;
+        alert(`Payment successful! ✅\n\nYour Order ID:\n${orderId}\n\nSave this ID to track your order.`);
 
         await reduceStock(cart);
+        await notifySellers(cart, customer, orderRef.id);
 
-// ✅ Notify sellers
-await notifySellers(cart, customer, orderRef.id);
-
-localStorage.removeItem("cart");
-updateCartBadge();
-renderCart();
-orderForm?.reset();
-
-showAccountPrompt(customer);
+        localStorage.removeItem("cart");
+        updateCartBadge();
+        renderCart();
+        orderForm?.reset();
+        showAccountPrompt(customer);
 
       } catch (err) {
         console.error("Checkout failed:", err);
@@ -432,35 +431,32 @@ if (orderForm) {
     if (!customer) return;
 
     try {
-      const total = getTotal(cart);
-
+      const total    = getTotal(cart);
       const orderRef = await addDoc(collection(db, "orders"), {
-  ...customer,
-  items:      cart,
-  total,
-  paymentRef: null,
-  status:     "Pending Payment",
-  createdAt:  serverTimestamp()
-});
+        ...customer,
+        items:      cart,
+        total,
+        paymentRef: null,
+        status:     "Pending Payment",
+        createdAt:  serverTimestamp()
+      });
 
-const orderId = orderRef.id;
-alert(`Order placed successfully! ✅\n\nYour Order ID:\n${orderId}\n\nSave this ID to track your order.`);
+      const orderId = orderRef.id;
+      alert(`Order placed successfully! ✅\n\nYour Order ID:\n${orderId}\n\nSave this ID to track your order.`);
 
-// ✅ Notify sellers
-await notifySellers(cart, customer, orderId);
+      await notifySellers(cart, customer, orderId);
 
-localStorage.removeItem("cart");
-updateCartBadge();
-renderCart();
-orderForm.reset();
+      localStorage.removeItem("cart");
+      updateCartBadge();
+      renderCart();
+      orderForm.reset();
+      showAccountPrompt(customer);
 
-showAccountPrompt(customer);
-
-} catch (err) {
-  console.error("Order failed:", err.code, err.message);
-  alert(err.message || "Failed to place order ❌");
-}
-});
+    } catch (err) {
+      console.error("Order failed:", err.code, err.message);
+      alert(err.message || "Failed to place order ❌");
+    }
+  });
 }
 
 // ======================
