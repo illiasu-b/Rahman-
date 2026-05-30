@@ -316,8 +316,7 @@ p { font-weight: 300; color: #4a4a4a; }
   min-height: 50vh;
   background:
     linear-gradient(160deg, rgba(20,20,20,0.68) 0%, rgba(80,80,80,0.40) 100%),
-    url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200')
-    center/cover no-repeat;
+    
   padding: 18px 1rem 24px;
 }
 
@@ -477,9 +476,8 @@ p { font-weight: 300; color: #4a4a4a; }
 .home-links {
   padding: 2.25rem 1rem;
   background:
-    linear-gradient(160deg, rgba(20,20,20,0.68) 0%, rgba(80,80,80,0.45) 100%),
-    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200')
-    center/cover no-repeat;
+    
+    
   display: flex;
   flex-direction: column;
   align-items: center;
