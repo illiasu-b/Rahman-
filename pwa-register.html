@@ -1,0 +1,18 @@
+<!--
+  ====================================================
+  PWA REGISTRATION SCRIPT
+  Paste this into EVERY HTML page just before </body>
+  Pages: index.html, shop.html, order.html, track.html,
+         about.html, contact.html, seller-dashboard.html,
+         dashboard.html
+  ====================================================
+-->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('[PWA] Service worker registered ✅', reg.scope))
+        .catch(err => console.error('[PWA] Registration failed:', err));
+    });
+  }
+</script>

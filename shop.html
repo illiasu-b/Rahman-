@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Shop</title>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2e7d32">
   <link rel="stylesheet" href="shop.css" />
   <link rel="stylesheet" href="search.css" />
   <link rel="stylesheet" href="darkmode.css" />
@@ -358,6 +360,13 @@
       window.open(`https://wa.me/${number}?text=${message}`, "_blank");
     };
   </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
 
 </body>
 </html>
