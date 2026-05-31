@@ -1,6 +1,7 @@
 // ── RahmanGrow Service Worker ──────────────────────────────
 // Version — bump this number whenever you deploy changes
-const CACHE_NAME = "rahmangrow-v1";
+// To this
+const CACHE_NAME = "rahmangrow-v2";
 
 // Files to cache for offline use
 const STATIC_FILES = [
